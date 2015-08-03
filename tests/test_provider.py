@@ -871,7 +871,7 @@ class RedisTestCase(ProviderTestCase):
 
 class UtilsTestCase(InvenioTestCase):
     def test_urleencode(self):
-        from invenio.modules.oauth2server.views.server import urlreencode
+        from invenio_oauth2server.views.server import urlreencode
 
         # Test encoding of unencoded colon which oauthlib will choke on if is
         # not re-encoded,
