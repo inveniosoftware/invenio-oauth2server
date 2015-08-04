@@ -10,5 +10,8 @@ recursive-include docs *.py
 recursive-include docs *.rst
 recursive-include docs Makefile
 recursive-include invenio_oauth2server *.html
+recursive-include invenio_oauth2server *.mo
+recursive-include invenio_oauth2server *.po
+recursive-include invenio_oauth2server *.pot
 recursive-include invenio_oauth2server *.py
 recursive-include tests *.py
