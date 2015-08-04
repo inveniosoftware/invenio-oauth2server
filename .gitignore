@@ -12,5 +12,11 @@ __pycache__
 .coverage
 .tox
 
+build
+dist
+
 # doc
 docs/_build
+
+# ignore compiled translations
+*.mo
