@@ -94,9 +94,9 @@ class ProviderTestCase(InvenioTestCase):
             self.os_debug = os.environ.get('OAUTHLIB_INSECURE_TRANSPORT', '')
             os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = 'true'
 
-        from ..models import Client, Scope
         from invenio_accounts.models import User
-        from ..registry import scopes as scopes_registry
+        from invenio_oauth2server.models import Client, Scope
+        from invenio_oauth2server.registry import scopes as scopes_registry
 
         # Register a test scope
         scopes_registry.register(Scope('test:scope'))
@@ -147,14 +147,14 @@ class ProviderTestCase(InvenioTestCase):
         self.objects = [u, u2, c1, c2]
 
         # Create a personal access token as well.
-        from ..models import Token
+        from invenio_oauth2server.models import Token
         self.personal_token = Token.create_personal(
             'test-personal', 1, scopes=[], is_internal=True
         )
 
     def tearDown(self):
         super(ProviderTestCase, self).tearDown()
-        from ..models import Client
+        from invenio_oauth2server.models import Client
         # Set back any previous value of DEBUG environment variable.
         if self.app.config.get('CFG_SITE_SECURE_URL').startswith('http://'):
             os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = self.os_debug
@@ -176,7 +176,7 @@ class ProviderTestCase(InvenioTestCase):
 class OAuth2ProviderTestCase(ProviderTestCase):
 
     def test_client_salt(self):
-        from ..models import Client
+        from invenio_oauth2server.models import Client
 
         c = Client(
             name='Test something',
@@ -470,7 +470,7 @@ class OAuth2ProviderTestCase(ProviderTestCase):
             assert r.json.get('scopes') == [u'test:scope']
 
     def test_client_flow(self):
-        from ..models import Client
+        from invenio_oauth2server.models import Client
         data = dict(
             client_id='dev',
             client_secret='dev',  # A public client should NOT do this!
@@ -715,7 +715,7 @@ class OAuth2ProviderExpirationTestCase(ProviderTestCase):
                             access_token=old_access_token))
         self.assert200(r)
 
-        from ..models import Token
+        from invenio_oauth2server.models import Token
         Token.query.filter_by(access_token=old_access_token).update(
             dict(expires=datetime.utcnow() - timedelta(seconds=1))
         )
@@ -757,7 +757,7 @@ class OAuth2ProviderExpirationTestCase(ProviderTestCase):
         self.assert401(r)
 
     def test_not_allowed_public_refresh_flow(self):
-        from ..models import Client
+        from invenio_oauth2server.models import Client
         # First login on provider site
         self.login("tester", "tester")
 
@@ -808,7 +808,7 @@ class OAuth2ProviderExpirationTestCase(ProviderTestCase):
                             access_token=old_access_token))
         self.assert200(r)
 
-        from ..models import Token
+        from invenio_oauth2server.models import Token
         Token.query.filter_by(access_token=old_access_token).update(
             dict(expires=datetime.utcnow() - timedelta(seconds=1))
         )

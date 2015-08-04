@@ -63,7 +63,7 @@ def get_token(access_token=None, refresh_token=None):
     elif refresh_token:
         return Token.query.join(Token.client).filter(
             Token.refresh_token == refresh_token,
-            Token.is_personal == False,
+            Token.is_personal == False,  # noqa
             Client.is_confidential == True,
         ).first()
     else:

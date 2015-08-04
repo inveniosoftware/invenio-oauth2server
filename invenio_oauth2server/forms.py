@@ -149,9 +149,9 @@ class ClientForm(ClientFormBase):
     is_confidential = fields.SelectField(
         label=_('Client type'),
         description=_(
-            'Select confidential if your application is capable of keeping the '
-            'issued client secret confidential (e.g. a web application), select'
-            ' public if your application cannot (e.g. a browser-based '
+            'Select confidential if your application is capable of keeping '
+            'the issued client secret confidential (e.g. a web application), '
+            'select public if your application cannot (e.g. a browser-based '
             'JavaScript application). If you select public, your application '
             'MUST validate the redirect URI.'),
         coerce=int,

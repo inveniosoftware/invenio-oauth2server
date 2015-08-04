@@ -26,11 +26,11 @@ from invenio.testsuite import InvenioTestCase, make_test_suite, \
 
 class OAuth2ModelsTestCase(InvenioTestCase):
     def setUp(self):
-        from ..models import Scope
+        from invenio_oauth2server.models import Scope
         from invenio_accounts.models import User
         from invenio_oauth2server.models import Client, Token
 
-        from ..registry import scopes as scopes_registry
+        from invenio_oauth2server.registry import scopes as scopes_registry
 
         # Register a test scope
         scopes_registry.register(Scope('test:scope1'))
@@ -114,8 +114,8 @@ class OAuth2ModelsTestCase(InvenioTestCase):
         self.delete_objects(self.objects)
 
     def test_empty_redirect_uri_and_scope(self):
-        from ..models import Client
-        from ..errors import ScopeDoesNotExists
+        from invenio_oauth2server.models import Client
+        from invenio_oauth2server.errors import ScopeDoesNotExists
 
         c = Client(
             client_id='dev',
@@ -140,8 +140,8 @@ class OAuth2ModelsTestCase(InvenioTestCase):
         self.delete_objects([c])
 
     def test_token_scopes(self):
-        from ..models import Client, Token
-        from ..errors import ScopeDoesNotExists
+        from invenio_oauth2server.models import Client, Token
+        from invenio_oauth2server.errors import ScopeDoesNotExists
 
         c = Client(
             client_id='dev2',
@@ -174,7 +174,7 @@ class OAuth2ModelsTestCase(InvenioTestCase):
         self.delete_objects([c])
 
     def test_registering_invalid_scope(self):
-        from ..registry import scopes as registry
+        from invenio_oauth2server.registry import scopes as registry
         from flask_registry import RegistryError
 
         self.assertRaises(RegistryError, registry.register, 'test:scope')
