@@ -36,3 +36,4 @@ Invenio modules that implements OAuth 2 server.
 - Marco Neumann <marco@crepererum.net>
 - Roman Chyla <roman.chyla@gmail.com>
 - Tibor Simko <tibor.simko@cern.ch>
+- Charlotte Cattaneo <ciris.cattaneo@gmail.com>
