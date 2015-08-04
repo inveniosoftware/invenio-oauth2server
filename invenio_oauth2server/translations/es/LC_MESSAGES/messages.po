@@ -9,80 +9,86 @@ msgstr ""
 "Project-Id-Version: invenio-oauth2server 0.1.0.dev20150000\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2015-08-04 10:12+0200\n"
-"PO-Revision-Date: 2015-08-04 10:13+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2015-08-04 11:56+0200\n"
 "Language-Team: es <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.0\n"
+"Last-Translator: \n"
+"Language: es\n"
+"X-Generator: Poedit 1.8.3\n"
 
 #: invenio_oauth2server/forms.py:150
 msgid "Client type"
-msgstr ""
+msgstr "Tipo de cliente"
 
 #: invenio_oauth2server/forms.py:151
 msgid ""
 "Select confidential if your application is capable of keeping the issued "
 "client secret confidential (e.g. a web application), select public if "
-"your application cannot (e.g. a browser-based JavaScript application). If"
-" you select public, your application MUST validate the redirect URI."
+"your application cannot (e.g. a browser-based JavaScript application). "
+"If you select public, your application MUST validate the redirect URI."
 msgstr ""
+"Seleccione confidencial si su aplicación es capaz de mantener el secreto "
+"de cliente emitido confidencial  (por ejemplo, una aplicación web), "
+"seleccione público si la aplicación no puede (por ejemplo, un navegador "
+"JavaScript browser-based).  Si selecciona público, su aplicación DEBE "
+"validar el URI sujeto a una redirección."
 
 #: invenio_oauth2server/forms.py:158
 msgid "Confidential"
-msgstr ""
+msgstr "Confidencial"
 
 #: invenio_oauth2server/forms.py:158
 msgid "Public"
-msgstr ""
+msgstr "Público"
 
 #: invenio_oauth2server/models.py:144
 msgid "Name"
-msgstr ""
+msgstr "Nombre"
 
 #: invenio_oauth2server/models.py:145
 msgid "Name of application (displayed to users)."
-msgstr ""
+msgstr "Nombre de la aplicación (mostrado a los usarios)"
 
 #: invenio_oauth2server/models.py:155
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 #: invenio_oauth2server/models.py:156
 msgid "Optional. Description of the application (displayed to users)."
-msgstr ""
+msgstr "Opcional. Descripción de la aplicación (mostrada a los usarios)"
 
 #: invenio_oauth2server/models.py:165
 msgid "Website URL"
-msgstr ""
+msgstr "URL del sitio Web"
 
 #: invenio_oauth2server/models.py:166
 msgid "URL of your application (displayed to users)."
-msgstr ""
+msgstr "URL de su applicación (mostrada a los usarios)"
 
 #: invenio_oauth2server/views/server.py:126
 msgid "Authorize application"
-msgstr ""
+msgstr "Autorizar la aplicación"
 
 #: invenio_oauth2server/views/settings.py:105
 #, python-format
 msgid "%(icon)s Applications"
-msgstr ""
+msgstr "%(icon)s Aplicaciónes"
 
 #: invenio_oauth2server/views/settings.py:110
 msgid "Applications"
-msgstr ""
+msgstr "Aplicaciónes"
 
 #: invenio_oauth2server/views/settings.py:144
 #: invenio_oauth2server/views/settings.py:206
 #: invenio_oauth2server/views/settings.py:262
 msgid "New"
-msgstr ""
+msgstr "Nuevo"
 
 #: invenio_oauth2server/views/settings.py:167
 #: invenio_oauth2server/views/settings.py:231
 msgid "Edit"
-msgstr ""
-
+msgstr "Editar"
