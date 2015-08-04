@@ -1,0 +1,88 @@
+# Spanish translations for invenio-oauth2server.
+# Copyright (C) 2015 ORGANIZATION
+# This file is distributed under the same license as the
+# invenio-oauth2server project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: invenio-oauth2server 0.1.0.dev20150000\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2015-08-04 10:12+0200\n"
+"PO-Revision-Date: 2015-08-04 10:13+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.0\n"
+
+#: invenio_oauth2server/forms.py:150
+msgid "Client type"
+msgstr ""
+
+#: invenio_oauth2server/forms.py:151
+msgid ""
+"Select confidential if your application is capable of keeping the issued "
+"client secret confidential (e.g. a web application), select public if "
+"your application cannot (e.g. a browser-based JavaScript application). If"
+" you select public, your application MUST validate the redirect URI."
+msgstr ""
+
+#: invenio_oauth2server/forms.py:158
+msgid "Confidential"
+msgstr ""
+
+#: invenio_oauth2server/forms.py:158
+msgid "Public"
+msgstr ""
+
+#: invenio_oauth2server/models.py:144
+msgid "Name"
+msgstr ""
+
+#: invenio_oauth2server/models.py:145
+msgid "Name of application (displayed to users)."
+msgstr ""
+
+#: invenio_oauth2server/models.py:155
+msgid "Description"
+msgstr ""
+
+#: invenio_oauth2server/models.py:156
+msgid "Optional. Description of the application (displayed to users)."
+msgstr ""
+
+#: invenio_oauth2server/models.py:165
+msgid "Website URL"
+msgstr ""
+
+#: invenio_oauth2server/models.py:166
+msgid "URL of your application (displayed to users)."
+msgstr ""
+
+#: invenio_oauth2server/views/server.py:126
+msgid "Authorize application"
+msgstr ""
+
+#: invenio_oauth2server/views/settings.py:105
+#, python-format
+msgid "%(icon)s Applications"
+msgstr ""
+
+#: invenio_oauth2server/views/settings.py:110
+msgid "Applications"
+msgstr ""
+
+#: invenio_oauth2server/views/settings.py:144
+#: invenio_oauth2server/views/settings.py:206
+#: invenio_oauth2server/views/settings.py:262
+msgid "New"
+msgstr ""
+
+#: invenio_oauth2server/views/settings.py:167
+#: invenio_oauth2server/views/settings.py:231
+msgid "Edit"
+msgstr ""
+
