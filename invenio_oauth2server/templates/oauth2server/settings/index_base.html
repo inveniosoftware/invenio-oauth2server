@@ -23,15 +23,15 @@
 
 {% block settings_body %}
 {{helpers.panel_start(
-    'Developer Applications',
-    btn='New application',
+    _('Developer Applications'),
+    btn=_('New application'),
     btn_icon='fa fa-plus',
     btn_href=url_for('.client_new'),
     with_body=False,
 )}}
 {% if clients %}
 <div class="panel-body">
-    <p>You have registered these applications to use the {{config['CFG_SITE_NAME']}} API:</p>
+    <p>{{ _('You have registered these applications to use the %(site_name)s API:', site_name=config.CFG_SITE_NAME) }}</p>
 </div>
 <ul class="list-group">
     {%- for c in clients %}
@@ -42,20 +42,20 @@
 </ul>
 {% else %}
 <div class="panel-body">
-    <p>You have not yet registered any applications. Click the 'New application' button to create an application to access the {{config['CFG_SITE_NAME']}} API.</p>
+    <p>{{ _("You have not yet registered any applications. Click the 'New application' button to create an application to access the %(site_name)s API.", site_name=config['CFG_SITE_NAME']) }}</p>
 </div>
 {% endif %}
 {{helpers.panel_end(with_body=False)}}
 {{helpers.panel_start(
-    'Personal access tokens',
-    btn='New token',
+    _('Personal access tokens'),
+    btn=_('New token'),
     btn_icon='fa fa-plus',
     btn_href=url_for('.token_new'),
     with_body=False,
 )}}
 {% if tokens %}
 <div class="panel-body">
-    <p>Following are personal tokens to used to access the {{config.CFG_SITE_NAME}} API:</p>
+    <p>{{ _('Following are personal tokens to used to access the %(site_name)s API:', site_name=config.CFG_SITE_NAME) }}</p>
 </div>
 <ul class="list-group">
     {%- for t in tokens %}
@@ -66,23 +66,23 @@
 </ul>
 {% else %}
 <div class="panel-body">
-    <p>You have not yet created any personal access tokens. Click the 'New token' button to create a personal access token.</p>
+    <p>{{ _("You have not yet created any personal access tokens. Click the 'New token' button to create a personal access token.") }}</p>
 </div>
 {% endif %}
 {{helpers.panel_end(with_body=False)}}
 {{helpers.panel_start(
-    'Authorized applications',
+    _('Authorized applications'),
     with_body=False,
 )}}
 {% if authorized_apps %}
 <div class="panel-body">
-    <p>You have granted the following application access to your account:</p>
+    <p>{{ _('You have granted the following application access to your account:') }}</p>
 </div>
 <ul class="list-group">
     {%- for a in authorized_apps %}
     <li class="list-group-item">
     <div class="pull-right">
-        <a href="{{url_for('.token_revoke', token_id=a.id)}}" class="btn btn-default btn-xs"><i class="fa fa-times-circle"></i> Revoke</a>
+        <a href="{{url_for('.token_revoke', token_id=a.id)}}" class="btn btn-default btn-xs"><i class="fa fa-times-circle"></i> {{ _('Revoke') }}</a>
     </div>
     <a href="{{a.client.website}}">{{a.client.name}}</a> <i class="fa fa-external-link"></i><br/><small class="text-muted">{{a.client.description}}</small>
     </li>
@@ -90,7 +90,7 @@
 </ul>
 {% else %}
 <div class="panel-body">
-    <p>You have not yet granted any external applications access to your account.</p>
+    <p>{{ _('You have not yet granted any external applications access to your account.') }}</p>
 </div>
 {% endif %}
 {{helpers.panel_end(with_body=False)}}
