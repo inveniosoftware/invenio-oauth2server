@@ -24,7 +24,7 @@
 Authors
 =======
 
-Invenio modules that implements OAuth 2 server.
+Invenio module that implements OAuth 2 server.
 
 - Eirini Psallida <eirini.psallida@cern.ch>
 - Esteban J. G. Gabancho <esteban.gabancho@gmail.com>

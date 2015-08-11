@@ -22,7 +22,7 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Invenio modules that implements OAuth 2 server."""
+"""Invenio module that implements OAuth 2 server."""
 
 import os
 import sys

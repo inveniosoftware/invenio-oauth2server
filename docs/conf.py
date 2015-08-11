@@ -302,7 +302,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   (master_doc, 'invenio-oauth2server', u'Invenio-OAuth2Server Documentation',
-   author, 'invenio-oauth2server', 'Invenio modules that implements OAuth 2 server.',
+   author, 'invenio-oauth2server', 'Invenio module that implements OAuth 2 server.',
    'Miscellaneous'),
 ]
 

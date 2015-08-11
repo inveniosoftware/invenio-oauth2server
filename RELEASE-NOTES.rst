@@ -7,8 +7,7 @@ Invenio-OAuth2Server v0.1.0 was released on August 4, 2015.
 About
 -----
 
-Invenio module that provides OAuth web authorization support.
-Invenio modules that implements OAuth 2 server.
+Invenio module that implements OAuth 2 server.
 
 *This is an experimental development preview release.*
 

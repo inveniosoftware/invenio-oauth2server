@@ -17,7 +17,7 @@
 # along with Invenio; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-"""Invenio modules that implements OAuth 2 server."""
+"""Invenio module that implements OAuth 2 server."""
 
 from .version import __version__
 

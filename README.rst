@@ -41,7 +41,7 @@
         :target: https://github.com/inveniosoftware/invenio-oauth2server/blob/master/LICENSE
 
 
-Invenio modules that implements OAuth 2 server.
+Invenio module that implements OAuth 2 server.
 
 * Free software: GPLv2 license
 * Documentation: https://invenio-oauth2server.readthedocs.org.
