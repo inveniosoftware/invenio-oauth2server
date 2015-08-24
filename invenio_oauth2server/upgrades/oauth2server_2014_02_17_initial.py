@@ -22,7 +22,7 @@
 import warnings
 
 from invenio.ext.sqlalchemy import db
-from invenio.modules.upgrader.api import op
+from invenio_upgrader.api import op
 
 from sqlalchemy_utils.types import URLType
 
