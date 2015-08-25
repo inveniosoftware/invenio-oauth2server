@@ -26,6 +26,7 @@ Authors
 
 Invenio module that implements OAuth 2 server.
 
+- Charlotte Cattaneo <ciris.cattaneo@gmail.com>
 - Eirini Psallida <eirini.psallida@cern.ch>
 - Esteban J. G. Gabancho <esteban.gabancho@gmail.com>
 - Ivan Masár <helix84@centrum.sk>
@@ -36,4 +37,3 @@ Invenio module that implements OAuth 2 server.
 - Marco Neumann <marco@crepererum.net>
 - Roman Chyla <roman.chyla@gmail.com>
 - Tibor Simko <tibor.simko@cern.ch>
-- Charlotte Cattaneo <ciris.cattaneo@gmail.com>

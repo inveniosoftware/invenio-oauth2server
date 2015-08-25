@@ -24,6 +24,21 @@
 Changes
 =======
 
-Version 0.1.0 (release 2015-08-04)
+Version 0.1.1 (released 2015-08-25)
+-----------------------------------
+
+Improved features
+~~~~~~~~~~~~~~~~~
+
+- Marks strings in templates for translations.  (#3)
+
+Bug fixes
+~~~~~~~~~
+
+- Adds missing `invenio_upgrader` dependency and amends past upgrade
+  recipes following its separation into standalone package.
+
+Version 0.1.0 (released 2015-08-04)
+-----------------------------------
 
 - Initial public release.

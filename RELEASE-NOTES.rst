@@ -1,8 +1,8 @@
 =============================
- Invenio-OAuth2Server v0.1.0
+ Invenio-OAuth2Server v0.1.1
 =============================
 
-Invenio-OAuth2Server v0.1.0 was released on August 4, 2015.
+Invenio-OAuth2Server v0.1.1 was released on August 25, 2015.
 
 About
 -----
@@ -11,20 +11,26 @@ Invenio module that implements OAuth 2 server.
 
 *This is an experimental development preview release.*
 
-What's new
-----------
+Improved features
+-----------------
 
-- Initial public release.
+- Marks strings in templates for translations.  (#3)
+
+Bug fixes
+---------
+
+- Adds missing `invenio_upgrader` dependency and amends past upgrade
+  recipes following its separation into standalone package.
 
 Installation
 ------------
 
-   $ pip install invenio-oauth2server==0.1.0
+   $ pip install invenio-oauth2server==0.1.1
 
 Documentation
 -------------
 
-   http://invenio-oauth2server.readthedocs.org/en/v0.1.0
+   http://invenio-oauth2server.readthedocs.org/en/v0.1.1
 
 Happy hacking and thanks for flying Invenio-OAuth2Server.
 
