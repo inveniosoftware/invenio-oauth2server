@@ -24,7 +24,8 @@ from invenio.ext.sqlalchemy import db
 from invenio_upgrader.api import op
 
 
-depends_on = ['invenio_2015_03_03_tag_value']
+depends_on = ['oauth2server_2014_02_17_initial',
+              'invenio_2015_03_03_tag_value']
 
 
 def info():
