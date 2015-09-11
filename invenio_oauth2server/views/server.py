@@ -34,8 +34,8 @@ from werkzeug.urls import url_encode
 
 from invenio.ext.sqlalchemy import db
 from invenio.ext.login import login_user
-from invenio.base.i18n import _
-from invenio.base.globals import cfg
+from invenio_base.i18n import _
+from invenio_base.globals import cfg
 
 from ..provider import oauth2
 from ..models import Client, OAuthUserProxy

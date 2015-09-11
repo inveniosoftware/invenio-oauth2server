@@ -29,7 +29,7 @@ from flask_login import login_required, current_user
 from flask_breadcrumbs import register_breadcrumb
 from flask_menu import register_menu
 
-from invenio.base.i18n import _
+from invenio_base.i18n import _
 from invenio.ext.sqlalchemy import db
 from invenio.ext.sslify import ssl_required
 
