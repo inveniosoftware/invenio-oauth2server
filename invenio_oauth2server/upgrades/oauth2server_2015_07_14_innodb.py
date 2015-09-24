@@ -19,7 +19,7 @@
 
 """Fixes foreign key relationship."""
 
-from invenio.ext.sqlalchemy import db
+from invenio_ext.sqlalchemy import db
 
 from invenio_upgrader.api import op
 

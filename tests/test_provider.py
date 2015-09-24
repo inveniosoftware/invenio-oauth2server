@@ -30,7 +30,7 @@ from flask import request, url_for
 from flask_oauthlib.client import prepare_request
 
 from invenio_base.globals import cfg
-from invenio.ext.sqlalchemy import db
+from invenio_ext.sqlalchemy import db
 from invenio.testsuite import InvenioTestCase, make_test_suite, run_test_suite
 
 from mock import MagicMock

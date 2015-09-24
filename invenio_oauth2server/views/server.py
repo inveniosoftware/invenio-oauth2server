@@ -32,8 +32,8 @@ from flask_breadcrumbs import register_breadcrumb
 from oauthlib.oauth2.rfc6749.errors import OAuth2Error
 from werkzeug.urls import url_encode
 
-from invenio.ext.sqlalchemy import db
-from invenio.ext.login import login_user
+from invenio_ext.sqlalchemy import db
+from invenio_ext.login import login_user
 from invenio_base.i18n import _
 from invenio_base.globals import cfg
 
