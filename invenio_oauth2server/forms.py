@@ -20,7 +20,7 @@
 """Define forms for generating access tokens and clients."""
 
 from invenio_base.i18n import _
-from invenio.utils.forms import InvenioBaseForm
+from invenio_utils.forms import InvenioBaseForm
 
 from oauthlib.oauth2.rfc6749.errors import InsecureTransportError, \
     InvalidRedirectURIError
