@@ -26,7 +26,6 @@ from flask import current_app
 from flask_login import current_user
 
 from invenio_base.i18n import _
-from invenio.config import SECRET_KEY as secret_key
 from invenio_ext.login.legacy_user import UserInfo
 from invenio_ext.sqlalchemy import db
 from invenio_accounts.models import User
@@ -42,6 +41,11 @@ from wtforms import validators
 
 from .errors import ScopeDoesNotExists
 from .validators import validate_redirect_uri, validate_scopes
+
+
+def secret_key():
+    """Return secret key as bytearray."""
+    return current_app.config['SECRET_KEY'].encode('utf-8')
 
 
 class NoneAesEngine(AesEngine):
