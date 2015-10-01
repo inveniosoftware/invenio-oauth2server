@@ -47,6 +47,8 @@ logging.basicConfig(level=logging.DEBUG)
 
 class ProviderTestCase(InvenioTestCase):
 
+    render_templates = False
+
     def create_app(self):
         try:
             app = super(ProviderTestCase, self).create_app()
