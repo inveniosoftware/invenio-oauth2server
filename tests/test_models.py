@@ -20,8 +20,7 @@
 from __future__ import absolute_import, print_function
 
 from invenio_ext.sqlalchemy import db
-from invenio.testsuite import InvenioTestCase, make_test_suite, \
-    run_test_suite
+from invenio_testing import InvenioTestCase
 
 
 class OAuth2ModelsTestCase(InvenioTestCase):
@@ -357,10 +356,3 @@ class OAuth2ModelsTestCase(InvenioTestCase):
 
         # delete consumer
         self.delete_objects([self.consumer])
-
-
-TEST_SUITE = make_test_suite(OAuth2ModelsTestCase)
-
-
-if __name__ == "__main__":
-    run_test_suite(TEST_SUITE)

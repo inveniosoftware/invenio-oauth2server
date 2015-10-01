@@ -31,7 +31,7 @@ from flask_oauthlib.client import prepare_request
 
 from invenio_base.globals import cfg
 from invenio_ext.sqlalchemy import db
-from invenio.testsuite import InvenioTestCase, make_test_suite, run_test_suite
+from invenio_testing import InvenioTestCase
 
 from mock import MagicMock
 
@@ -884,13 +884,3 @@ class UtilsTestCase(InvenioTestCase):
             self.assertEqual(request.url, "http://localhost"+testurl)
             urlreencode(test_fun)()
             self.assertEqual(request.url, "http://localhost/test?a=b%3Ad&a=d")
-
-
-TEST_SUITE = make_test_suite(OAuth2ProviderTestCase,
-                             OAuth2ProviderExpirationTestCase,
-                             UtilsTestCase,
-                             RedisTestCase)
-
-
-if __name__ == "__main__":
-    run_test_suite(TEST_SUITE)
