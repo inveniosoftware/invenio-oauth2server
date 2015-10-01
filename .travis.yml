@@ -24,6 +24,8 @@
 notifications:
   email: false
 
+sudo: false
+
 services:
   - mysql
   - redis
