@@ -39,20 +39,20 @@ requirements = [
     'Flask-OAuthlib>=0.6.0,<0.7',  # quick fix for issue invenio#2158
     # FIXME new oauthlib release after 0.7.2 has some compatible problems with
     # the used Flask-Oauthlib version.
+    'oauthlib==0.7.2',
     'Flask-SQLAlchemy>=2.0',
     'SQLAlchemy>=1.0',
-    'SQLAlchemy-Utils[encrypted]>=0.30.1',
-    'oauthlib==0.7.2',
-    'invenio-accounts>=0.1.0',
-    'invenio-base>=0.3.0',
-    'invenio-upgrader>=0.1.1',
-    'invenio-utils>=0.1.1',
-    'invenio-ext>=0.2.1',
+    'SQLAlchemy-Utils[encrypted]>=0.31.0',
+    'invenio-accounts>=0.2.0',
+    'invenio-base>=0.3.1',
+    'invenio-upgrader>=0.2.0',
+    'invenio-utils>=0.2.0',
+    'invenio-ext>=0.3.1',
 ]
 
 test_requirements = [
     'coverage>=4.0.0',
-    'invenio-access>=0.1.0',
+    'invenio-access>=0.2.0',
     'invenio-testing>=0.1.1',
     'pytest-cov>=2.1.0',
     'pytest-pep8>=1.0.6',

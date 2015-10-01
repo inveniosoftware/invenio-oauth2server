@@ -24,6 +24,27 @@
 Changes
 =======
 
+Version 0.2.0 (released 2015-10-06)
+-----------------------------------
+
+Incompatible changes
+~~~~~~~~~~~~~~~~~~~~
+
+- Removes legacy upgrade recipes. You **MUST** upgrade to the latest
+  Invenio 2.1 before upgrading Invenio-Upgrader.
+
+Bug fixes
+~~~~~~~~~
+
+- Removes calls to PluginManager consider_setuptools_entrypoints()
+  removed in PyTest 2.8.0.
+- Adds missing `invenio_base` dependency.
+
+Notes
+~~~~~
+
+- Disables test_settings_index test case.
+
 Version 0.1.1 (released 2015-08-25)
 -----------------------------------
 

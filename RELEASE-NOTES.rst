@@ -1,8 +1,8 @@
 =============================
- Invenio-OAuth2Server v0.1.1
+ Invenio-OAuth2Server v0.2.0
 =============================
 
-Invenio-OAuth2Server v0.1.1 was released on August 25, 2015.
+Invenio-OAuth2Server v0.2.0 was released on October 6, 2015.
 
 About
 -----
@@ -11,26 +11,33 @@ Invenio module that implements OAuth 2 server.
 
 *This is an experimental development preview release.*
 
-Improved features
------------------
+Incompatible changes
+--------------------
 
-- Marks strings in templates for translations.  (#3)
+- Removes legacy upgrade recipes. You **MUST** upgrade to the latest
+  Invenio 2.1 before upgrading Invenio-Upgrader.
 
 Bug fixes
 ---------
 
-- Adds missing `invenio_upgrader` dependency and amends past upgrade
-  recipes following its separation into standalone package.
+- Removes calls to PluginManager consider_setuptools_entrypoints()
+  removed in PyTest 2.8.0.
+- Adds missing `invenio_base` dependency.
+
+Notes
+-----
+
+- Disables test_settings_index test case.
 
 Installation
 ------------
 
-   $ pip install invenio-oauth2server==0.1.1
+   $ pip install invenio-oauth2server==0.2.0
 
 Documentation
 -------------
 
-   http://invenio-oauth2server.readthedocs.org/en/v0.1.1
+   http://invenio-oauth2server.readthedocs.org/en/v0.2.0
 
 Happy hacking and thanks for flying Invenio-OAuth2Server.
 
