@@ -17,35 +17,35 @@
 # along with Invenio; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-"""Fixes foreign key relationship."""
+"""Remove legacy upgrade recipes."""
+
+import warnings
 
 from invenio_ext.sqlalchemy import db
-
 from invenio_upgrader.api import op
 
+from sqlalchemy.sql import text
 
-depends_on = []
+depends_on = [
+    'oauth2server_2015_07_14_innodb',
+]
+
+legacy_upgrades = [
+    'oauth2server_2014_02_17_initial',
+    'oauth2server_2014_10_21_encrypted_token_columns',
+]
 
 
 def info():
-    """Return upgrade recipe information."""
-    return "Fixes foreign key relationship."
+    """Info message."""
+    return __doc__
 
 
 def do_upgrade():
-    """Carry out the upgrade."""
-    op.alter_column(
-        table_name='oauth2TOKEN',
-        column_name='client_id',
-        type_=db.String(255),
-        existing_nullable=False
-    )
-    op.alter_column(
-        table_name='oauth2TOKEN',
-        column_name='user_id',
-        type_=db.Integer(15, unsigned=True),
-        existing_nullable=False
-    )
+    """Implement your upgrades here."""
+    sql = text('delete from upgrade where upgrade = :upgrade')
+    for upgrade in legacy_upgrades:
+        db.engine.execute(sql, upgrade=upgrade)
 
 
 def estimate():
@@ -54,10 +54,14 @@ def estimate():
 
 
 def pre_upgrade():
-    """Pre-upgrade checks."""
-    pass
+    """Run pre-upgrade checks (optional)."""
+    sql = text('select 1 from upgrade where upgrade = :upgrade')
+    for upgrade in legacy_upgrades:
+        if not db.engine.execute(sql, upgrade=upgrade).fetchall():
+            warnings.warn("Upgrade '{}' was not applied.".format(upgrade))
 
 
 def post_upgrade():
-    """Post-upgrade checks."""
-    pass
+    """Run post-upgrade checks (optional)."""
+    # Example of issuing warnings:
+    # warnings.warn("A continuable error occurred")
