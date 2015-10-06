@@ -33,7 +33,7 @@ from invenio_base.globals import cfg
 from invenio_ext.sqlalchemy import db
 from invenio_testing import InvenioTestCase
 
-from mock import MagicMock
+from mock import MagicMock, patch
 
 try:
     from six.moves.urllib.parse import urlparse
@@ -46,8 +46,6 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 class ProviderTestCase(InvenioTestCase):
-
-    render_templates = False
 
     def create_app(self):
         try:
@@ -99,6 +97,12 @@ class ProviderTestCase(InvenioTestCase):
         from invenio_accounts.models import User
         from invenio_oauth2server.models import Client, Scope
         from invenio_oauth2server.registry import scopes as scopes_registry
+
+        self.assets_patcher = patch(
+            'webassets.ext.jinja2.AssetsExtension._render_assets'
+        )
+        _render_assets = self.assets_patcher.start()
+        _render_assets.return_value = '/ping'
 
         # Register a test scope
         scopes_registry.register(Scope('test:scope'))
@@ -157,6 +161,12 @@ class ProviderTestCase(InvenioTestCase):
     def tearDown(self):
         super(ProviderTestCase, self).tearDown()
         from invenio_oauth2server.models import Client
+
+        # Keep users logged out!
+        self.logout()
+
+        self.assets_patcher.stop()
+
         # Set back any previous value of DEBUG environment variable.
         if self.app.config.get('CFG_SITE_SECURE_URL').startswith('http://'):
             os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = self.os_debug
