@@ -31,7 +31,7 @@ from flask_oauthlib.client import prepare_request
 
 from invenio_base.globals import cfg
 from invenio_ext.sqlalchemy import db
-from invenio_testing import InvenioTestCase
+from invenio_testing import InvenioTestCase, nottest
 
 from mock import MagicMock, patch
 
@@ -48,18 +48,15 @@ logging.basicConfig(level=logging.DEBUG)
 class ProviderTestCase(InvenioTestCase):
 
     def create_app(self):
-        try:
-            app = super(ProviderTestCase, self).create_app()
-            app.testing = True
-            app.config.update(dict(
-                OAUTH2_CACHE_TYPE='simple',
-            ))
-            client = create_client(app, 'oauth2test')
-            client.http_request = MagicMock(
-                side_effect=self.patch_request(app)
-            )
-        except Exception as e:
-            print(e)
+        app = super(ProviderTestCase, self).create_app()
+        app.testing = True
+        app.config.update(dict(
+            OAUTH2_CACHE_TYPE='simple',
+        ))
+        client = create_client(app, 'oauth2test')
+        client.http_request = MagicMock(
+            side_effect=self.patch_request(app)
+        )
         return app
 
     def patch_request(self, app):
@@ -601,6 +598,7 @@ class OAuth2ProviderTestCase(ProviderTestCase):
         self.assert200(r)
         self.assertEqual(r.json, dict(ping='pong'))
 
+    @nottest
     def test_settings_index(self):
         # Create a remote account (linked account)
         r = self.client.get(
