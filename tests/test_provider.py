@@ -30,7 +30,9 @@ from flask import request, url_for
 from flask_oauthlib.client import prepare_request
 
 from invenio_base.globals import cfg
+
 from invenio_ext.sqlalchemy import db
+
 from invenio_testing import InvenioTestCase, nottest
 
 from mock import MagicMock, patch
@@ -333,7 +335,7 @@ class OAuth2ProviderTestCase(ProviderTestCase):
 
         # Access token valid
         r = self.client.get(url_for('oauth2server.info',
-                            access_token=old_access_token))
+                                    access_token=old_access_token))
         self.assert200(r)
 
         # Obtain new access token with refresh token
@@ -422,7 +424,7 @@ class OAuth2ProviderTestCase(ProviderTestCase):
         )
         self.assertStatus(r, 401)
 
-        # # Now logout
+        # Now logout
         r = self.client.get('/oauth2test/logout')
         self.assertStatus(r, 200)
         assert r.data == "logout"
@@ -460,7 +462,8 @@ class OAuth2ProviderTestCase(ProviderTestCase):
             self.assertStatus(r, 302)
             # Important - access token exists in URI fragment and must not be
             # sent to the client.
-            next_url, data = self.parse_redirect(r.location, parse_fragment=True)
+            next_url, data = self.parse_redirect(
+                r.location, parse_fragment=True)
 
             assert data['access_token']
             assert data['token_type'] == 'Bearer'
@@ -472,7 +475,7 @@ class OAuth2ProviderTestCase(ProviderTestCase):
             # Authentication flow has now been completed, and the client can
             # use the access token to make request to the provider.
             r = self.client.get(url_for('oauth2server.info',
-                                access_token=data['access_token']))
+                                        access_token=data['access_token']))
             self.assert200(r)
             assert r.json.get('client') == client_id
             assert r.json.get('user') == self.objects[0].id
@@ -517,7 +520,7 @@ class OAuth2ProviderTestCase(ProviderTestCase):
         # Authentication flow has now been completed, and the client can
         # use the access token to make request to the provider.
         r = self.client.get(url_for('oauth2server.info',
-                            access_token=data['access_token']))
+                                    access_token=data['access_token']))
         self.assert200(r)
         assert r.json.get('client') == 'confidential'
         assert r.json.get('user') == self.objects[0].id
@@ -722,7 +725,7 @@ class OAuth2ProviderExpirationTestCase(ProviderTestCase):
 
         # Access token valid
         r = self.client.get(url_for('oauth2server.info',
-                            access_token=old_access_token))
+                                    access_token=old_access_token))
         self.assert200(r)
 
         from invenio_oauth2server.models import Token
@@ -733,7 +736,7 @@ class OAuth2ProviderExpirationTestCase(ProviderTestCase):
 
         # Access token is expired
         r = self.client.get(url_for('oauth2server.info',
-                            access_token=old_access_token),
+                                    access_token=old_access_token),
                             base_url=cfg['CFG_SITE_SECURE_URL'])
         self.assert401(r)
 
@@ -815,7 +818,7 @@ class OAuth2ProviderExpirationTestCase(ProviderTestCase):
 
         # Access token valid
         r = self.client.get(url_for('oauth2server.info',
-                            access_token=old_access_token))
+                                    access_token=old_access_token))
         self.assert200(r)
 
         from invenio_oauth2server.models import Token
@@ -826,7 +829,7 @@ class OAuth2ProviderExpirationTestCase(ProviderTestCase):
 
         # Access token is expired
         r = self.client.get(url_for('oauth2server.info',
-                            access_token=old_access_token),
+                                    access_token=old_access_token),
                             follow_redirects=True)
         self.assert401(r)
 
@@ -849,6 +852,7 @@ class OAuth2ProviderExpirationTestCase(ProviderTestCase):
 
 
 class RedisTestCase(ProviderTestCase):
+
     def create_app(self):
         app = super(ProviderTestCase, self).create_app()
         app.testing = True
@@ -880,6 +884,7 @@ class RedisTestCase(ProviderTestCase):
 
 
 class UtilsTestCase(InvenioTestCase):
+
     def test_urleencode(self):
         from invenio_oauth2server.views.server import urlreencode
 
@@ -891,6 +896,6 @@ class UtilsTestCase(InvenioTestCase):
             pass
 
         with self.app.test_request_context(testurl):
-            self.assertEqual(request.url, "http://localhost"+testurl)
+            self.assertEqual(request.url, "http://localhost" + testurl)
             urlreencode(test_fun)()
             self.assertEqual(request.url, "http://localhost/test?a=b%3Ad&a=d")

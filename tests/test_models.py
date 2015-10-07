@@ -20,10 +20,12 @@
 from __future__ import absolute_import, print_function
 
 from invenio_ext.sqlalchemy import db
+
 from invenio_testing import InvenioTestCase
 
 
 class OAuth2ModelsTestCase(InvenioTestCase):
+
     def setUp(self):
         from invenio_oauth2server.models import Scope
         from invenio_accounts.models import User
