@@ -22,30 +22,30 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Invenio module that implements OAuth 2 server."""
+"""Test OAuth2Server providers."""
 
 from __future__ import absolute_import, print_function
 
+from invenio_db import db
+from invenio_oauth2server.models import Client
 
-class InvenioOAuth2Server(object):
-    """Invenio-OAuth2Server extension."""
 
-    def __init__(self, app=None):
-        """Extension initialization."""
-        if app:
-            self.init_app(app)
+def test_client_salt(app):
+    with app.app_context():
+        with db.session.begin_nested():
+            client = Client(
+                name='Test something',
+                is_confidential=True,
+                user_id=1,
+            )
 
-    def init_app(self, app):
-        """Flask application initialization."""
-        self.init_config(app)
+            client.gen_salt()
+            assert len(client.client_id) == \
+                app.config['OAUTH2_CLIENT_ID_SALT_LEN']
+            assert len(client.client_secret) == \
+                app.config['OAUTH2_CLIENT_SECRET_SALT_LEN']
 
-        app.extensions['invenio-oauth2server'] = self
+            db.session.add(client)
 
-    def init_config(self, app):
-        """Initialize configuration."""
-        app.config.setdefault(
-            "OAUTH2SERVER_BASE_TEMPLATE",
-            app.config.get("BASE_TEMPLATE",
-                           "invenio_oauth2server/base.html"))
-        app.config.setdefault('OAUTH2_CLIENT_ID_SALT_LEN', 40)
-        app.config.setdefault('OAUTH2_CLIENT_SECRET_SALT_LEN', 60)
+        with db.session.begin_nested():
+            db.session.delete(client)

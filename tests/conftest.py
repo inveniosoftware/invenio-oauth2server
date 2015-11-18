@@ -37,6 +37,7 @@ from flask_registry import Registry
 
 from invenio_accounts.models import User
 from invenio_db import InvenioDB, db
+from invenio_oauth2server import InvenioOAuth2Server
 from invenio_oauth2server.models import Client, Token
 
 
@@ -61,6 +62,7 @@ def app():
         with app.app_context():
             db.drop_all()
 
+    InvenioOAuth2Server(app)
     # Initiate test data
     with app.app_context():
         with db.session.begin_nested():
