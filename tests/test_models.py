@@ -26,6 +26,8 @@
 
 import pytest
 
+from flask_registry import RegistryError
+
 from invenio_accounts.models import User
 from invenio_db import db
 from invenio_oauth2server.errors import ScopeDoesNotExists
@@ -109,3 +111,9 @@ def test_token_scopes(app):
 
         with db.session.begin_nested():
             db.session.delete(client)
+
+
+def test_registering_invalid_scope(app):
+    with app.app_context():
+        with pytest.raises(RegistryError):
+            scopes.register('test:scope')
