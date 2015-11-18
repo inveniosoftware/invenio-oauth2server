@@ -35,6 +35,7 @@ from invenio_accounts.models import User
 from invenio_db import db
 
 from sqlalchemy_utils.types import URLType
+from sqlalchemy_utils.types.encrypted import AesEngine, EncryptedType
 
 from werkzeug.security import gen_salt
 
@@ -42,6 +43,33 @@ from wtforms import validators
 
 from .errors import ScopeDoesNotExists
 from .validators import validate_redirect_uri, validate_scopes
+
+
+def secret_key():
+    """Return secret key as bytearray."""
+    return current_app.config['SECRET_KEY'].encode('utf-8')
+
+
+class NoneAesEngine(AesEngine):
+
+    """Filter None values from encrypting."""
+
+    def encrypt(self, value):
+        """Encrypt a value on the way in."""
+        if value is not None:
+            return super(NoneAesEngine, self).encrypt(value)
+
+    def decrypt(self, value):
+        """Decrypt value on the way out."""
+        if value is not None:
+            return super(NoneAesEngine, self).decrypt(value)
+
+
+class String255EncryptedType(EncryptedType):
+
+    """String encrypted type."""
+
+    impl = db.String(255)
 
 
 class Scope(object):
@@ -229,3 +257,119 @@ class Client(db.Model):
         self.client_secret = gen_salt(
             current_app.config.get('OAUTH2_CLIENT_SECRET_SALT_LEN')
         )
+
+
+class Token(db.Model):
+    """A bearer token is the final token that can be used by the client."""
+
+    __tablename__ = 'oauth2TOKEN'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    """Object ID."""
+
+    client_id = db.Column(
+        db.String(255), db.ForeignKey(Client.client_id),
+        nullable=False,
+    )
+    """Foreign key to client application."""
+
+    client = db.relationship(
+        'Client',
+        backref=db.backref(
+            'oauth2tokens',
+            cascade="all, delete-orphan"
+        ))
+    """SQLAlchemy relationship to client application."""
+
+    user_id = db.Column(
+        db.Integer, db.ForeignKey(User.id), nullable=True
+    )
+    """Foreign key to user."""
+
+    user = db.relationship(
+        User,
+        backref=db.backref(
+            "oauth2tokens",
+            cascade="all, delete-orphan",
+        )
+    )
+    """SQLAlchemy relationship to user."""
+
+    token_type = db.Column(db.String(255), default='bearer')
+    """Token type - only bearer is supported at the moment."""
+
+    access_token = db.Column(String255EncryptedType(
+        type_in=db.String(255),
+        key=secret_key),
+        unique=True
+    )
+
+    refresh_token = db.Column(String255EncryptedType(
+        type_in=db.String(255),
+        key=secret_key,
+        engine=NoneAesEngine),
+        unique=True, nullable=True
+    )
+
+    expires = db.Column(db.DateTime, nullable=True)
+
+    _scopes = db.Column(db.Text)
+
+    is_personal = db.Column(db.Boolean, default=False)
+    """Personal accesss token."""
+
+    is_internal = db.Column(db.Boolean, default=False)
+    """Determines if token is an internally generated token."""
+
+    @property
+    def scopes(self):
+        """Return all scopes."""
+        if self._scopes:
+            return self._scopes.split()
+        return []
+
+    @scopes.setter
+    def scopes(self, scopes):
+        """Set scopes."""
+        validate_scopes(scopes)
+        self._scopes = " ".join(set(scopes)) if scopes else ""
+
+    def get_visible_scopes(self):
+        """Get list of non-internal scopes for token."""
+        from .registry import scopes as scopes_registry
+        return [k for k, s in scopes_registry.choices() if k in self.scopes]
+
+    @classmethod
+    def create_personal(cls, name, user_id, scopes=None, is_internal=False):
+        """Create a personal access token.
+        A token that is bound to a specific user and which doesn't expire, i.e.
+        similar to the concept of an API key.
+        """
+        scopes = " ".join(scopes) if scopes else ""
+
+        c = Client(
+            name=name,
+            user_id=user_id,
+            is_internal=True,
+            is_confidential=False,
+            _default_scopes=scopes
+        )
+        c.gen_salt()
+
+        t = Token(
+            client_id=c.client_id,
+            user_id=user_id,
+            access_token=gen_salt(
+                current_app.config.get('OAUTH2_TOKEN_PERSONAL_SALT_LEN')
+            ),
+            expires=None,
+            _scopes=scopes,
+            is_personal=True,
+            is_internal=is_internal,
+        )
+
+        db.session.add(c)
+        db.session.add(t)
+        db.session.commit()
+
+        return t

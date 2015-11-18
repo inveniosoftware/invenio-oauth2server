@@ -29,7 +29,7 @@ import pytest
 from invenio_accounts.models import User
 from invenio_db import db
 from invenio_oauth2server.errors import ScopeDoesNotExists
-from invenio_oauth2server.models import Client, Scope
+from invenio_oauth2server.models import Client, Scope, Token
 from invenio_oauth2server.registry import scopes
 
 
@@ -39,7 +39,7 @@ def test_empty_redirect_uri_and_scope(app):
         scopes.register(Scope('test:scope1'))
         scopes.register(Scope('test:scope2', internal=True))
 
-        test_user = User()
+        test_user = User(email='info@invenio-software.org')
 
         client = Client(
             client_id='dev',
@@ -63,6 +63,49 @@ def test_empty_redirect_uri_and_scope(app):
         assert client.default_scopes == ['test:scope1', 'test:scope2']
         with pytest.raises(ScopeDoesNotExists):
             client.default_scopes = ['invalid']
+
+        with db.session.begin_nested():
+            db.session.delete(client)
+
+
+def test_token_scopes(app):
+    with app.app_context():
+        # Register a test scope
+        scopes.register(Scope('test:scope1'))
+        scopes.register(Scope('test:scope2', internal=True))
+
+        test_user = User(email='info@invenio-software.org')
+
+        client = Client(
+            client_id='dev2',
+            client_secret='dev2',
+            name='dev2',
+            description='',
+            is_confidential=False,
+            user=test_user,
+            _redirect_uris='',
+            _default_scopes=""
+        )
+        token = Token(
+            client=client,
+            user=test_user,
+            token_type='bearer',
+            access_token='dev_access',
+            refresh_token='dev_refresh',
+            expires=None,
+            is_personal=False,
+            is_internal=False,
+            _scopes='',
+        )
+        token.scopes = ['test:scope1', 'test:scope2', 'test:scope2']
+        with db.session.begin_nested():
+            db.session.add(client)
+            db.session.add(token)
+
+        assert token.scopes == ['test:scope1', 'test:scope2']
+        with pytest.raises(ScopeDoesNotExists):
+            token.scopes = ['invalid']
+        assert token.get_visible_scopes() == ['test:scope1']
 
         with db.session.begin_nested():
             db.session.delete(client)
