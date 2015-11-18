@@ -35,10 +35,12 @@ from flask import Flask
 from flask_cli import FlaskCLI
 from flask_registry import Registry
 
+from invenio_accounts.models import User
 from invenio_db import InvenioDB, db
+from invenio_oauth2server.models import Client, Token
 
 
-@pytest.fixture()
+@pytest.fixture
 def app():
     """Flask application fixture."""
     app = Flask('testapp')
@@ -58,5 +60,51 @@ def app():
     def teardown():
         with app.app_context():
             db.drop_all()
+
+    # Initiate test data
+    with app.app_context():
+        with db.session.begin_nested():
+            app.resource_owner =\
+                User(email='resource_owner@invenio-software.org',
+                     password='test')
+            app.consumer = User(email='consumer@invenio-software.org',
+                                password='test')
+            # create resource_owner -> client_1
+            app.u1c1 = Client(client_id='client_test_u1c1',
+                              client_secret='client_test_u1c1',
+                              name='client_test_u1c1',
+                              description='',
+                              is_confidential=False,
+                              user=app.resource_owner,
+                              _redirect_uris='',
+                              _default_scopes=""
+                              )
+            # create resource_owner -> client_1 / resource_owner -> token_1
+            app.u1c1u1t1 = Token(client=app.u1c1,
+                                 user=app.resource_owner,
+                                 token_type='u',
+                                 access_token='dev_access_1',
+                                 refresh_token='dev_refresh_1',
+                                 expires=None,
+                                 is_personal=False,
+                                 is_internal=False,
+                                 _scopes='',
+                                 )
+            # create consumer -> client_1 / resource_owner -> token_2
+            app.u1c1u2t2 = Token(client=app.u1c1,
+                                 user=app.consumer,
+                                 token_type='u',
+                                 access_token='dev_access_2',
+                                 refresh_token='dev_refresh_2',
+                                 expires=None,
+                                 is_personal=False,
+                                 is_internal=False,
+                                 _scopes='',
+                                 )
+            db.session.add(app.resource_owner)
+            db.session.add(app.consumer)
+            db.session.add(app.u1c1)
+            db.session.add(app.u1c1u1t1)
+            db.session.add(app.u1c1u2t2)
 
     return app
