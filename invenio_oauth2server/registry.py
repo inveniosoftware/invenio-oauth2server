@@ -22,41 +22,27 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-
-"""Pytest configuration."""
-
 from __future__ import absolute_import, print_function
 
-import os
-
-import pytest
-
-from flask import Flask
-from flask_cli import FlaskCLI
-from flask_registry import Registry
-
-from invenio_db import InvenioDB, db
+from flask_registry import RegistryProxy, DictRegistry, RegistryError
+from .models import Scope
 
 
-@pytest.fixture()
-def app():
-    """Flask application fixture."""
-    app = Flask('testapp')
-    app.config.update(
-        TESTING=True,
-        SECRET_KEY='test_key',
-        SQLALCHEMY_TRACK_MODIFICATIONS=True,
-        SQLALCHEMY_DATABASE_URI=os.getenv('SQLALCHEMY_DATABASE_URI',
-                                          'sqlite://'),
-    )
-    FlaskCLI(app)
-    Registry(app)
-    InvenioDB(app)
-    with app.app_context():
-        db.create_all()
+class ScopesRegistry(DictRegistry):
 
-    def teardown():
-        with app.app_context():
-            db.drop_all()
+    """Registry for OAuth scopes."""
 
-    return app
+    def register(self, scope):
+        """ Register an OAuth scope. """
+        if not isinstance(scope, Scope):
+            raise RegistryError("Invalid scope value.")
+        super(ScopesRegistry, self).register(scope.id, scope)
+
+    def choices(self, exclude_internal=True):
+        items = self.items()
+        items.sort()
+        return [(k, scope) for k, scope in items if
+                not exclude_internal or not scope.is_internal]
+
+
+scopes = RegistryProxy('oauth2server.scopes', ScopesRegistry)

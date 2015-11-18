@@ -22,41 +22,21 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-
-"""Pytest configuration."""
+"""Errors raised by Invenio-OAuth2Server."""
 
 from __future__ import absolute_import, print_function
 
-import os
 
-import pytest
+class OAuth2ServerError(Exception):
 
-from flask import Flask
-from flask_cli import FlaskCLI
-from flask_registry import Registry
-
-from invenio_db import InvenioDB, db
+    """Base class for errors in oauth2server module."""
 
 
-@pytest.fixture()
-def app():
-    """Flask application fixture."""
-    app = Flask('testapp')
-    app.config.update(
-        TESTING=True,
-        SECRET_KEY='test_key',
-        SQLALCHEMY_TRACK_MODIFICATIONS=True,
-        SQLALCHEMY_DATABASE_URI=os.getenv('SQLALCHEMY_DATABASE_URI',
-                                          'sqlite://'),
-    )
-    FlaskCLI(app)
-    Registry(app)
-    InvenioDB(app)
-    with app.app_context():
-        db.create_all()
+class ScopeDoesNotExists(OAuth2ServerError):
 
-    def teardown():
-        with app.app_context():
-            db.drop_all()
+    """Scope is not registered it scopes registry."""
 
-    return app
+    def __init__(self, scope, *args, **kwargs):
+        """Initialize exception by storing invalid scope."""
+        super(ScopeDoesNotExists, self).__init__(*args, **kwargs)
+        self.scope = scope

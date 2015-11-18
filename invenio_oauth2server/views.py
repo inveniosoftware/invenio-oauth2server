@@ -26,8 +26,7 @@
 
 from __future__ import absolute_import, print_function
 
-from flask import Blueprint, render_template
-from flask_babelex import gettext as _
+from flask import Blueprint
 
 blueprint = Blueprint(
     'invenio_oauth2server',
@@ -35,11 +34,3 @@ blueprint = Blueprint(
     template_folder='templates',
     static_folder='static',
 )
-
-
-@blueprint.route("/")
-def index():
-    """Basic view."""
-    return render_template(
-        "invenio_oauth2server/index.html",
-        module_name=_('Invenio-OAuth2Server'))
