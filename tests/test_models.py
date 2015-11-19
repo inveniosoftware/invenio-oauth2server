@@ -35,21 +35,17 @@ from invenio_oauth2server.models import Client, Scope, Token
 from invenio_oauth2server.registry import scopes
 
 
-def test_empty_redirect_uri_and_scope(app):
+def test_empty_redirect_uri_and_scope(models_fixture):
+    app = models_fixture
     with app.app_context():
-        # Register a test scope
-        scopes.register(Scope('test:scope1'))
-        scopes.register(Scope('test:scope2', internal=True))
-
-        test_user = User(email='info@invenio-software.org')
 
         client = Client(
-            client_id='dev',
-            client_secret='dev',
-            name='dev',
+            client_id='dev2',
+            client_secret='dev2',
+            name='dev2',
             description='',
             is_confidential=False,
-            user=test_user,
+            user=app.test_user,
             _redirect_uris='',
             _default_scopes=""
         )
@@ -70,27 +66,22 @@ def test_empty_redirect_uri_and_scope(app):
             db.session.delete(client)
 
 
-def test_token_scopes(app):
+def test_token_scopes(models_fixture):
+    app = models_fixture
     with app.app_context():
-        # Register a test scope
-        scopes.register(Scope('test:scope1'))
-        scopes.register(Scope('test:scope2', internal=True))
-
-        test_user = User(email='info@invenio-software.org')
-
         client = Client(
             client_id='dev2',
             client_secret='dev2',
             name='dev2',
             description='',
             is_confidential=False,
-            user=test_user,
+            user=app.test_user,
             _redirect_uris='',
             _default_scopes=""
         )
         token = Token(
             client=client,
-            user=test_user,
+            user=app.test_user,
             token_type='bearer',
             access_token='dev_access',
             refresh_token='dev_refresh',
@@ -113,14 +104,16 @@ def test_token_scopes(app):
             db.session.delete(client)
 
 
-def test_registering_invalid_scope(app):
+def test_registering_invalid_scope(models_fixture):
+    app = models_fixture
     with app.app_context():
         with pytest.raises(RegistryError):
             scopes.register('test:scope')
 
 
-def test_deletion_of_consumer_resource_owner(app):
+def test_deletion_of_consumer_resource_owner(models_fixture):
     """Test deleting of connected user."""
+    app = models_fixture
     with app.app_context():
         uid_1 = app.resource_owner.id
         cid_1 = app.u1c1.client_id
@@ -162,8 +155,10 @@ def test_deletion_of_consumer_resource_owner(app):
                 False
 
 
-def test_deletion_of_resource_owner_consumer(app):
+def test_deletion_of_resource_owner_consumer(models_fixture):
     """Test deleting of connected user."""
+    app = models_fixture
+
     uid_consumer = app.consumer.id
     cid_1 = app.u1c1.client_id
     tid_1 = app.u1c1u1t1.id
@@ -198,8 +193,9 @@ def test_deletion_of_resource_owner_consumer(app):
         db.session.delete(app.consumer)
 
 
-def test_deletion_of_client1(app):
+def test_deletion_of_client1(models_fixture):
     """Test deleting of connected user."""
+    app = models_fixture
 
     uid_resource_manager = app.resource_owner.id
     uid_consumer = app.consumer.id
@@ -236,8 +232,10 @@ def test_deletion_of_client1(app):
             db.session.delete(app.consumer)
 
 
-def test_deletion_of_token1(app):
+def test_deletion_of_token1(models_fixture):
     """Test deleting of connected user."""
+    app = models_fixture
+
     uid_resource_manager = app.resource_owner.id
     uid_consumer = app.consumer.id
     cid_1 = app.u1c1.client_id
@@ -271,8 +269,9 @@ def test_deletion_of_token1(app):
         db.session.delete(app.consumer)
 
 
-def test_deletion_of_token2(app):
+def test_deletion_of_token2(models_fixture):
     """Test deleting of connected user."""
+    app = models_fixture
     uid_resource_manager = app.resource_owner.id
     uid_consumer = app.consumer.id
     cid_1 = app.u1c1.client_id

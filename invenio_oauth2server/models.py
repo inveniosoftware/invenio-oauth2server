@@ -345,31 +345,31 @@ class Token(db.Model):
         A token that is bound to a specific user and which doesn't expire, i.e.
         similar to the concept of an API key.
         """
-        scopes = " ".join(scopes) if scopes else ""
+        with db.session.begin_nested():
+            scopes = " ".join(scopes) if scopes else ""
 
-        c = Client(
-            name=name,
-            user_id=user_id,
-            is_internal=True,
-            is_confidential=False,
-            _default_scopes=scopes
-        )
-        c.gen_salt()
+            c = Client(
+                name=name,
+                user_id=user_id,
+                is_internal=True,
+                is_confidential=False,
+                _default_scopes=scopes
+            )
+            c.gen_salt()
 
-        t = Token(
-            client_id=c.client_id,
-            user_id=user_id,
-            access_token=gen_salt(
-                current_app.config.get('OAUTH2_TOKEN_PERSONAL_SALT_LEN')
-            ),
-            expires=None,
-            _scopes=scopes,
-            is_personal=True,
-            is_internal=is_internal,
-        )
+            t = Token(
+                client_id=c.client_id,
+                user_id=user_id,
+                access_token=gen_salt(
+                    current_app.config.get('OAUTH2_TOKEN_PERSONAL_SALT_LEN')
+                ),
+                expires=None,
+                _scopes=scopes,
+                is_personal=True,
+                is_internal=is_internal,
+            )
 
-        db.session.add(c)
-        db.session.add(t)
-        db.session.commit()
+            db.session.add(c)
+            db.session.add(t)
 
         return t

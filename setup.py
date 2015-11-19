@@ -37,6 +37,7 @@ tests_require = [
     'check-manifest>=0.25',
     'coverage>=4.0',
     'isort>=4.2.2',
+    'mock>=1.3.0',
     'pep257>=0.7.0',
     'pytest-cache>=1.0',
     'pytest-cov>=1.8.0',
@@ -62,10 +63,15 @@ setup_requires = [
 install_requires = [
     'Flask>=0.10.0',
     'Flask-BabelEx>=0.9.2',
+    'Flask-Breadcrumbs>=0.3.0',
     'Flask-Registry>=0.2.0',
+    'Flask-Login<0.3.0,>=0.2.11',
+    'Flask-OAuthlib>=0.6.0,<0.7',
+    'Flask-Security>=1.7.4',
     'Invenio-Accounts>=1.0.0a2',
     'Invenio-DB>=1.0.0a5',
     'oauthlib==0.7.2',
+    'redis>=2.10.5',
     'six>=1.7.2',
     'SQLAlchemy-Utils[encrypted]>=0.31.0',
 ]

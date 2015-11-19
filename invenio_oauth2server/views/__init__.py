@@ -22,15 +22,8 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Invenio module that implements OAuth 2 server."""
-
 from __future__ import absolute_import, print_function
 
-from flask import Blueprint
+from .server import blueprint as server_blueprint
 
-blueprint = Blueprint(
-    'invenio_oauth2server',
-    __name__,
-    template_folder='templates',
-    static_folder='static',
-)
+__all__ = ('server_blueprint')
