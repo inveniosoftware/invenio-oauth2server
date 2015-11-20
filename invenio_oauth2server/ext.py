@@ -51,3 +51,5 @@ class InvenioOAuth2Server(object):
         app.config.setdefault('OAUTH2_CLIENT_SECRET_SALT_LEN', 60)
         app.config.setdefault('OAUTH2_CACHE_TYPE', 'redis')
         app.config.setdefault('OAUTH2_TOKEN_PERSONAL_SALT_LEN', 60)
+        app.config.setdefault('OAUTH2_PROVIDER_ERROR_ENDPOINT',
+                              'oauth2server.errors')

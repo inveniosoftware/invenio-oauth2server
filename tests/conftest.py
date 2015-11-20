@@ -50,7 +50,7 @@ from invenio_oauth2server.registry import scopes
 
 from mock import MagicMock
 
-from helpers import create_client, patch_request
+from helpers import register_oauth2test_blueprint
 
 
 @pytest.fixture()
@@ -64,6 +64,7 @@ def app():
         SQLALCHEMY_DATABASE_URI=os.getenv('SQLALCHEMY_DATABASE_URI',
                                           'sqlite://'),
         SERVER_NAME='example.com',
+        OAUTHLIB_INSECURE_TRANSPORT=True,
     )
     FlaskCLI(app)
     Babel(app)
@@ -145,6 +146,8 @@ def provider_fixture(app):
     """Fixture that contains test data for provider tests."""
     with app.app_context():
         with db.session.begin_nested():
+            scopes.register(Scope('test:scope'))
+
             app.user1 = User(email='info@invenio-software.org',
                              password='tester')
             app.user2 = User(email='abuse@invenio-software.org',
@@ -159,8 +162,8 @@ def provider_fixture(app):
                             description='',
                             is_confidential=False,
                             user=app.user1,
-                            _redirect_uris='{0}/oauth2test/authorized'.format(
-                                app.config['SERVER_NAME']),
+                            _redirect_uris='http://{0}/oauth2test/authorized'.
+                            format(app.config['SERVER_NAME']),
                             _default_scopes="test:scope"
                             )
 
@@ -170,8 +173,8 @@ def provider_fixture(app):
                             description='',
                             is_confidential=True,
                             user=app.user1,
-                            _redirect_uris='{0}/oauth2test/authorized'.format(
-                                app.config['SERVER_NAME']),
+                            _redirect_uris='http://{0}/oauth2test/authorized'.
+                            format(app.config['SERVER_NAME']),
                             _default_scopes="test:scope"
                             )
             db.session.add(app.c1)
@@ -180,4 +183,6 @@ def provider_fixture(app):
                                                    1,
                                                    scopes=[],
                                                    is_internal=True)
+
+        register_oauth2test_blueprint(app)
     return app

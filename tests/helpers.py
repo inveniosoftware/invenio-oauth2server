@@ -26,7 +26,7 @@
 
 from __future__ import absolute_import, print_function
 
-from flask import url_for, request, session, jsonify, abort
+from flask import Blueprint, url_for, request, session, jsonify, abort
 from flask_oauthlib.client import OAuth, prepare_request
 from flask_security import url_for_security
 
@@ -59,8 +59,10 @@ def login(test_client):
     assert resp.status_code == 200
 
 
-def create_client(app, name, **kwargs):
+def register_oauth2test_blueprint(app, **kwargs):
     """Helper function to create a OAuth2 client to test an OAuth2 provider."""
+    blueprint = Blueprint('oauth2test', __name__, template_folder='templates')
+
     default = dict(
         consumer_key='confidential',
         consumer_secret='confidential',
@@ -74,18 +76,18 @@ def create_client(app, name, **kwargs):
     default.update(kwargs)
 
     oauth = OAuth(app)
-    remote = oauth.remote_app(name, **default)
+    remote = oauth.remote_app('oauth2test', **default)
 
-    @app.route('/oauth2test/login')
+    @blueprint.route('/oauth2test/login')
     def login():
         return remote.authorize(callback=url_for('authorized', _external=True))
 
-    @app.route('/oauth2test/logout')
+    @blueprint.route('/oauth2test/logout')
     def logout():
         session.pop('confidential_token', None)
         return "logout"
 
-    @app.route('/oauth2test/authorized')
+    @blueprint.route('/oauth2test/authorized')
     @remote.authorized_handler
     def authorized(resp):
         if resp is None:
@@ -106,15 +108,15 @@ def create_client(app, name, **kwargs):
                 return abort(ret.status)
             return ret.raw_data
 
-    @app.route('/oauth2test/test-ping')
+    @blueprint.route('/oauth2test/test-ping')
     def test_ping():
         return get_test(url_for("oauth2server.ping"))
 
-    @app.route('/oauth2test/test-info')
+    @blueprint.route('/oauth2test/test-info')
     def test_info():
         return get_test(url_for('oauth2server.info'))
 
-    @app.route('/oauth2test/test-invalid')
+    @blueprint.route('/oauth2test/test-invalid')
     def test_invalid():
         return get_test(url_for('oauth2server.invalid'))
 
@@ -122,7 +124,7 @@ def create_client(app, name, **kwargs):
     def get_oauth_token():
         return session.get('confidential_token')
 
-    return remote
+    app.register_blueprint(blueprint)
 
 
 def patch_request(app):

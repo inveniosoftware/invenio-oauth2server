@@ -56,7 +56,8 @@ def test_client_salt(provider_fixture):
             db.session.delete(client)
 
 
-def invalid_authorize_requests(app):
+def test_invalid_authorize_requests(provider_fixture):
+    app = provider_fixture
     # First login on provider site
     with app.app_context():
         with app.test_client() as client:
@@ -64,17 +65,18 @@ def invalid_authorize_requests(app):
             login(client)
 
             for client_id in ['dev', 'confidential']:
-                redirect_uri = '{0}/oauth2test/authorized'.format(
-                    app.config['SERVER_NAME'])
+                redirect_uri = 'http://{0}{1}'.format(
+                    app.config['SERVER_NAME'],
+                    url_for('oauth2test.authorized')
+                )
                 scope = 'test:scope'
                 response_type = 'code'
 
                 error_url = url_for('oauth2server.errors')
 
                 # Valid request authorize request
-                client.get(url_for('login'))
                 r = client.get(
-                    url_for('authorized'),
+                    url_for('oauth2server.authorize'),
                     data={
                         'redirect_uri': redirect_uri,
                         'scope': scope,
@@ -85,7 +87,7 @@ def invalid_authorize_requests(app):
 
                 # Invalid scope
                 r = client.get(url_for(
-                    'authorized',
+                    'oauth2server.authorize',
                     redirect_uri=redirect_uri,
                     scope='INVALID',
                     response_type=response_type,
