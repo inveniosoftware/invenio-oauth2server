@@ -30,6 +30,7 @@ import six
 
 from flask import current_app
 from flask_babelex import gettext as _
+from flask_login import current_user
 
 from invenio_accounts.models import User
 from invenio_db import db
@@ -70,6 +71,41 @@ class String255EncryptedType(EncryptedType):
     """String encrypted type."""
 
     impl = db.String(255)
+
+
+class OAuthUserProxy(object):
+
+    """Proxy object to an Invenio User."""
+
+    def __init__(self, user):
+        """Initialize proxy object with user instance."""
+        self._user = user
+
+    def __getattr__(self, name):
+        """Pass any undefined attribute to the underlying object."""
+        return getattr(self._user, name)
+
+    def __getstate__(self):
+        """Return the id."""
+        return self.id
+
+    def __setstate__(self, state):
+        """Set user info."""
+        self._user = User.query.get(state)
+
+    @property
+    def id(self):
+        """Return user identifier."""
+        return self._user.id
+
+    def check_password(self, password):
+        """Check user password."""
+        return self.password == password
+
+    @classmethod
+    def get_current_user(cls):
+        """Return an instance of current user object."""
+        return cls(current_user._get_current_object())
 
 
 class Scope(object):

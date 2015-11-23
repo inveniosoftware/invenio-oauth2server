@@ -43,7 +43,7 @@ from invenio_db import db
 # from invenio_ext.login import login_user
 
 from ..provider import oauth2
-from ..models import Client
+from ..models import Client, OAuthUserProxy
 from ..registry import scopes as scopes_registry
 
 
@@ -77,7 +77,7 @@ def setup_app():
 
     # Configures an OAuth2Provider instance to use configured caching system
     # to get and set the grant token.
-    bind_cache_grant(current_app, oauth2, current_user)
+    bind_cache_grant(current_app, oauth2, lambda: OAuthUserProxy(current_user))
 
     # Disables oauthlib's secure transport detection in in debug mode.
     if current_app.debug or current_app.testing:

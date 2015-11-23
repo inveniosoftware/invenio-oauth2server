@@ -43,20 +43,15 @@ def parse_redirect(location, parse_fragment=False):
     )
 
 
-def sign_up(test_client):
-    resp = test_client.post(url_for_security('register'), data={
-        'email': 'test_user@inveniosoftware.org',
-        'password': 'test_password1',
-        })
-    assert resp.status_code == 200
-
-
-def login(test_client):
-    resp = test_client.post(url_for_security('login'), data={
-        'email': 'test_user@inveniosoftware.org',
-        'password': 'test_password1',
-        })
-    assert resp.status_code == 200
+def login(test_client, email='info@invenio-software.org', password='tester'):
+    url = url_for_security('login')
+    resp = test_client.post(
+        url,
+        data={
+            'email': email,
+            'password': password,
+        },
+        follow_redirects=True,)
 
 
 def register_oauth2test_blueprint(app, **kwargs):

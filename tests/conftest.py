@@ -59,12 +59,17 @@ def app():
     app = Flask('testapp')
     app.config.update(
         TESTING=True,
+        LOGIN_DISABLED=False,
         SECRET_KEY='test_key',
         SQLALCHEMY_TRACK_MODIFICATIONS=True,
         SQLALCHEMY_DATABASE_URI=os.getenv('SQLALCHEMY_DATABASE_URI',
                                           'sqlite://'),
         SERVER_NAME='example.com',
+        WTF_CSRF_ENABLED=False,
         OAUTHLIB_INSECURE_TRANSPORT=True,
+        OAUTH2_CACHE_TYPE='simple',
+        SECURITY_PASSWORD_HASH='plaintext',
+        SECURITY_PASSWORD_SCHEMES=['plaintext'],
     )
     FlaskCLI(app)
     Babel(app)
@@ -149,9 +154,12 @@ def provider_fixture(app):
             scopes.register(Scope('test:scope'))
 
             app.user1 = User(email='info@invenio-software.org',
-                             password='tester')
+                             password='tester',
+                             active=True,
+                             )
             app.user2 = User(email='abuse@invenio-software.org',
-                             password='tester2')
+                             password='tester2',
+                             active=True)
 
             db.session.add(app.user1)
             db.session.add(app.user2)
@@ -185,4 +193,16 @@ def provider_fixture(app):
                                                    is_internal=True)
 
         register_oauth2test_blueprint(app)
+
+    class myProxyHack(object):
+
+        def __init__(self, app):
+            self.app = app
+
+        def __call__(self, environ, start_response):
+            environ['REMOTE_ADDR'] = environ.get('REMOTE_ADDR', '127.0.0.1')
+            return self.app(environ, start_response)
+
+    app.wsgi_app = myProxyHack(app.wsgi_app)
+
     return app

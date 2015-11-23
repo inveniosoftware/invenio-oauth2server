@@ -26,12 +26,12 @@
 
 from __future__ import absolute_import, print_function
 
-from flask import url_for
+from flask import json, url_for
 
 from invenio_db import db
 from invenio_oauth2server.models import Client
 
-from helpers import login, parse_redirect, sign_up
+from helpers import login, parse_redirect
 
 
 def test_client_salt(provider_fixture):
@@ -61,7 +61,6 @@ def test_invalid_authorize_requests(provider_fixture):
     # First login on provider site
     with app.app_context():
         with app.test_client() as client:
-            sign_up(client)
             login(client)
 
             for client_id in ['dev', 'confidential']:
@@ -164,3 +163,89 @@ def test_invalid_authorize_requests(provider_fixture):
                 next_url, data = parse_redirect(r.location)
                 assert data['error'] == 'mismatching_redirect_uri'
                 assert error_url in next_url
+
+
+def test_refresh_flow(provider_fixture):
+    app = provider_fixture
+    with app.app_context():
+        with app.test_client() as client:
+            # First login on provider site
+            login(client)
+
+            data = dict(
+                redirect_uri='http://{0}{1}'.format(
+                    app.config['SERVER_NAME'],
+                    url_for('oauth2test.authorized')),
+                scope='test:scope',
+                response_type='code',
+                client_id='confidential',
+                state='mystate'
+            )
+
+            r = client.get(url_for('oauth2server.authorize', **data))
+            assert r.status_code == 200
+
+            data['confirm'] = 'yes'
+            data['scope'] = 'test:scope'
+            data['state'] = 'mystate'
+
+            # Obtain one time code
+            r = client.post(
+                url_for('oauth2server.authorize'), data=data
+            )
+            r.status_code == 302
+            next_url, res_data = parse_redirect(r.location)
+            assert res_data['code']
+            assert res_data['state'] == 'mystate'
+
+            # Exchange one time code for access token
+            r = client.post(
+                url_for('oauth2server.access_token'), data=dict(
+                    client_id='confidential',
+                    client_secret='confidential',
+                    grant_type='authorization_code',
+                    code=res_data['code'],
+                )
+            )
+            assert r.status_code == 200
+            json_resp = json.loads(r.get_data())
+            assert json_resp['access_token']
+            assert json_resp['refresh_token']
+            assert json_resp['scope'] == 'test:scope'
+            assert json_resp['token_type'] == 'Bearer'
+            refresh_token = json_resp['refresh_token']
+            old_access_token = json_resp['access_token']
+
+            # Access token valid
+            r = client.get(url_for('oauth2server.info',
+                           access_token=old_access_token))
+            assert r.status_code == 200
+
+            # Obtain new access token with refresh token
+            r = client.post(
+                url_for('oauth2server.access_token'), data=dict(
+                    client_id='confidential',
+                    client_secret='confidential',
+                    grant_type='refresh_token',
+                    refresh_token=refresh_token,
+                )
+            )
+            r.status_code == 200
+            json_resp = json.loads(r.get_data())
+            assert json_resp['access_token']
+            assert json_resp['refresh_token']
+            assert json_resp['access_token'] != old_access_token
+            assert json_resp['refresh_token'] != refresh_token
+            assert json_resp['scope'] == 'test:scope'
+            assert json_resp['token_type'] == 'Bearer'
+
+            # New access token valid
+            r = client.get(url_for('oauth2server.info',
+                                   access_token=json_resp['access_token']))
+            assert r.status_code == 200
+
+            # Old access token no longer valid
+            r = client.get(url_for('oauth2server.info',
+                                   access_token=old_access_token,),
+                           base_url='http://' + app.config['SERVER_NAME'])
+            assert r.status_code == 401
