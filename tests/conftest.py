@@ -38,6 +38,7 @@ from flask_mail import Mail
 from flask_menu import Menu
 from flask_oauthlib.client import OAuth
 from flask_registry import Registry
+import flask_httpretty
 
 from invenio_accounts import InvenioAccounts
 from invenio_accounts.models import User
@@ -172,7 +173,7 @@ def provider_fixture(app):
                             user=app.user1,
                             _redirect_uris='http://{0}/oauth2test/authorized'.
                             format(app.config['SERVER_NAME']),
-                            _default_scopes="test:scope"
+                            _default_scopes='test:scope'
                             )
 
             app.c2 = Client(client_id='confidential',
@@ -183,16 +184,23 @@ def provider_fixture(app):
                             user=app.user1,
                             _redirect_uris='http://{0}/oauth2test/authorized'.
                             format(app.config['SERVER_NAME']),
-                            _default_scopes="test:scope"
+                            _default_scopes='test:scope'
                             )
             db.session.add(app.c1)
             db.session.add(app.c2)
         app.personal_token = Token.create_personal('test-personal',
-                                                   1,
+                                                   app.user1.id,
                                                    scopes=[],
                                                    is_internal=True)
 
         register_oauth2test_blueprint(app)
+        flask_httpretty.reset()
+        flask_httpretty.register_app(app, 'http://{0}'.format(
+            app.config['SERVER_NAME']))
+        flask_httpretty.enable()
+
+        def teardown():
+            flask_httpretty.disable()
 
     class myProxyHack(object):
 

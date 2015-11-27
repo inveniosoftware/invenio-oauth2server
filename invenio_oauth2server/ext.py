@@ -26,6 +26,8 @@
 
 from __future__ import absolute_import, print_function
 
+from .provider import oauth2
+
 
 class InvenioOAuth2Server(object):
     """Invenio-OAuth2Server extension."""
@@ -38,6 +40,8 @@ class InvenioOAuth2Server(object):
     def init_app(self, app):
         """Flask application initialization."""
         self.init_config(app)
+
+        oauth2.init_app(app)
 
         app.extensions['invenio-oauth2server'] = self
 
@@ -52,4 +56,9 @@ class InvenioOAuth2Server(object):
         app.config.setdefault('OAUTH2_CACHE_TYPE', 'redis')
         app.config.setdefault('OAUTH2_TOKEN_PERSONAL_SALT_LEN', 60)
         app.config.setdefault('OAUTH2_PROVIDER_ERROR_ENDPOINT',
-                              'oauth2server.errors')
+                              'oauth2server.errors'),
+        app.config.setdefault('OAUTH2_ALLOWED_RESPONSE_TYPES', ['code',
+                                                                'token'])
+        app.config.setdefault('OAUTH2_ALLOWED_GRANT_TYPES', [
+            'authorization_code', 'client_credentials', 'refresh_token',
+            ])

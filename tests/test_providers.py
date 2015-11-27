@@ -31,6 +31,8 @@ from flask import json, url_for
 from invenio_db import db
 from invenio_oauth2server.models import Client
 
+from mock import MagicMock
+
 from helpers import login, parse_redirect
 
 
@@ -249,3 +251,83 @@ def test_refresh_flow(provider_fixture):
                                    access_token=old_access_token,),
                            base_url='http://' + app.config['SERVER_NAME'])
             assert r.status_code == 401
+
+
+def test_web_auth_flow(provider_fixture):
+        app = provider_fixture
+        # Go to login - should redirect to oauth2 server for login an
+        # authorization
+        with app.app_context():
+            with app.test_client() as client:
+                # client.http_request = MagicMock(
+                #    side_effect=patch_request(app, client)
+                # )
+
+                r = client.get('/oauth2test/test-ping')
+
+                # First login on provider site
+                login(client)
+
+                r = client.get('/oauth2test/login')
+                assert r.status_code == 302
+                next_url, data = parse_redirect(r.location)
+
+                # Authorize page
+                r = client.get(next_url, query_string=data)
+                assert r.status_code == 200
+
+                # User confirms request
+                data['confirm'] = 'yes'
+                data['scope'] = 'test:scope'
+                data['state'] = ''
+
+                r = client.post(next_url, data=data)
+                assert r.status_code == 302
+                next_url, data = parse_redirect(r.location)
+                assert next_url == 'http://{0}/oauth2test/authorized'.format(
+                    app.config['SERVER_NAME'])
+                assert 'code' in data
+
+                import pudb
+                pudb.set_trace()
+                # User is redirected back to client site.
+                # - The client view /oauth2test/authorized will in the
+                #   background fetch the access token.
+                r = client.get(next_url, query_string=data)
+                assert r.status_code == 200
+                pudb.set_trace()
+
+                # Authentication flow has now been completed, and the access
+                # token can be used to access protected resources.
+                r = client.get('/oauth2test/test-ping')
+                assert r.status_code == 200
+                assert json.loads(r.get_data()) == dict(ping='pong')
+
+                # Authentication flow has now been completed, and the access
+                # token can be used to access protected resources.
+                r = client.get('/oauth2test/test-ping')
+                assert r.status_code == 200
+                assert json.loads(r.get_data()) == dict(ping='pong')
+
+                r = client.get('/oauth2test/test-info')
+                assert r.status_code == 200
+                json_resp = json.loads(r.get_data())
+                assert json_resp['client'] == 'confidential'
+                assert json_resp['user'] == app.user1.id
+                assert json_resp['scopes'] == [u'test:scope']
+
+                # Access token doesn't provide access to this URL.
+                r = client.get(
+                    '/oauth2test/test-invalid',
+                    base_url='http://{0}'.format(app.config['SERVER_NAME'])
+                )
+                assert r.status_code == 401
+
+                # # Now logout
+                r = client.get('/oauth2test/logout')
+                assert r.status_code == 200
+                assert r.data == "logout"
+
+                # And try to access the information again
+                r = client.get('/oauth2test/test-ping')
+                assert r.status_code == 403

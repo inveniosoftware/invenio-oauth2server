@@ -60,7 +60,7 @@ blueprint = Blueprint(
 def setup_app():
     """Setup OAuth2 provider."""
     # Initialize OAuth2 provider
-    oauth2.init_app(current_app)
+    # oauth2.init_app(current_app)
 
     # Configures the OAuth2 provider to use the SQLALchemy models for getters
     # and setters for user, client and tokens.
