@@ -22,17 +22,30 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Errors raised by Invenio-OAuth2Server."""
+
+"""Module tests."""
+
+from __future__ import absolute_import, print_function
+
+from flask import Flask
+
+from invenio_oauth2server import InvenioOAuth2Server
 
 
-class OAuth2ServerError(Exception):
-    """Base class for errors in oauth2server module."""
+def test_version():
+    """Test version import."""
+    from invenio_oauth2server import __version__
+    assert __version__
 
 
-class ScopeDoesNotExists(OAuth2ServerError):
-    """Scope is not registered it scopes registry."""
+def test_init():
+    """Test extension initialization."""
+    app = Flask('testapp')
+    ext = InvenioOAuth2Server(app)
+    assert 'invenio-oauth2server' in app.extensions
 
-    def __init__(self, scope, *args, **kwargs):
-        """Initialize exception by storing invalid scope."""
-        super(ScopeDoesNotExists, self).__init__(*args, **kwargs)
-        self.scope = scope
+    app = Flask('testapp')
+    ext = InvenioOAuth2Server()
+    assert 'invenio-oauth2server' not in app.extensions
+    ext.init_app(app)
+    assert 'invenio-oauth2server' in app.extensions

@@ -28,4 +28,6 @@ This file is imported by ``invenio_oauth2server.__init__``,
 and parsed by ``setup.py``.
 """
 
-__version__ = "0.2.1.dev20151006"
+from __future__ import absolute_import, print_function
+
+__version__ = "0.1.0.dev20150000"

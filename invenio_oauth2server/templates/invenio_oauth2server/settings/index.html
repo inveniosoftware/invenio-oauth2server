@@ -16,10 +16,11 @@
 # along with Invenio; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 #}
+{%- extends config.OAUTH2SERVER_SETTINGS_TEMPLATE %}
 
-{%- import "accounts/settings/helpers.html" as helpers with context %}
-{%- from "_formhelpers.html" import render_field with context %}
-{%- extends "accounts/settings/index.html" %}
+{# FIXME Import from future formatter. #}
+{%- from "invenio_oauth2server/settings/_macros.html" import render_field with context%}
+{%- import "invenio_oauth2server/settings/helpers.html" as helpers with context %}
 
 {% block settings_body %}
 {{helpers.panel_start(

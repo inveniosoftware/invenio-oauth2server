@@ -17,9 +17,10 @@
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 #}
 
-{%- import "accounts/settings/helpers.html" as helpers with context %}
-{%- from "_formhelpers.html" import render_field with context %}
-{%- extends "accounts/settings/index.html" %}
+{%- extends "invenio_oauth2server/settings/index.html" %}
+
+{%- import "invenio_oauth2server/settings/helpers.html" as helpers with context %}
+{%- from "invenio_oauth2server/settings/_macros.html" import render_field with context %}
 
 {% block settings_body %}
 {{helpers.panel_start(
@@ -43,7 +44,7 @@
 <div class="panel-body">
     <form method="POST" role="form" action="">
     {%- for field in form %}
-    {{ render_field(field, show_description=True) }}
+    {{ render_field(field) }}
     {%- endfor %}
     <div class="form-group">
         <button type="submit" name="delete" class="btn btn-danger"><i class="fa fa-trash-o"></i> {{ _('Delete') }}</button>

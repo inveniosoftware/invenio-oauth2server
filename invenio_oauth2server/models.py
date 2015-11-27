@@ -1,45 +1,44 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2014, 2015 CERN.
+# Copyright (C) 2015 CERN.
 #
-# Invenio is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License as
+# Invenio is free software; you can redistribute it
+# and/or modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation; either version 2 of the
 # License, or (at your option) any later version.
 #
-# Invenio is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
+# Invenio is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Invenio; if not, write to the Free Software Foundation, Inc.,
-# 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+# along with Invenio; if not, write to the
+# Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+# In applying this license, CERN does not
+# waive the privileges and immunities granted to it by virtue of its status
+# as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Database models for OAuth2 server."""
+"""OAuth2Server models."""
 
-from __future__ import absolute_import
-
-from flask import current_app
-
-from flask_login import current_user
-
-from invenio_base.i18n import _
-from invenio_ext.login.legacy_user import UserInfo
-from invenio_ext.sqlalchemy import db
-from invenio_accounts.models import User
+from __future__ import absolute_import, print_function
 
 import six
-
+from flask import current_app
+from flask_babelex import lazy_gettext as _
+from flask_login import current_user
+from invenio_accounts.models import User
+from invenio_db import db
 from sqlalchemy_utils.types import URLType
 from sqlalchemy_utils.types.encrypted import AesEngine, EncryptedType
-
 from werkzeug.security import gen_salt
-
 from wtforms import validators
 
 from .errors import ScopeDoesNotExists
+from .proxies import current_oauth2server
 from .validators import validate_redirect_uri, validate_scopes
 
 
@@ -49,7 +48,6 @@ def secret_key():
 
 
 class NoneAesEngine(AesEngine):
-
     """Filter None values from encrypting."""
 
     def encrypt(self, value):
@@ -64,14 +62,12 @@ class NoneAesEngine(AesEngine):
 
 
 class String255EncryptedType(EncryptedType):
-
     """String encrypted type."""
 
     impl = db.String(255)
 
 
 class OAuthUserProxy(object):
-
     """Proxy object to an Invenio User."""
 
     def __init__(self, user):
@@ -88,7 +84,8 @@ class OAuthUserProxy(object):
 
     def __setstate__(self, state):
         """Set user info."""
-        self._user = UserInfo(state)
+        self._user = current_app.extensions['security'].datastore.get_user(
+            state)
 
     @property
     def id(self):
@@ -106,7 +103,6 @@ class OAuthUserProxy(object):
 
 
 class Scope(object):
-
     """OAuth scope definition."""
 
     def __init__(self, id_, help_text='', group='', internal=False):
@@ -118,7 +114,6 @@ class Scope(object):
 
 
 class Client(db.Model):
-
     """A client is the app which want to use the resource of a user.
 
     It is suggested that the client is registered by a user on your site, but
@@ -172,7 +167,7 @@ class Client(db.Model):
         default=u'',
     )
 
-    user_id = db.Column(db.ForeignKey('user.id'), nullable=True)
+    user_id = db.Column(db.ForeignKey(User.id), nullable=True)
     """Creator of the client application."""
 
     client_id = db.Column(db.String(255), primary_key=True)
@@ -296,7 +291,6 @@ class Client(db.Model):
 
 
 class Token(db.Model):
-
     """A bearer token is the final token that can be used by the client."""
 
     __tablename__ = 'oauth2TOKEN'
@@ -305,7 +299,7 @@ class Token(db.Model):
     """Object ID."""
 
     client_id = db.Column(
-        db.String(255), db.ForeignKey('oauth2CLIENT.client_id'),
+        db.String(255), db.ForeignKey(Client.client_id),
         nullable=False,
     )
     """Foreign key to client application."""
@@ -319,7 +313,7 @@ class Token(db.Model):
     """SQLAlchemy relationship to client application."""
 
     user_id = db.Column(
-        db.Integer(15, unsigned=True), db.ForeignKey('user.id'), nullable=True
+        db.Integer, db.ForeignKey(User.id), nullable=True
     )
     """Foreign key to user."""
 
@@ -373,8 +367,8 @@ class Token(db.Model):
 
     def get_visible_scopes(self):
         """Get list of non-internal scopes for token."""
-        from .registry import scopes as scopes_registry
-        return [k for k, s in scopes_registry.choices() if k in self.scopes]
+        return [k for k, s in current_oauth2server.scope_choices()
+                if k in self.scopes]
 
     @classmethod
     def create_personal(cls, name, user_id, scopes=None, is_internal=False):
@@ -383,31 +377,31 @@ class Token(db.Model):
         A token that is bound to a specific user and which doesn't expire, i.e.
         similar to the concept of an API key.
         """
-        scopes = " ".join(scopes) if scopes else ""
+        with db.session.begin_nested():
+            scopes = " ".join(scopes) if scopes else ""
 
-        c = Client(
-            name=name,
-            user_id=user_id,
-            is_internal=True,
-            is_confidential=False,
-            _default_scopes=scopes
-        )
-        c.gen_salt()
+            c = Client(
+                name=name,
+                user_id=user_id,
+                is_internal=True,
+                is_confidential=False,
+                _default_scopes=scopes
+            )
+            c.gen_salt()
 
-        t = Token(
-            client_id=c.client_id,
-            user_id=user_id,
-            access_token=gen_salt(
-                current_app.config.get('OAUTH2_TOKEN_PERSONAL_SALT_LEN')
-            ),
-            expires=None,
-            _scopes=scopes,
-            is_personal=True,
-            is_internal=is_internal,
-        )
+            t = Token(
+                client_id=c.client_id,
+                user_id=user_id,
+                access_token=gen_salt(
+                    current_app.config.get('OAUTH2_TOKEN_PERSONAL_SALT_LEN')
+                ),
+                expires=None,
+                _scopes=scopes,
+                is_personal=True,
+                is_internal=is_internal,
+            )
 
-        db.session.add(c)
-        db.session.add(t)
-        db.session.commit()
+            db.session.add(c)
+            db.session.add(t)
 
         return t

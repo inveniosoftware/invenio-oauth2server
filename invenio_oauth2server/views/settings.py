@@ -21,29 +21,27 @@
 """OAuth Server Settings Blueprint."""
 
 from __future__ import absolute_import
+
 from functools import wraps
 
-from flask import Blueprint, render_template, request, abort, redirect, \
-    url_for, flash, session
-from flask_login import login_required, current_user
+from flask import Blueprint, abort, flash, redirect, render_template, \
+    request, session, url_for
+from flask_babelex import lazy_gettext as _
 from flask_breadcrumbs import register_breadcrumb
+from flask_login import current_user, login_required
 from flask_menu import register_menu
+from invenio_db import db
 
-from invenio_base.i18n import _
-from invenio_ext.sqlalchemy import db
-from invenio_ext.sslify import ssl_required
-
-
-from ..models import Client, Token
 from ..forms import ClientForm, TokenForm
-from ..registry import scopes
+from ..models import Client, Token
+from ..proxies import current_oauth2server
 
 blueprint = Blueprint(
-    'oauth2server_settings',
+    'invenio_oauth2server_settings',
     __name__,
-    url_prefix="/account/settings/applications",
-    static_folder="../static",
-    template_folder="../templates",
+    url_prefix='/account/settings/applications',
+    static_folder='../static',
+    template_folder='../templates',
 )
 
 
@@ -98,7 +96,6 @@ def token_getter(is_personal=True, is_internal=False):
 # Views
 #
 @blueprint.route("/", methods=['GET', 'POST'])
-@ssl_required
 @login_required
 @register_menu(
     blueprint, 'settings.applications',
@@ -110,6 +107,7 @@ def token_getter(is_personal=True, is_internal=False):
     blueprint, 'breadcrumbs.settings.applications', _('Applications')
 )
 def index():
+    """List user tokens."""
     clients = Client.query.filter_by(
         user_id=current_user.get_id(),
         is_internal=False,
@@ -130,7 +128,7 @@ def index():
     ).all()
 
     return render_template(
-        "oauth2server/settings/index.html",
+        'invenio_oauth2server/settings/index.html',
         clients=clients,
         tokens=tokens,
         authorized_apps=authorized_apps,
@@ -138,12 +136,12 @@ def index():
 
 
 @blueprint.route("/clients/new/", methods=['GET', 'POST'])
-@ssl_required
 @login_required
 @register_breadcrumb(
     blueprint, 'breadcrumbs.settings.applications.client_new', _('New')
 )
 def client_new():
+    """Create new client."""
     form = ClientForm(request.form)
 
     if form.validate_on_submit():
@@ -152,23 +150,23 @@ def client_new():
         form.populate_obj(c)
         db.session.add(c)
         db.session.commit()
-        return redirect(url_for(".client_view", client_id=c.client_id))
+        return redirect(url_for('.client_view', client_id=c.client_id))
 
     return render_template(
-        "oauth2server/settings/client_new.html",
+        'invenio_oauth2server/settings/client_new.html',
         form=form,
     )
 
 
 @blueprint.route("/clients/<string:client_id>/", methods=['GET', 'POST'])
-@ssl_required
 @login_required
 @register_breadcrumb(
     blueprint, 'breadcrumbs.settings.applications.client_edit', _('Edit')
 )
 @client_getter()
 def client_view(client):
-    if request.method == "POST" and 'delete' in request.form:
+    """Show client's detail."""
+    if request.method == 'POST' and 'delete' in request.form:
         db.session.delete(client)
         db.session.commit()
         return redirect(url_for('.index'))
@@ -179,17 +177,17 @@ def client_view(client):
         db.session.commit()
 
     return render_template(
-        "oauth2server/settings/client_view.html",
+        'invenio_oauth2server/settings/client_view.html',
         client=client,
         form=form,
     )
 
 
-@blueprint.route("/clients/<string:client_id>/reset/", methods=['POST'])
-@ssl_required
+@blueprint.route('/clients/<string:client_id>/reset/', methods=['POST'])
 @login_required
 @client_getter()
 def client_reset(client):
+    """Reset client's secret."""
     if request.form.get('reset') == 'yes':
         client.reset_client_secret()
         db.session.commit()
@@ -200,14 +198,14 @@ def client_reset(client):
 # Token views
 #
 @blueprint.route("/tokens/new/", methods=['GET', 'POST'])
-@ssl_required
 @login_required
 @register_breadcrumb(
     blueprint, 'breadcrumbs.settings.applications.token_new', _('New')
 )
 def token_new():
+    """Create new token."""
     form = TokenForm(request.form)
-    form.scopes.choices = scopes.choices()
+    form.scopes.choices = current_oauth2server.scope_choices()
 
     if form.validate_on_submit():
         t = Token.create_personal(
@@ -219,19 +217,19 @@ def token_new():
         return redirect(url_for(".token_view", token_id=t.id))
 
     return render_template(
-        "oauth2server/settings/token_new.html",
+        "invenio_oauth2server/settings/token_new.html",
         form=form,
     )
 
 
 @blueprint.route("/tokens/<string:token_id>/", methods=['GET', 'POST'])
-@ssl_required
 @login_required
 @register_breadcrumb(
     blueprint, 'breadcrumbs.settings.applications.token_edit', _('Edit')
 )
 @token_getter()
 def token_view(token):
+    """Show token details."""
     if request.method == "POST" and 'delete' in request.form:
         db.session.delete(token)
         db.session.commit()
@@ -240,7 +238,7 @@ def token_view(token):
     show_token = session.pop('show_personal_access_token', False)
 
     form = TokenForm(request.form, name=token.client.name, scopes=token.scopes)
-    form.scopes.choices = scopes.choices()
+    form.scopes.choices = current_oauth2server.scope_choices()
 
     if form.validate_on_submit():
         token.client.name = form.data['name']
@@ -248,7 +246,7 @@ def token_view(token):
         db.session.commit()
 
     return render_template(
-        "oauth2server/settings/token_view.html",
+        "invenio_oauth2server/settings/token_view.html",
         token=token,
         form=form,
         show_token=show_token,
@@ -256,13 +254,13 @@ def token_view(token):
 
 
 @blueprint.route("/tokens/<string:token_id>/revoke/", methods=['GET', ])
-@ssl_required
 @login_required
 @register_breadcrumb(
     blueprint, 'breadcrumbs.settings.applications.token_new', _('New')
 )
 @token_getter(is_personal=False, is_internal=False)
 def token_revoke(token):
+    """Revoke given token."""
     db.session.delete(token)
     db.session.commit()
     return redirect(url_for('.index'))

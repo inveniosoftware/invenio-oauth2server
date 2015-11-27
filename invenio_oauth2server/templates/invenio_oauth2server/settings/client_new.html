@@ -17,22 +17,23 @@
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 #}
 
-{%- import "accounts/settings/helpers.html" as helpers with context %}
-{%- from "_formhelpers.html" import render_field with context %}
-{%- extends "accounts/settings/index.html" %}
+{%- extends "invenio_oauth2server/settings/index.html" %}
+
+{%- import "invenio_oauth2server/settings/helpers.html" as helpers with context %}
+{%- from "invenio_oauth2server/settings/_macros.html" import render_field with context %}
 
 {% block settings_body %}
 {{helpers.panel_start(
-    'New personal access token',
+    _('New OAuth Application'),
 )}}
 <form role="form" method="POST">
 {%- for field in form %}
-{{ render_field(field, show_description=True) }}
+{{ render_field(field) }}
 {%- endfor %}
 <div class="form-group">
     <div class="">
-      <a href="{{url_for('.index')}}" class="btn btn-default"><i class="fa fa-times"></i> Cancel</a>
-      <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Create</button>
+      <a href="{{url_for('.index')}}" class="btn btn-default"><i class="fa fa-times"></i> {{ _('Cancel') }}</a>
+      <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> {{ _('Register') }}</button>
     </div>
   </div>
 </form>

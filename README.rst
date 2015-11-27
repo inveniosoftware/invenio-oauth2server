@@ -43,12 +43,14 @@
 
 Invenio module that implements OAuth 2 server.
 
+*This is an experimental developer preview release.*
+
 * Free software: GPLv2 license
-* Documentation: https://invenio-oauth2server.readthedocs.org.
+* Documentation: https://pythonhosted.org/invenio-oauth2server/
 
 Features
 ========
 
-- Settings view for configuring applications and personal access tokens.
-- Uses encryption field for seamless encryption/decryption of the access
+* Settings view for configuring applications and personal access tokens.
+* Uses encryption field for seamless encryption/decryption of the access
   and refresh tokens.

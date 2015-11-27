@@ -21,10 +21,11 @@
 # In applying this license, CERN does not
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
-#
-# !WARNING! !WARNING! !WARNING! !WARNING! !WARNING! !WARNING! !WARNING!
-#      Do NOT delete this file, even when it seems to be useless!
-#      It used by read Read the Docs to build our documentation!
-# !WARNING! !WARNING! !WARNING! !WARNING! !WARNING! !WARNING! !WARNING!
 
--e .[docs]
+
+pep257 invenio_oauth2server && \
+isort -rc -c -df **/*.py && \
+check-manifest --ignore ".travis-*" && \
+sphinx-build -qnNW docs docs/_build/html && \
+python setup.py test && \
+sphinx-build -qnNW -b doctest docs docs/_build/doctest

@@ -1,49 +1,47 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2014, 2015 CERN.
+# Copyright (C) 2015 CERN.
 #
-# Invenio is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License as
+# Invenio is free software; you can redistribute it
+# and/or modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation; either version 2 of the
 # License, or (at your option) any later version.
 #
-# Invenio is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
+# Invenio is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Invenio; if not, write to the Free Software Foundation, Inc.,
-# 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+# along with Invenio; if not, write to the
+# Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+# In applying this license, CERN does not
+# waive the privileges and immunities granted to it by virtue of its status
+# as an Intergovernmental Organization or submit itself to any jurisdiction.
 
 """OAuth 2.0 Provider."""
 
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
-import os
 from functools import wraps
 
-from flask import Blueprint, current_app, request, render_template, jsonify, \
-    abort, redirect
-from flask_oauthlib.contrib.oauth2 import bind_cache_grant, bind_sqlalchemy
-from flask_login import login_required
+from flask import Blueprint, abort, current_app, jsonify, redirect, \
+    render_template, request
+from flask_babelex import lazy_gettext as _
 from flask_breadcrumbs import register_breadcrumb
+from flask_security import login_required, login_user
 from oauthlib.oauth2.rfc6749.errors import OAuth2Error
 from werkzeug.urls import url_encode
 
-from invenio_ext.sqlalchemy import db
-from invenio_ext.login import login_user
-from invenio_base.i18n import _
-from invenio_base.globals import cfg
-
+from ..models import Client
 from ..provider import oauth2
-from ..models import Client, OAuthUserProxy
-from ..registry import scopes as scopes_registry
-
+from ..proxies import current_oauth2server
 
 blueprint = Blueprint(
-    'oauth2server',
+    'invenio_oauth2server',
     __name__,
     url_prefix='/oauth',
     static_folder="../static",
@@ -51,39 +49,12 @@ blueprint = Blueprint(
 )
 
 
-@blueprint.before_app_first_request
-def setup_app():
-    """Setup OAuth2 provider."""
-    # Initialize OAuth2 provider
-    oauth2.init_app(current_app)
-
-    # Configures the OAuth2 provider to use the SQLALchemy models for getters
-    # and setters for user, client and tokens.
-    bind_sqlalchemy(oauth2, db.session, client=Client)
-
-    # Flask-OAuthlib does not support CACHE_REDIS_URL
-    if cfg['OAUTH2_CACHE_TYPE'] == 'redis' and \
-       cfg.get('CACHE_REDIS_URL'):
-        from redis import from_url as redis_from_url
-        cfg.setdefault(
-            'OAUTH2_CACHE_REDIS_HOST',
-            redis_from_url(cfg['CACHE_REDIS_URL'])
-        )
-
-    # Configures an OAuth2Provider instance to use configured caching system
-    # to get and set the grant token.
-    bind_cache_grant(current_app, oauth2, OAuthUserProxy.get_current_user)
-
-    # Disables oauthlib's secure transport detection in in debug mode.
-    if current_app.debug or current_app.testing:
-        os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-
-
 @oauth2.after_request
 def login_oauth2_user(valid, oauth):
     """Log in a user after having been verified."""
     if valid:
-        login_user(oauth.user.id)
+        login_user(oauth.user)
+
     return valid, oauth
 
 
@@ -107,7 +78,7 @@ def error_handler(f):
 def urlreencode(f):
     """Re-encode query string.
 
-    oauthlib's URL decoding is very strict and very often chokes on
+    OAuthLib's URL decoding is very strict and very often chokes on
     common user mistakes like not encoding colons, hence let Flask decode the
     request args and reencode them.
     """
@@ -138,12 +109,13 @@ def authorize(*args, **kwargs):
         if not client:
             abort(404)
 
+        scopes = current_oauth2server.scopes
         ctx = dict(
             client=client,
             oauth_request=kwargs.get('request'),
-            scopes=map(lambda x: scopes_registry[x], kwargs.get('scopes', []))
+            scopes=[scopes[x] for x in kwargs.get('scopes', [])],
         )
-        return render_template('oauth2server/authorize.html', **ctx)
+        return render_template('invenio_oauth2server/authorize.html', **ctx)
 
     confirm = request.form.get('confirm', 'no')
     return confirm == 'yes'
@@ -165,9 +137,9 @@ def errors():
     from oauthlib.oauth2.rfc6749.errors import raise_from_error
     try:
         raise_from_error(request.values.get('error'), params=dict())
-        return render_template('oauth2server/errors.html', error=None)
+        return render_template('invenio_oauth2server/errors.html', error=None)
     except OAuth2Error as e:
-        return render_template('oauth2server/errors.html', error=e)
+        return render_template('invenio_oauth2server/errors.html', error=e)
 
 
 @blueprint.route('/ping/', methods=['GET', 'POST'])

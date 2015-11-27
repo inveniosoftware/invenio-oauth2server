@@ -22,8 +22,11 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-[tox]
-envlist = py27
+"""Helper proxy to the state object."""
 
-[testenv]
-commands = {envpython} setup.py test
+from flask import current_app
+from werkzeug.local import LocalProxy
+
+current_oauth2server = LocalProxy(
+    lambda: current_app.extensions['invenio-oauth2server']
+)

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+{# -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
 # Copyright (C) 2015 CERN.
@@ -21,18 +21,13 @@
 # In applying this license, CERN does not
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
+#}
+{%- extends "invenio_oauth2server/base.html" %}
 
-"""Errors raised by Invenio-OAuth2Server."""
+{%- block page_body %}
 
+{%- block settings_body %}
+{%- block settings_form %}{%- endblock settings_form %}
+{%- endblock settings_body %}
 
-class OAuth2ServerError(Exception):
-    """Base class for errors in oauth2server module."""
-
-
-class ScopeDoesNotExists(OAuth2ServerError):
-    """Scope is not registered it scopes registry."""
-
-    def __init__(self, scope, *args, **kwargs):
-        """Initialize exception by storing invalid scope."""
-        super(ScopeDoesNotExists, self).__init__(*args, **kwargs)
-        self.scope = scope
+{%- endblock page_body %}

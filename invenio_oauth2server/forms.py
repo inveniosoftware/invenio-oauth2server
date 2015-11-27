@@ -3,30 +3,33 @@
 # This file is part of Invenio.
 # Copyright (C) 2014, 2015 CERN.
 #
-# Invenio is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License as
+# Invenio is free software; you can redistribute it
+# and/or modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation; either version 2 of the
 # License, or (at your option) any later version.
 #
-# Invenio is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
+# Invenio is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Invenio; if not, write to the Free Software Foundation, Inc.,
-# 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+# along with Invenio; if not, write to the
+# Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+# In applying this license, CERN does not
+# waive the privileges and immunities granted to it by virtue of its status
+# as an Intergovernmental Organization or submit itself to any jurisdiction.
 
 """Define forms for generating access tokens and clients."""
 
-from invenio_base.i18n import _
-from invenio_utils.forms import InvenioBaseForm
-
+from flask_babelex import lazy_gettext as _
+from flask_wtf import Form
 from oauthlib.oauth2.rfc6749.errors import InsecureTransportError, \
     InvalidRedirectURIError
-
 from wtforms import fields, validators, widgets
-
+from wtforms.widgets import HTMLString
 from wtforms_alchemy import model_form_factory
 
 from .models import Client
@@ -66,14 +69,13 @@ def scopes_multi_checkbox(field, **kwargs):
         html.append(u'</label></div>')
     html.append(u'</div>')
 
-    return u''.join(html)
+    return HTMLString(u''.join(html))
 
 
 #
 # Redirect URI field
 #
 class RedirectURIField(fields.TextAreaField):
-
     """Process redirect URI field data."""
 
     def process_formdata(self, valuelist):
@@ -90,7 +92,6 @@ class RedirectURIField(fields.TextAreaField):
 
 
 class RedirectURIValidator(object):
-
     """Validate if redirect URIs."""
 
     def __call__(self, form, field):
@@ -106,15 +107,14 @@ class RedirectURIValidator(object):
 
         if errors:
             raise validators.ValidationError(
-                "Invalid redirect URIs: %s" % ", ".join(errors)
+                _("Invalid redirect URIs: %(urls)s", urls=", ".join(errors))
             )
 
 
 #
 # Forms
 #
-class ClientFormBase(model_form_factory(InvenioBaseForm)):
-
+class ClientFormBase(model_form_factory(Form)):
     """Base class for Client form."""
 
     class Meta:
@@ -133,15 +133,15 @@ class ClientFormBase(model_form_factory(InvenioBaseForm)):
 
 
 class ClientForm(ClientFormBase):
-
     """Client form."""
 
     # Trick to make redirect_uris render in the bottom of the form.
     redirect_uris = RedirectURIField(
-        label="Redirect URIs (one per line)",
-        description="One redirect URI per line. This is your applications"
-                    " authorization callback URLs. HTTPS must be used for all "
-                    "hosts except localhost (for testing purposes).",
+        label=_("Redirect URIs (one per line)"),
+        description=_(
+            "One redirect URI per line. This is your applications"
+            " authorization callback URLs. HTTPS must be used for all "
+            "hosts except localhost (for testing purposes)."),
         validators=[RedirectURIValidator(), validators.DataRequired()],
         default='',
     )
@@ -160,18 +160,18 @@ class ClientForm(ClientFormBase):
     )
 
 
-class TokenForm(InvenioBaseForm):
-
+class TokenForm(Form):
     """Token form."""
 
     name = fields.StringField(
-        description="Name of personal access token.",
+        description=_("Name of personal access token."),
         validators=[validators.DataRequired()],
     )
     scopes = fields.SelectMultipleField(
         widget=scopes_multi_checkbox,
         choices=[],  # Must be dynamically provided in view.
-        description="Scopes assigns permissions to your personal access token."
-                    " A personal access token works just like a normal OAuth "
-                    " access token for authentication against the API."
+        description=_(
+            "Scopes assigns permissions to your personal access token."
+            " A personal access token works just like a normal OAuth "
+            " access token for authentication against the API.")
     )
