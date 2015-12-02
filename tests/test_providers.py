@@ -427,3 +427,36 @@ def test_client_flow(provider_fixture):
             assert json.loads(r.get_data()).get('client') == 'confidential'
             assert json.loads(r.get_data()).get('user') == app.user1.id
             assert json.loads(r.get_data()).get('scopes') == [u'test:scope']
+
+
+def test_auth_flow_denied(provider_fixture):
+    app = provider_fixture
+    with app.app_context():
+        with app.test_client() as client:
+            # First login on provider site
+            login(client)
+
+            r = client.get(url_for('oauth2test.login'))
+            assert r.status_code == 302
+            next_url, data = parse_redirect(r.location)
+
+            # Authorize page
+            r = client.get(next_url, query_string=data)
+            assert r.status_code == 200
+
+            # User rejects request
+            data['confirm'] = 'no'
+            data['scope'] = 'test:scope'
+            data['state'] = ''
+
+            r = client.post(next_url, data=data)
+            assert r.status_code == 302
+            next_url, data = parse_redirect(r.location)
+            assert next_url == 'http://{0}/oauth2test/authorized'.format(
+                app.config['SERVER_NAME'])
+            assert data.get('error') == 'access_denied'
+
+        # Returned
+        r = client.get(next_url, query_string=data)
+        assert r.status_code == 200
+        assert r.data == "Access denied: error=access_denied"

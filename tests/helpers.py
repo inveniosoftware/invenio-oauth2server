@@ -101,7 +101,8 @@ def create_oauth_client(app, name, **kwargs):
 
     @blueprint.route('/oauth2test/login')
     def login():
-        return remote.authorize(callback=url_for('authorized', _external=True))
+        return remote.authorize(callback=url_for('oauth2test.authorized',
+                                                 _external=True))
 
     @blueprint.route('/oauth2test/logout')
     def logout():
