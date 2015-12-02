@@ -379,3 +379,51 @@ def test_implicit_flow(provider_fixture):
                 assert json.loads(r.get_data()).get('user') == app.user1.id
                 assert json.loads(r.get_data()).get('scopes') \
                     == [u'test:scope']
+
+
+def test_client_flow(provider_fixture):
+    app = provider_fixture
+    with app.app_context():
+        with app.test_client() as client:
+            data = dict(
+                client_id='dev',
+                client_secret='dev',  # A public client should NOT do this!
+                grant_type='client_credentials',
+                scope='test:scope',
+            )
+
+            # Public clients are not allowed to use
+            # grant_type=client_credentials
+            r = client.post(url_for(
+                'oauth2server.access_token'
+            ), data=data)
+            assert r.status_code == 401
+            assert json.loads(r.get_data()).get('error') == 'invalid_client'
+
+            data = dict(
+                client_id='confidential',
+                client_secret='confidential',
+                grant_type='client_credentials',
+                scope='test:scope',
+            )
+
+            # Retrieve access token using client_credentials
+            r = client.post(url_for(
+                'oauth2server.access_token'
+            ), data=data)
+            assert r.status_code == 200
+
+            data = json.loads(r.get_data())
+            assert data['access_token']
+            assert data['token_type'] == 'Bearer'
+            assert data['scope'] == 'test:scope'
+            assert data.get('refresh_token') is None
+
+            # Authentication flow has now been completed, and the client can
+            # use the access token to make request to the provider.
+            r = client.get(url_for('oauth2server.info',
+                                   access_token=data['access_token']))
+            assert r.status_code == 200
+            assert json.loads(r.get_data()).get('client') == 'confidential'
+            assert json.loads(r.get_data()).get('user') == app.user1.id
+            assert json.loads(r.get_data()).get('scopes') == [u'test:scope']
