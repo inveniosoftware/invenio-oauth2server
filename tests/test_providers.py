@@ -26,7 +26,7 @@
 
 from __future__ import absolute_import, print_function
 
-from flask import json, url_for
+from flask import json, url_for, session
 
 from invenio_db import db
 from invenio_oauth2server.models import Client
@@ -253,17 +253,15 @@ def test_refresh_flow(provider_fixture):
             assert r.status_code == 401
 
 
-def test_web_auth_flow(provider_fixture):
+def web_auth_flow(provider_fixture):
         app = provider_fixture
         # Go to login - should redirect to oauth2 server for login an
         # authorization
         with app.app_context():
             with app.test_client() as client:
-                # client.http_request = MagicMock(
-                #    side_effect=patch_request(app, client)
-                # )
+                oauth_client = create_client(app, 'oauth2test', client)
 
-                r = client.get('/oauth2test/test-ping')
+                r = oauth_client.get('/oauth2test/test-ping')
 
                 # First login on provider site
                 login(client)
@@ -288,15 +286,14 @@ def test_web_auth_flow(provider_fixture):
                     app.config['SERVER_NAME'])
                 assert 'code' in data
 
-                import pudb
-                pudb.set_trace()
                 # User is redirected back to client site.
                 # - The client view /oauth2test/authorized will in the
                 #   background fetch the access token.
                 r = client.get(next_url, query_string=data)
                 assert r.status_code == 200
-                pudb.set_trace()
 
+                import pudb
+                pudb.set_trace()
                 # Authentication flow has now been completed, and the access
                 # token can be used to access protected resources.
                 r = client.get('/oauth2test/test-ping')

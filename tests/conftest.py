@@ -38,7 +38,6 @@ from flask_mail import Mail
 from flask_menu import Menu
 from flask_oauthlib.client import OAuth
 from flask_registry import Registry
-import flask_httpretty
 
 from invenio_accounts import InvenioAccounts
 from invenio_accounts.models import User
@@ -51,7 +50,7 @@ from invenio_oauth2server.registry import scopes
 
 from mock import MagicMock
 
-from helpers import register_oauth2test_blueprint
+from helpers import create_oauth_client, patch_request
 
 
 @pytest.fixture()
@@ -193,14 +192,11 @@ def provider_fixture(app):
                                                    scopes=[],
                                                    is_internal=True)
 
-        register_oauth2test_blueprint(app)
-        flask_httpretty.reset()
-        flask_httpretty.register_app(app, 'http://{0}'.format(
-            app.config['SERVER_NAME']))
-        flask_httpretty.enable()
-
-        def teardown():
-            flask_httpretty.disable()
+        # Mock the oauth client calls to prevent them from going online.
+        oauth_client = create_oauth_client(app, 'oauth2test')
+        oauth_client.http_request = MagicMock(
+            side_effect=patch_request(app)
+        )
 
     class myProxyHack(object):
 

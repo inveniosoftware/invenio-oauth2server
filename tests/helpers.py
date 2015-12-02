@@ -32,7 +32,37 @@ from flask_oauthlib.client import OAuth, prepare_request
 from flask_security import url_for_security
 from six.moves.urllib.parse import urlparse
 
+from mock import MagicMock
+
 from werkzeug.urls import url_parse, url_decode, url_unparse
+
+
+def patch_request(app):
+    test_client = app.test_client()
+
+    def make_request(uri, headers=None, data=None, method=None):
+        import pudb
+        pudb.set_trace()
+
+        uri, headers, data, method = prepare_request(
+            uri, headers, data, method
+        )
+        if not headers and data is not None:
+            headers = {
+                'Content-Type': ' application/x-www-form-urlencoded'
+            }
+
+        # test client is a `werkzeug.test.Client`
+        parsed = urlparse(uri)
+        uri = '%s?%s' % (parsed.path, parsed.query)
+        resp = test_client.open(
+            uri, headers=headers, data=data, method=method,
+            base_url='http://{0}'.format(app.config['SERVER_NAME'])
+        )
+        # for compatible
+        resp.code = resp.status_code
+        return resp, resp.data
+    return make_request
 
 
 def parse_redirect(location, parse_fragment=False):
@@ -52,7 +82,7 @@ def login(test_client, email='info@invenio-software.org', password='tester'):
         })
 
 
-def register_oauth2test_blueprint(app, **kwargs):
+def create_oauth_client(app, name, **kwargs):
     """Helper function to create a OAuth2 client to test an OAuth2 provider."""
     blueprint = Blueprint('oauth2test', __name__, template_folder='templates')
 
@@ -70,13 +100,11 @@ def register_oauth2test_blueprint(app, **kwargs):
     default.update(kwargs)
 
     oauth = OAuth(app)
-    remote = oauth.remote_app('oauth2test', **default)
+    remote = oauth.remote_app(name, **default)
 
     @blueprint.route('/oauth2test/login')
     def login():
-        resp = remote.authorize(callback=url_for('oauth2test.authorized',
-                                _external=True))
-        return resp
+        return remote.authorize(callback=url_for('authorized', _external=True))
 
     @blueprint.route('/oauth2test/logout')
     def logout():
@@ -90,9 +118,8 @@ def register_oauth2test_blueprint(app, **kwargs):
             return 'Access denied: error=%s' % (
                 request.args.get('error', "unknown")
             )
-
         if isinstance(resp, dict) and 'access_token' in resp:
-            session['confidential_token'] = resp['access_token']
+            session['confidential_token'] = (resp['access_token'], '')
             return jsonify(resp)
         return str(resp)
 
@@ -100,8 +127,6 @@ def register_oauth2test_blueprint(app, **kwargs):
         if 'confidential_token' not in session:
             abort(403)
         else:
-            import pudb
-            pudb.set_trace()
             ret = remote.get(test_url)
             if ret.status != 200:
                 return abort(ret.status)
@@ -124,3 +149,5 @@ def register_oauth2test_blueprint(app, **kwargs):
         return session.get('confidential_token')
 
     app.register_blueprint(blueprint)
+
+    return remote
