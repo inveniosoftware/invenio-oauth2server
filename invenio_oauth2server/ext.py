@@ -61,4 +61,5 @@ class InvenioOAuth2Server(object):
                                                                 'token'])
         app.config.setdefault('OAUTH2_ALLOWED_GRANT_TYPES', [
             'authorization_code', 'client_credentials', 'refresh_token',
-            ])
+            ],)
+        app.config.setdefault('OAUTH2_PROVIDER_TOKEN_EXPIRES_IN', 3600)

@@ -460,3 +460,25 @@ def test_auth_flow_denied(provider_fixture):
         r = client.get(next_url, query_string=data)
         assert r.status_code == 200
         assert r.data == "Access denied: error=access_denied"
+
+
+def test_personal_access_token(provider_fixture):
+    app = provider_fixture
+    with app.app_context():
+        with app.test_client() as client:
+            r = client.get(
+                url_for('oauth2server.ping'),
+                query_string="access_token={0}".format(
+                    app.personal_token.access_token)
+            )
+            assert r.status_code == 200
+            assert json.loads(r.get_data()) == dict(ping='pong')
+
+            # Access token is not valid for this scope
+            r = client.get(
+                url_for('oauth2server.info'),
+                query_string="access_token={0}".format(
+                    app.personal_token.access_token),
+                base_url='http://{0}'.format(app.config['SERVER_NAME'])
+            )
+            assert r.status_code == 401
