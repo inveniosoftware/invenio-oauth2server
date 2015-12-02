@@ -482,3 +482,35 @@ def test_personal_access_token(provider_fixture):
                 base_url='http://{0}'.format(app.config['SERVER_NAME'])
             )
             assert r.status_code == 401
+
+
+def test_resource_auth_methods(provider_fixture):
+    app = provider_fixture
+    with app.app_context():
+        with app.test_client() as client:
+            # Query string
+            r = client.get(
+                url_for('oauth2server.ping'),
+                query_string="access_token={0}".format(
+                    app.personal_token.access_token)
+            )
+            r.status_code == 200
+            assert json.loads(r.get_data()) == dict(ping='pong')
+
+            # POST request body
+            r = client.post(
+                url_for('oauth2server.ping'),
+                data=dict(access_token=app.personal_token.access_token),
+            )
+            assert r.status_code == 200
+            assert json.loads(r.get_data()) == dict(ping='pong')
+
+            # Authorization Header
+            r = client.get(
+                url_for('oauth2server.ping'),
+                headers=[
+                    ("Authorization",
+                     "Bearer {0}".format(app.personal_token.access_token))]
+                )
+            assert r.status_code == 200
+            assert json.loads(r.get_data()) == dict(ping='pong')
