@@ -41,9 +41,6 @@ def patch_request(app):
     test_client = app.test_client()
 
     def make_request(uri, headers=None, data=None, method=None):
-        import pudb
-        pudb.set_trace()
-
         uri, headers, data, method = prepare_request(
             uri, headers, data, method
         )

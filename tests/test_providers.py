@@ -259,9 +259,7 @@ def web_auth_flow(provider_fixture):
         # authorization
         with app.app_context():
             with app.test_client() as client:
-                oauth_client = create_client(app, 'oauth2test', client)
-
-                r = oauth_client.get('/oauth2test/test-ping')
+                r = client.get('/oauth2test/test-ping')
 
                 # First login on provider site
                 login(client)
@@ -292,8 +290,6 @@ def web_auth_flow(provider_fixture):
                 r = client.get(next_url, query_string=data)
                 assert r.status_code == 200
 
-                import pudb
-                pudb.set_trace()
                 # Authentication flow has now been completed, and the access
                 # token can be used to access protected resources.
                 r = client.get('/oauth2test/test-ping')
@@ -328,3 +324,58 @@ def web_auth_flow(provider_fixture):
                 # And try to access the information again
                 r = client.get('/oauth2test/test-ping')
                 assert r.status_code == 403
+
+
+def test_implicit_flow(provider_fixture):
+    app = provider_fixture
+    with app.app_context():
+        with app.test_client() as client:
+            # First login on provider site
+            login(client)
+
+            for client_id in ['dev', 'confidential']:
+                data = dict(
+                    redirect_uri='http://{0}/oauth2test/authorized'.format(
+                        app.config['SERVER_NAME']),
+                    response_type='token',  # For implicit grant type
+                    client_id=client_id,
+                    scope='test:scope',
+                    state='teststate'
+                )
+
+                # Authorize page
+                r = client.get(url_for(
+                    'oauth2server.authorize',
+                    **data
+                ), follow_redirects=True)
+                assert r.status_code == 200
+
+                # User confirms request
+                data['confirm'] = 'yes'
+                data['scope'] = 'test:scope'
+                data['state'] = 'teststate'
+
+                r = client.post(url_for('oauth2server.authorize'), data=data)
+                assert r.status_code == 302
+                # Important - access token exists in URI fragment and must not
+                # be sent to the client.
+                next_url, data = parse_redirect(r.location,
+                                                parse_fragment=True)
+
+                assert data['access_token']
+                assert data['token_type'] == 'Bearer'
+                assert data['state'] == 'teststate'
+                assert data['scope'] == 'test:scope'
+                assert data.get('refresh_token') is None
+                assert next_url == 'http://{0}/oauth2test/authorized'.format(
+                    app.config['SERVER_NAME'])
+
+                # Authentication flow has now been completed, and the client
+                # can use the access token to make request to the provider.
+                r = client.get(url_for('oauth2server.info',
+                                       access_token=data['access_token']))
+                assert r.status_code == 200
+                assert json.loads(r.get_data()).get('client') == client_id
+                assert json.loads(r.get_data()).get('user') == app.user1.id
+                assert json.loads(r.get_data()).get('scopes') \
+                    == [u'test:scope']
