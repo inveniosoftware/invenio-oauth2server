@@ -22,27 +22,28 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
+
+"""Minimal Flask application example for development.
+
+Run example development server:
+
+.. code-block:: console
+
+   $ cd examples
+   $ python app.py
+"""
+
 from __future__ import absolute_import, print_function
 
-from flask_registry import RegistryProxy, DictRegistry, RegistryError
-from .models import Scope
+from flask import Flask
+from flask_babelex import Babel
 
+from invenio_oauth2server import InvenioOAuth2Server
 
-class ScopesRegistry(DictRegistry):
+# Create Flask application
+app = Flask(__name__)
+Babel(app)
+InvenioOAuth2Server(app)
 
-    """Registry for OAuth scopes."""
-
-    def register(self, scope):
-        """ Register an OAuth scope. """
-        if not isinstance(scope, Scope):
-            raise RegistryError("Invalid scope value.")
-        super(ScopesRegistry, self).register(scope.id, scope)
-
-    def choices(self, exclude_internal=True):
-        items = self.items()
-        items.sort()
-        return [(k, scope) for k, scope in items if
-                not exclude_internal or not scope.is_internal]
-
-
-scopes = RegistryProxy('oauth2server.scopes', ScopesRegistry)
+if __name__ == "__main__":
+    app.run()

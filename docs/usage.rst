@@ -22,9 +22,8 @@
     as an Intergovernmental Organization or submit itself to any jurisdiction.
 
 
-Authors
+=======
+ Usage
 =======
 
-Invenio module that implements OAuth 2 server.
-
-- CERN <info@invenio-software.org>
+.. automodule:: invenio_oauth2server

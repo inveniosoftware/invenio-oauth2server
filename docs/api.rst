@@ -22,9 +22,9 @@
     as an Intergovernmental Organization or submit itself to any jurisdiction.
 
 
-Authors
-=======
+API Docs
+========
 
-Invenio module that implements OAuth 2 server.
+invenio_oauth2server
+--------------------
 
-- CERN <info@invenio-software.org>

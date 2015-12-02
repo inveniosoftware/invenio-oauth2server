@@ -1,160 +1,87 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2014, 2015 CERN.
+# Copyright (c) 2015 CERN.
 #
-# Invenio is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License as
+# Invenio is free software; you can redistribute it
+# and/or modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation; either version 2 of the
 # License, or (at your option) any later version.
 #
-# Invenio is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
+# Invenio is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Invenio; if not, write to the Free Software Foundation, Inc.,
-# 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+# along with Invenio; if not, write to the
+# Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+# In applying this license, CERN does not
+# waive the privileges and immunities granted to it by virtue of its status
+# as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-from __future__ import absolute_import, print_function
+"""OAuth2Server models test cases."""
 
-from invenio_ext.sqlalchemy import db
-from invenio_testing import InvenioTestCase
+import pytest
+
+from flask_registry import RegistryError
+
+from invenio_accounts.models import User
+from invenio_db import db
+from invenio_oauth2server.errors import ScopeDoesNotExists
+from invenio_oauth2server.models import Client, Scope, Token
+from invenio_oauth2server.registry import scopes
 
 
-class OAuth2ModelsTestCase(InvenioTestCase):
-    def setUp(self):
-        from invenio_oauth2server.models import Scope
-        from invenio_accounts.models import User
-        from invenio_oauth2server.models import Client, Token
+def test_empty_redirect_uri_and_scope(models_fixture):
+    app = models_fixture
+    with app.app_context():
 
-        from invenio_oauth2server.registry import scopes as scopes_registry
-
-        # Register a test scope
-        scopes_registry.register(Scope('test:scope1'))
-        scopes_registry.register(Scope('test:scope2', internal=True))
-
-        self.base_url = self.app.config.get('CFG_SITE_SECURE_URL')
-
-        # Create needed objects
-        u = User(
-            email='info@invenio-software.org', nickname='tester'
-        )
-        u.password = "tester"
-
-        self.create_objects([u])
-
-        # environment
-        #
-        # resource_owner -- client1 -- token_1
-        #                     |
-        #                     -------- token_2
-        #                               |
-        #       consumer ----------------
-
-        # create resource_owner and consumer
-        self.resource_owner = User(
-            email='resource_owner@invenio-software.org',
-            nickname='resource_owner', password='test')
-        self.consumer = User(
-            email='consumer@invenio-software.org', nickname='consumer',
-            password='test')
-
-        self.create_objects([self.resource_owner, self.consumer])
-
-        # create resource_owner -> client_1
-        self.u1c1 = Client(
-            client_id='client_test_u1c1',
-            client_secret='client_test_u1c1',
-            name='client_test_u1c1',
-            description='',
-            is_confidential=False,
-            user=self.resource_owner,
-            _redirect_uris='',
-            _default_scopes=""
-        )
-
-        self.create_objects([self.u1c1])
-
-        # create resource_owner -> client_1 / resource_owner -> token_1
-        self.u1c1u1t1 = Token(
-            client=self.u1c1,
-            user=self.resource_owner,
-            token_type='u',
-            access_token='dev_access_1',
-            refresh_token='dev_refresh_1',
-            expires=None,
-            is_personal=False,
-            is_internal=False,
-            _scopes='',
-        )
-        # create consumer -> client_1 / resource_owner -> token_2
-        self.u1c1u2t2 = Token(
-            client=self.u1c1,
-            user=self.consumer,
-            token_type='u',
-            access_token='dev_access_2',
-            refresh_token='dev_refresh_2',
-            expires=None,
-            is_personal=False,
-            is_internal=False,
-            _scopes='',
-        )
-
-        # create objects
-        self.create_objects([self.u1c1u1t1, self.u1c1u2t2])
-
-        self.objects = [u,
-                        self.resource_owner, self.consumer,
-                        self.u1c1u1t1, self.u1c1u2t2]
-
-    def tearDown(self):
-        self.delete_objects(self.objects)
-
-    def test_empty_redirect_uri_and_scope(self):
-        from invenio_oauth2server.models import Client
-        from invenio_oauth2server.errors import ScopeDoesNotExists
-
-        c = Client(
-            client_id='dev',
-            client_secret='dev',
-            name='dev',
-            description='',
-            is_confidential=False,
-            user=self.objects[0],
-            _redirect_uris='',
-            _default_scopes=""
-        )
-        self.create_objects([c])
-        self.assertIsNone(c.default_redirect_uri)
-        self.assertEqual(c.redirect_uris, [])
-        self.assertEqual(c.default_scopes, [])
-
-        c.default_scopes = ['test:scope1', 'test:scope2', 'test:scope2', ]
-
-        self.assertEqual(c.default_scopes, ['test:scope1', 'test:scope2'])
-        self.assertRaises(ScopeDoesNotExists,
-                          c.__setattr__, 'default_scopes', ['invalid', ])
-        self.delete_objects([c])
-
-    def test_token_scopes(self):
-        from invenio_oauth2server.models import Client, Token
-        from invenio_oauth2server.errors import ScopeDoesNotExists
-
-        c = Client(
+        client = Client(
             client_id='dev2',
             client_secret='dev2',
             name='dev2',
             description='',
             is_confidential=False,
-            user=self.objects[0],
+            user=app.test_user,
             _redirect_uris='',
             _default_scopes=""
         )
-        t = Token(
-            client=c,
-            user=self.objects[0],
+        with db.session.begin_nested():
+            db.session.add(client)
+
+        assert client.default_redirect_uri is None
+        assert client.redirect_uris == []
+        assert client.default_scopes == []
+
+        client.default_scopes = ['test:scope1', 'test:scope2', 'test:scope2', ]
+
+        assert client.default_scopes == ['test:scope1', 'test:scope2']
+        with pytest.raises(ScopeDoesNotExists):
+            client.default_scopes = ['invalid']
+
+        with db.session.begin_nested():
+            db.session.delete(client)
+
+
+def test_token_scopes(models_fixture):
+    app = models_fixture
+    with app.app_context():
+        client = Client(
+            client_id='dev2',
+            client_secret='dev2',
+            name='dev2',
+            description='',
+            is_confidential=False,
+            user=app.test_user,
+            _redirect_uris='',
+            _default_scopes=""
+        )
+        token = Token(
+            client=client,
+            user=app.test_user,
             token_type='bearer',
             access_token='dev_access',
             refresh_token='dev_refresh',
@@ -163,196 +90,216 @@ class OAuth2ModelsTestCase(InvenioTestCase):
             is_internal=False,
             _scopes='',
         )
-        t.scopes = ['test:scope1', 'test:scope2', 'test:scope2']
-        self.create_objects([c, t])
-        self.assertEqual(t.scopes, ['test:scope1', 'test:scope2'])
-        self.assertRaises(ScopeDoesNotExists,
-                          t.__setattr__, 'scopes', ['invalid'])
-        self.assertEqual(t.get_visible_scopes(),
-                         ['test:scope1'])
-        self.delete_objects([c])
+        token.scopes = ['test:scope1', 'test:scope2', 'test:scope2']
+        with db.session.begin_nested():
+            db.session.add(client)
+            db.session.add(token)
 
-    def test_registering_invalid_scope(self):
-        from invenio_oauth2server.registry import scopes as registry
-        from flask_registry import RegistryError
+        assert token.scopes == ['test:scope1', 'test:scope2']
+        with pytest.raises(ScopeDoesNotExists):
+            token.scopes = ['invalid']
+        assert token.get_visible_scopes() == ['test:scope1']
 
-        self.assertRaises(RegistryError, registry.register, 'test:scope')
+        with db.session.begin_nested():
+            db.session.delete(client)
 
-    def test_deletion_of_consumer_resource_owner(self):
-        """Test deleting of connected user."""
-        from invenio_accounts.models import User
-        from invenio_oauth2server.models import Client, Token
 
-        uid_1 = self.resource_owner.id
-        cid_1 = self.u1c1.client_id
-        tid_1 = self.u1c1u1t1.id
-        tid_2 = self.u1c1u2t2.id
+def test_registering_invalid_scope(models_fixture):
+    app = models_fixture
+    with app.app_context():
+        with pytest.raises(RegistryError):
+            scopes.register('test:scope')
+
+
+def test_deletion_of_consumer_resource_owner(models_fixture):
+    """Test deleting of connected user."""
+    app = models_fixture
+    with app.app_context():
+        uid_1 = app.resource_owner.id
+        cid_1 = app.u1c1.client_id
+        tid_1 = app.u1c1u1t1.id
+        tid_2 = app.u1c1u2t2.id
 
         # start testing
 
         # delete consumer
-        self.delete_objects([self.consumer])
+        with db.session.begin_nested():
+            db.session.delete(app.consumer)
 
         # assert that t2 deleted
-        self.assertFalse(
-            db.session.query(
-                Token.query.filter(Token.id == tid_2).exists()).scalar())
+            assert db.session.query(
+                Token.query.filter(
+                    Token.id == tid_2).exists()).scalar() is False
         # still exist resource_owner and client_1 and token_1
-        self.assertTrue(
-            db.session.query(
-                User.query.filter(User.id == uid_1).exists()).scalar())
-        self.assertTrue(
-            db.session.query(
+            assert db.session.query(
+                User.query.filter(User.id == uid_1).exists()).scalar() is True
+
+            assert db.session.query(
                 Client.query.filter(
-                    Client.client_id == cid_1).exists()).scalar())
-        self.assertTrue(
-            db.session.query(
-                Token.query.filter(Token.id == tid_1).exists()).scalar())
+                    Client.client_id == cid_1).exists()).scalar() is True
+
+            assert db.session.query(
+                Token.query.filter(Token.id == tid_1).exists()).scalar() is \
+                True
 
         # delete resource_owner
-        self.delete_objects([self.resource_owner])
+            db.session.delete(app.resource_owner)
 
         # still resource_owner and client_1 and token_1 deleted
-        self.assertFalse(
-            db.session.query(
+            assert db.session.query(
                 Client.query.filter(
-                    Client.client_id == cid_1).exists()).scalar())
-        self.assertFalse(
-            db.session.query(
-                Token.query.filter(Token.id == tid_1).exists()).scalar())
+                    Client.client_id == cid_1).exists()).scalar() is False
 
-    def test_deletion_of_resource_owner_consumer(self):
-        """Test deleting of connected user."""
-        from invenio_accounts.models import User
-        from invenio_oauth2server.models import Client, Token
+            assert db.session.query(
+                Token.query.filter(Token.id == tid_1).exists()).scalar() is \
+                False
 
-        uid_consumer = self.consumer.id
-        cid_1 = self.u1c1.client_id
-        tid_1 = self.u1c1u1t1.id
-        tid_2 = self.u1c1u2t2.id
 
-        # start testing
+def test_deletion_of_resource_owner_consumer(models_fixture):
+    """Test deleting of connected user."""
+    app = models_fixture
 
-        # delete consumer
-        self.delete_objects([self.resource_owner])
+    uid_consumer = app.consumer.id
+    cid_1 = app.u1c1.client_id
+    tid_1 = app.u1c1u1t1.id
+    tid_2 = app.u1c1u2t2.id
+
+    # start testing
+
+    # delete consumer
+    with app.app_context():
+        with db.session.begin_nested():
+            db.session.delete(app.resource_owner)
 
         # assert that c1, t1, t2 deleted
-        self.assertFalse(
-            db.session.query(
-                Client.query.filter(
-                    Client.client_id == cid_1).exists()).scalar())
-        self.assertFalse(
-            db.session.query(
-                Token.query.filter(Token.id == tid_1).exists()).scalar())
-        self.assertFalse(
-            db.session.query(
-                Token.query.filter(Token.id == tid_2).exists()).scalar())
+        assert db.session.query(
+            Client.query.filter(
+                Client.client_id == cid_1).exists()).scalar() is False
+
+        assert db.session.query(
+            Token.query.filter(
+                Token.id == tid_1).exists()).scalar() is False
+
+        assert db.session.query(
+            Token.query.filter(
+                Token.id == tid_2).exists()).scalar() is False
+
         # still exist consumer
-        self.assertTrue(
-            db.session.query(
-                User.query.filter(User.id == uid_consumer).exists()).scalar())
+        assert db.session.query(
+            User.query.filter(
+                User.id == uid_consumer).exists()).scalar() is True
 
         # delete consumer
-        self.delete_objects([self.consumer])
+        db.session.delete(app.consumer)
 
-    def test_deletion_of_client1(self):
-        """Test deleting of connected user."""
-        from invenio_accounts.models import User
-        from invenio_oauth2server.models import Token
 
-        uid_resource_manager = self.resource_owner.id
-        uid_consumer = self.consumer.id
-        tid_1 = self.u1c1u1t1.id
-        tid_2 = self.u1c1u2t2.id
+def test_deletion_of_client1(models_fixture):
+    """Test deleting of connected user."""
+    app = models_fixture
 
-        # start testing
+    uid_resource_manager = app.resource_owner.id
+    uid_consumer = app.consumer.id
+    tid_1 = app.u1c1u1t1.id
+    tid_2 = app.u1c1u2t2.id
 
-        # delete client_1
-        self.delete_objects([self.u1c1])
+    # start testing
 
-        # assert that token_1, token_2 deleted
-        self.assertFalse(
-            db.session.query(
-                Token.query.filter(Token.id == tid_1).exists()).scalar())
-        self.assertFalse(
-            db.session.query(
-                Token.query.filter(Token.id == tid_2).exists()).scalar())
-        # still exist resource_owner, consumer
-        self.assertTrue(
-            db.session.query(
+    # delete client_1
+    with app.app_context():
+        with db.session.begin_nested():
+            db.session.delete(app.u1c1)
+
+            # assert that token_1, token_2 deleted
+            assert db.session.query(
+                Token.query.filter(
+                    Token.id == tid_1).exists()).scalar() is False
+
+            assert db.session.query(
+                Token.query.filter(
+                    Token.id == tid_2).exists()).scalar() is False
+
+            # still exist resource_owner, consumer
+            assert db.session.query(
                 User.query.filter(
-                    User.id == uid_resource_manager).exists()).scalar())
-        self.assertTrue(
-            db.session.query(
-                User.query.filter(User.id == uid_consumer).exists()).scalar())
+                    User.id == uid_resource_manager).exists()
+                ).scalar() is True
 
-        # delete consumer
-        self.delete_objects([self.consumer])
+            assert db.session.query(
+                User.query.filter(
+                    User.id == uid_consumer).exists()).scalar() is True
 
-    def test_deletion_of_token1(self):
-        """Test deleting of connected user."""
-        from invenio_accounts.models import User
-        from invenio_oauth2server.models import Client, Token
+            # delete consumer
+            db.session.delete(app.consumer)
 
-        uid_resource_manager = self.resource_owner.id
-        uid_consumer = self.consumer.id
-        cid_1 = self.u1c1.client_id
-        tid_2 = self.u1c1u2t2.id
 
-        # start testing
+def test_deletion_of_token1(models_fixture):
+    """Test deleting of connected user."""
+    app = models_fixture
 
-        # delete token_1
-        self.delete_objects([self.u1c1u1t1])
+    uid_resource_manager = app.resource_owner.id
+    uid_consumer = app.consumer.id
+    cid_1 = app.u1c1.client_id
+    tid_2 = app.u1c1u2t2.id
+
+    # start testing
+
+    # delete token_1
+    with app.app_context():
+        with db.session.begin_nested():
+            db.session.delete(app.u1c1u1t1)
 
         # still exist resource_owner, consumer, client_1, token_2
-        self.assertTrue(
-            db.session.query(
-                User.query.filter(
-                    User.id == uid_resource_manager).exists()).scalar())
-        self.assertTrue(
-            db.session.query(
-                User.query.filter(User.id == uid_consumer).exists()).scalar())
-        self.assertTrue(
-            db.session.query(
-                Client.query.filter(
-                    Client.client_id == cid_1).exists()).scalar())
-        self.assertTrue(
-            db.session.query(
-                Token.query.filter(Token.id == tid_2).exists()).scalar())
+        assert db.session.query(
+            User.query.filter(
+                User.id == uid_resource_manager).exists()).scalar() is True
+
+        assert db.session.query(
+            User.query.filter(
+                User.id == uid_consumer).exists()).scalar() is True
+
+        assert db.session.query(
+            Client.query.filter(
+                Client.client_id == cid_1).exists()).scalar() is True
+
+        assert db.session.query(
+            Token.query.filter(
+                Token.id == tid_2).exists()).scalar() is True
 
         # delete consumer
-        self.delete_objects([self.consumer])
+        db.session.delete(app.consumer)
 
-    def test_deletion_of_token2(self):
-        """Test deleting of connected user."""
-        from invenio_accounts.models import User
-        from invenio_oauth2server.models import Client, Token
 
-        uid_resource_manager = self.resource_owner.id
-        uid_consumer = self.consumer.id
-        cid_1 = self.u1c1.client_id
-        tid_1 = self.u1c1u1t1.id
+def test_deletion_of_token2(models_fixture):
+    """Test deleting of connected user."""
+    app = models_fixture
+    uid_resource_manager = app.resource_owner.id
+    uid_consumer = app.consumer.id
+    cid_1 = app.u1c1.client_id
+    tid_1 = app.u1c1u1t1.id
 
-        # start testing
+    # start testing
 
-        # delete token_2
-        self.delete_objects([self.u1c1u2t2])
+    # delete token_2
+    with app.app_context():
+        with db.session.begin_nested():
+            db.session.delete(app.u1c1u2t2)
 
         # still exist resource_owner, consumer, client_1, token_1
-        self.assertTrue(
-            db.session.query(
-                User.query.filter(
-                    User.id == uid_resource_manager).exists()).scalar())
-        self.assertTrue(
-            db.session.query(
-                User.query.filter(User.id == uid_consumer).exists()).scalar())
-        self.assertTrue(
-            db.session.query(
-                Client.query.filter(
-                    Client.client_id == cid_1).exists()).scalar())
-        self.assertTrue(
-            db.session.query(
-                Token.query.filter(Token.id == tid_1).exists()).scalar())
+        assert db.session.query(
+            User.query.filter(
+                User.id == uid_resource_manager).exists()).scalar() is True
+
+        assert db.session.query(
+            User.query.filter(
+                User.id == uid_consumer).exists()).scalar() is True
+
+        assert db.session.query(
+            Client.query.filter(
+                Client.client_id == cid_1).exists()).scalar() is True
+
+        assert db.session.query(
+            Token.query.filter(
+                Token.id == tid_1).exists()).scalar() is True
 
         # delete consumer
-        self.delete_objects([self.consumer])
+        db.session.delete(app.consumer)

@@ -3,19 +3,24 @@
 # This file is part of Invenio.
 # Copyright (C) 2015 CERN.
 #
-# Invenio is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License as
+# Invenio is free software; you can redistribute it
+# and/or modify it under the terms of the GNU General Public License as
 # published by the Free Software Foundation; either version 2 of the
 # License, or (at your option) any later version.
 #
-# Invenio is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
+# Invenio is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Invenio; if not, write to the Free Software Foundation, Inc.,
-# 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
+# along with Invenio; if not, write to the
+# Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+# MA 02111-1307, USA.
+#
+# In applying this license, CERN does not
+# waive the privileges and immunities granted to it by virtue of its status
+# as an Intergovernmental Organization or submit itself to any jurisdiction.
 
 
 notifications:
@@ -23,56 +28,35 @@ notifications:
 
 sudo: false
 
-services:
-  - mysql
-  - redis
-
 language: python
 
 cache:
-  - apt
   - pip
 
 env:
-  - REQUIREMENTS=lowest REXTRAS=docs,tests
-  - REQUIREMENTS=release REXTRAS=docs,tests
-  - REQUIREMENTS=devel REXTRAS=docs,tests
+  - REQUIREMENTS=lowest
+  - REQUIREMENTS=release
+  - REQUIREMENTS=devel
 
 python:
   - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
 
 before_install:
-  - "travis_retry pip install --upgrade pip"
-  - "travis_retry pip install check-manifest mock twine wheel coveralls"
-  - "python requirements.py --extras=$REXTRAS --level=min > .travis-lowest-requirements.txt"
-  - "python requirements.py --extras=$REXTRAS --level=pypi > .travis-release-requirements.txt"
-  - "python requirements.py --extras=$REXTRAS --level=dev > .travis-devel-requirements.txt"
-  - "mkdir -p ${VIRTUAL_ENV}/var/invenio.base-instance/"
-  - "cp .travis.invenio.cfg ${VIRTUAL_ENV}/var/invenio.base-instance/invenio.cfg"
+  - "travis_retry pip install --upgrade pip setuptools py"
+  - "travis_retry pip install twine wheel coveralls requirements-builder"
+  - "requirements-builder --level=min setup.py > .travis-lowest-requirements.txt"
+  - "requirements-builder --level=pypi setup.py > .travis-release-requirements.txt"
+  - "requirements-builder --level=dev --req requirements-devel.txt setup.py > .travis-devel-requirements.txt"
 
 install:
-  - "travis_retry pip install -e git+https://github.com/inveniosoftware/invenio#egg=invenio"
-  - "travis_retry pip install -r .travis-$REQUIREMENTS-requirements.txt --allow-all-external"
-  - "travis_retry pip install -e .[$REXTRAS]"
-
-before_script:
-  - "inveniomanage database init --yes-i-know"
-  - "inveniomanage database create --quiet"
+  - "travis_retry pip install -r .travis-${REQUIREMENTS}-requirements.txt"
+  - "travis_retry pip install -e .[all]"
 
 script:
-  - "check-manifest --ignore .travis-\\*-requirements.txt"
-  - "sphinx-build -qnN docs docs/_build/html"
-  - "python setup.py test"
+  - "./run-tests.sh"
 
 after_success:
   - coveralls
-
-deploy:
-  provider: pypi
-  user: jirikuncar
-  password:
-    secure: xSD/XcMnmhBYRqcJbLOPsIFDhMCV48EaeLwNkGW0sQPlTsgm1PtIm6eyedogq2gaKJsOoan20mc1VH4L0P2AGiLuAvuxXUpjr/Zj/QePJ8iCeLoy5Tg1I8VfkUQsBtO9lIRtqg5qUI5u8w6PhfAOXB9JqoBOv5WHpE/zir5fvMKwSG/K8nlk3JD+C3Hi3gWgcdIsr/BPpeB+lqqh4dLVQSDz+42aH553IMCCgZpiXEmQ9w9/IdeUZCHMZgFNyz4HQbxQIXx8SLjKmcA/jwbcWCX4WzawJxgnoGH7HcETh9GjNmcRBDbyRLQiG8Um4hyfMoZ87P5om08FfRSvGKce7Wg8bEcZVGrXy/S1H+Ofh2zYG9pQJ7OHF4qqCaw3vhZ2Vo7f5xqv4e7vl3JyukAzpykTYPacad+87Ob8u74dLiO0fszUnhDOyD8MXlbQo8UlOHRL4sdqHTuNGXE0OXMhlvH1+vCzCKEZYu++2BwnYuzll9bt0JCWynyjuD+INAQrns/8YCjVSzgKJ+KjgpNkdoNznUMoBrah/McuAfww5j17FOUNUZVvjcVM24y1zW905poxoiKqJfI+StPYyZ5uv+o9alkAozeCXDrae9awXGKE4JY2jiua+bZQW0WmH9IJ05/ekY9LeB/C4ga05w7bGaxeNhRoJfkcsjANBlRo9zA=
-  distributions: "compile_catalog sdist bdist_wheel"
-  on:
-    tags: true
-    python: "2.7"

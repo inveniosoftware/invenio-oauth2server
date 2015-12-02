@@ -17,13 +17,14 @@
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 #}
 
-{%- import "accounts/settings/helpers.html" as helpers with context %}
-{% extends "page.html" %}
+{# %- import "accounts/settings/helpers.html" as helpers with context %#}
+{% extends "invenio_oauth2server/base.html" %}
 
-{% block body %}
+{% block page_body %}
 <div class="row">
 <div class="col-md-8 col-md-offset-2">
-{{ helpers.panel_start(_('Authorize application'), icon='fa fa-shield fa-fw') }}
+{#{ helpers.panel_start(_('Authorize application'), icon='fa fa-shield fa-fw') }#}
+Authorize application
 <h1 align="center">{{ _('Authorize application') }}</h1>
 <h3 align="center">{{ _("Application '%(client_name)s' by '%(client_user)s' wants permission to access your account.",
                         client_name=client.name, client_user=client.user.nickname or client.user.email) }}</h3>
@@ -56,7 +57,7 @@
     <button type="submit" value="no" name="confirm" class="btn btn-danger"><i class="fa fa-ban"></i> {{ _('Reject') }}</button>
   </form>
 </div>
-{{helpers.panel_end()}}
+{#{helpers.panel_end()}#}
 </div>
 </div>
 {% endblock %}

@@ -22,27 +22,30 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
+
+"""Module tests."""
+
 from __future__ import absolute_import, print_function
 
-from flask_registry import RegistryProxy, DictRegistry, RegistryError
-from .models import Scope
+from flask import Flask
+
+from invenio_oauth2server import InvenioOAuth2Server
 
 
-class ScopesRegistry(DictRegistry):
-
-    """Registry for OAuth scopes."""
-
-    def register(self, scope):
-        """ Register an OAuth scope. """
-        if not isinstance(scope, Scope):
-            raise RegistryError("Invalid scope value.")
-        super(ScopesRegistry, self).register(scope.id, scope)
-
-    def choices(self, exclude_internal=True):
-        items = self.items()
-        items.sort()
-        return [(k, scope) for k, scope in items if
-                not exclude_internal or not scope.is_internal]
+def test_version():
+    """Test version import."""
+    from invenio_oauth2server import __version__
+    assert __version__
 
 
-scopes = RegistryProxy('oauth2server.scopes', ScopesRegistry)
+def test_init():
+    """Test extension initialization."""
+    app = Flask('testapp')
+    ext = InvenioOAuth2Server(app)
+    assert 'invenio-oauth2server' in app.extensions
+
+    app = Flask('testapp')
+    ext = InvenioOAuth2Server()
+    assert 'invenio-oauth2server' not in app.extensions
+    ext.init_app(app)
+    assert 'invenio-oauth2server' in app.extensions

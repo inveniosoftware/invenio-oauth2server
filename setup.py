@@ -27,41 +27,59 @@
 import os
 import sys
 
-from setuptools import setup
+from setuptools import find_packages, setup
 from setuptools.command.test import test as TestCommand
 
 readme = open('README.rst').read()
 history = open('CHANGES.rst').read()
 
-requirements = [
-    'six>=1.7.2',
-    'Flask>=0.10.1',
-    'Flask-OAuthlib>=0.6.0,<0.7',  # quick fix for issue invenio#2158
-    # FIXME new oauthlib release after 0.7.2 has some compatible problems with
-    # the used Flask-Oauthlib version.
-    'oauthlib==0.7.2',
-    'Flask-SQLAlchemy>=2.0',
-    'SQLAlchemy>=1.0',
-    'SQLAlchemy-Utils[encrypted]>=0.31.0',
-    'invenio-accounts>=0.2.0',
-    'invenio-base>=0.3.1',
-    'invenio-upgrader>=0.2.0',
-    'invenio-utils>=0.2.0',
-    'invenio-ext>=0.3.1',
-]
-
-test_requirements = [
-    'coverage>=4.0.0',
-    'invenio-access>=0.2.0',
-    'invenio-testing>=0.1.1',
-    'pytest-cov>=2.1.0',
+tests_require = [
+    'check-manifest>=0.25',
+    'coverage>=4.0',
+    'isort>=4.2.2',
+    'mock>=1.3.0',
+    'pep257>=0.7.0',
+    'pytest-cache>=1.0',
+    'pytest-cov>=1.8.0',
     'pytest-pep8>=1.0.6',
     'pytest>=2.8.0',
 ]
 
+extras_require = {
+    'docs': [
+        "Sphinx>=1.3",
+    ],
+    'tests': tests_require,
+}
+
+extras_require['all'] = []
+for reqs in extras_require.values():
+    extras_require['all'].extend(reqs)
+
+setup_requires = [
+    'Babel>=1.3',
+]
+
+install_requires = [
+    'Flask>=0.10.0',
+    'Flask-BabelEx>=0.9.2',
+    'Flask-Breadcrumbs>=0.3.0',
+    'Flask-Registry>=0.2.0',
+    'Flask-Login<0.3.0,>=0.2.11',
+    'Flask-OAuthlib>=0.6.0,<0.7',
+    'Flask-Security>=1.7.4',
+    'Invenio-Accounts>=1.0.0a2',
+    'Invenio-DB>=1.0.0a5',
+    'oauthlib==0.7.2',
+    'redis>=2.10.5',
+    'six>=1.7.2',
+    'SQLAlchemy-Utils[encrypted]>=0.31.0',
+]
+
+packages = find_packages()
+
 
 class PyTest(TestCommand):
-
     """PyTest Test."""
 
     user_options = [('pytest-args=', 'a', "Arguments to pass to py.test")]
@@ -81,8 +99,11 @@ class PyTest(TestCommand):
     def finalize_options(self):
         """Finalize pytest."""
         TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
+        if hasattr(self, '_test_args'):
+            self.test_suite = ''
+        else:
+            self.test_args = []
+            self.test_suite = True
 
     def run_tests(self):
         """Run tests."""
@@ -102,25 +123,20 @@ setup(
     version=version,
     description=__doc__,
     long_description=readme + '\n\n' + history,
-    keywords='invenio oauth server',
+    keywords='invenio TODO',
     license='GPLv2',
     author='CERN',
     author_email='info@invenio-software.org',
     url='https://github.com/inveniosoftware/invenio-oauth2server',
-    packages=[
-        'invenio_oauth2server',
-    ],
+    packages=packages,
     zip_safe=False,
     include_package_data=True,
     platforms='any',
-    install_requires=requirements,
-    extras_require={
-        'docs': [
-            'Sphinx>=1.3',
-            'sphinx_rtd_theme>=0.1.7'
-        ],
-        'tests': test_requirements
-    },
+    entry_points={},
+    extras_require=extras_require,
+    install_requires=install_requires,
+    setup_requires=setup_requires,
+    tests_require=tests_require,
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
@@ -130,13 +146,12 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Programming Language :: Python :: 2',
-        # 'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
-        # 'Programming Language :: Python :: 3',
-        # 'Programming Language :: Python :: 3.3',
-        # 'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Development Status :: 1 - Planning',
     ],
-    tests_require=test_requirements,
     cmdclass={'test': PyTest},
 )
