@@ -31,6 +31,7 @@ import os
 
 import pytest
 from flask import Flask, url_for
+from flask.views import MethodView
 from flask_babelex import Babel
 from flask_breadcrumbs import Breadcrumbs
 from flask_cli import FlaskCLI
@@ -43,6 +44,8 @@ from invenio_db import InvenioDB, db
 from mock import MagicMock
 
 from invenio_oauth2server import InvenioOAuth2Server
+from invenio_oauth2server.decorators import require_api_auth, \
+    require_oauth_scopes
 from invenio_oauth2server.models import Client, Scope, Token
 from invenio_oauth2server.views import server_blueprint, settings_blueprint
 
@@ -198,5 +201,90 @@ def provider_fixture(app):
                                                    app.user1.id,
                                                    scopes=[],
                                                    is_internal=True)
+
+    return app
+
+
+@pytest.fixture
+def resource_fixture(app):
+    """Fixture that contains the test data for models tests."""
+    from flask import request
+    from invenio_oauth2server.proxies import current_oauth2server
+
+    # Setup API resources
+    class Test1Resource(MethodView):
+        # NOTE: Method decorators are applied in reverse order
+        decorators = [
+            require_oauth_scopes('test:testscope'),
+            require_api_auth(),
+        ]
+
+        def get(self):
+            assert request.oauth.access_token
+            return "success", 200
+
+        def post(self):
+            assert request.oauth.access_token
+            return "success", 200
+
+    class Test2Resource(MethodView):
+
+        @require_api_auth()
+        @require_oauth_scopes('test:testscope')
+        def get(self):
+            assert request.oauth.access_token
+            return "success", 200
+
+        @require_api_auth()
+        @require_oauth_scopes('test:testscope')
+        def post(self):
+            assert request.oauth.access_token
+            return "success", 200
+
+    # Register API resources
+    app.add_url_rule(
+        '/api/test1/decoratorstestcase/',
+        view_func=Test1Resource.as_view('test1resource'),
+    )
+    app.add_url_rule(
+        '/api/test2/decoratorstestcase/',
+        view_func=Test2Resource.as_view('test2resource'),
+    )
+
+    datastore = app.extensions['security'].datastore
+    with app.app_context():
+        # Register a test scope
+        current_oauth2server.register_scope(Scope(
+            'test:testscope',
+            group='Test',
+            help_text='Test scope'
+        ))
+        with db.session.begin_nested():
+            app.user = datastore.create_user(
+                email='info@invenio-software.org', password='tester',
+                active=True,
+            )
+
+        # Create tokens
+        app.token = Token.create_personal(
+            'test-', app.user.id, scopes=['test:testscope'], is_internal=True)
+        app.token_noscope = Token.create_personal(
+            'test-', app.user.id, scopes=[], is_internal=True)
+
+    with app.test_request_context():
+        app.url_for_test1resource = url_for('test1resource')
+        app.url_for_test2resource = url_for('test2resource')
+        app.url_for_test1resource_token = url_for(
+            'test1resource', access_token=app.token.access_token
+        )
+        app.url_for_test2resource_token = url_for(
+            'test2resource', access_token=app.token.access_token
+        )
+        app.url_for_test1resource_token_noscope = url_for(
+            'test1resource', access_token=app.token_noscope.access_token
+        )
+        app.url_for_test2resource_token_noscope = url_for(
+            'test2resource', access_token=app.token_noscope.access_token
+        )
 
     return app

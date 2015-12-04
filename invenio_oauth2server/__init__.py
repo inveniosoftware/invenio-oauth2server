@@ -28,5 +28,11 @@ from __future__ import absolute_import, print_function
 
 from .ext import InvenioOAuth2Server
 from .version import __version__
+from .decorators import require_api_auth, require_oauth_scopes
 
-__all__ = ('__version__', 'InvenioOAuth2Server')
+__all__ = (
+    '__version__',
+    'InvenioOAuth2Server',
+    'require_api_auth',
+    'require_oauth_scopes',
+)
