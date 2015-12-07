@@ -136,10 +136,11 @@ def errors():
     """Error view in case of invalid oauth requests."""
     from oauthlib.oauth2.rfc6749.errors import raise_from_error
     try:
+        error = None
         raise_from_error(request.values.get('error'), params=dict())
-        return render_template('invenio_oauth2server/errors.html', error=None)
-    except OAuth2Error as e:
-        return render_template('invenio_oauth2server/errors.html', error=e)
+    except OAuth2Error as raised:
+        error = raised
+    return render_template('invenio_oauth2server/errors.html', error=error)
 
 
 @blueprint.route('/ping', methods=['GET', 'POST'])

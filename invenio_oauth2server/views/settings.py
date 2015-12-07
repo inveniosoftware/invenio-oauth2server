@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2014, 2015 CERN.
+# Copyright (C) 2014, 2015, 2016 CERN.
 #
 # Invenio is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -251,16 +251,3 @@ def token_view(token):
         form=form,
         show_token=show_token,
     )
-
-
-@blueprint.route("/tokens/<string:token_id>/revoke/", methods=['GET', ])
-@login_required
-@register_breadcrumb(
-    blueprint, 'breadcrumbs.settings.applications.token_new', _('New')
-)
-@token_getter(is_personal=False, is_internal=False)
-def token_revoke(token):
-    """Revoke given token."""
-    db.session.delete(token)
-    db.session.commit()
-    return redirect(url_for('.index'))

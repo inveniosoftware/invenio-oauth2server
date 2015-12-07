@@ -26,11 +26,13 @@
 
 from __future__ import absolute_import, print_function
 
+from datetime import datetime, timedelta
+
 from flask import json, url_for
 from helpers import login, parse_redirect
 from invenio_db import db
 
-from invenio_oauth2server.models import Client
+from invenio_oauth2server.models import Client, Token
 
 
 def test_client_salt(provider_fixture):
@@ -68,7 +70,8 @@ def test_invalid_authorize_requests(provider_fixture):
                 scope = 'test:scope'
                 response_type = 'code'
 
-                error_url = url_for('invenio_oauth2server.errors')
+                error_url = url_for('invenio_oauth2server.errors',
+                                    _external=True)
 
                 # Valid request authorize request
                 r = client.get(
@@ -573,3 +576,230 @@ def test_settings_index(provider_fixture):
                 )
             )
             assert 302 == res.status_code
+
+
+def test_info_not_accessible_in_production(provider_fixture):
+    """Info route should not be available in production mode."""
+    app = provider_fixture
+    with app.test_request_context():
+        with app.test_client() as client:
+            app.config.update(
+                DEBUG=False,
+                TESTING=False,
+            )
+            data = dict(
+                client_id='dev',
+                client_secret='dev',  # A public client should NOT do this!
+                grant_type='client_credentials',
+                scope='test:scope',
+            )
+
+            # Public clients are not allowed to use
+            # grant_type=client_credentials
+            r = client.post(url_for(
+                'invenio_oauth2server.access_token'
+            ), data=data)
+            assert r.status_code == 401
+            assert json.loads(r.get_data()).get('error') == 'invalid_client'
+
+            data = dict(
+                client_id='confidential',
+                client_secret='confidential',
+                grant_type='client_credentials',
+                scope='test:scope',
+            )
+
+            # Retrieve access token using client_credentials
+            r = client.post(url_for(
+                'invenio_oauth2server.access_token'
+            ), data=data)
+            assert r.status_code == 200
+
+            data = json.loads(r.get_data())
+            assert data['access_token']
+            assert data['token_type'] == 'Bearer'
+            assert data['scope'] == 'test:scope'
+            assert data.get('refresh_token') is None
+
+            # Authentication flow has now been completed, and the client can
+            # use the access token to make request to the provider.
+            r = client.get(url_for('invenio_oauth2server.info',
+                                   access_token=data['access_token']))
+            assert r.status_code == 404
+
+
+def test_expired_refresh_flow(expiration_fixture):
+    """Test refresh flow with an expired token."""
+    app = expiration_fixture
+    # First login on provider site
+    with app.test_request_context():
+        with app.test_client() as client:
+            login(client)
+
+            data = dict(
+                redirect_uri=url_for('oauth2test.authorized', _external=True),
+                scope='test:scope',
+                response_type='code',
+                client_id='confidential',
+                state='mystate'
+            )
+
+            r = client.get(url_for('invenio_oauth2server.authorize', **data))
+            assert r.status_code == 200
+
+            data['confirm'] = 'yes'
+            data['scope'] = 'test:scope'
+            data['state'] = 'mystate'
+
+            # Obtain one time code
+            r = client.post(
+                url_for('invenio_oauth2server.authorize'), data=data
+            )
+            assert r.status_code == 302
+            next_url, res_data = parse_redirect(r.location)
+            assert res_data['code']
+            assert res_data['state'] == 'mystate'
+
+            # Exchange one time code for access token
+            r = client.post(
+                url_for('invenio_oauth2server.access_token'), data=dict(
+                    client_id='confidential',
+                    client_secret='confidential',
+                    grant_type='authorization_code',
+                    code=res_data['code'],
+                )
+            )
+            assert r.status_code == 200
+            assert json.loads(r.get_data())['access_token']
+            assert json.loads(r.get_data())['refresh_token']
+            assert json.loads(r.get_data())['expires_in'] > 0
+            assert json.loads(r.get_data())['scope'] == 'test:scope'
+            assert json.loads(r.get_data())['token_type'] == 'Bearer'
+            refresh_token = json.loads(r.get_data())['refresh_token']
+            old_access_token = json.loads(r.get_data())['access_token']
+
+            # Access token valid
+            r = client.get(url_for('invenio_oauth2server.info',
+                                   access_token=old_access_token))
+            assert r.status_code == 200
+
+            Token.query.filter_by(access_token=old_access_token).update(
+                dict(expires=datetime.utcnow() - timedelta(seconds=1))
+            )
+            db.session.commit()
+
+            # Access token is expired
+            r = client.get(url_for('invenio_oauth2server.info',
+                                   access_token=old_access_token))
+            assert r.status_code == 401
+
+            # Obtain new access token with refresh token
+            r = client.post(
+                url_for('invenio_oauth2server.access_token'), data=dict(
+                    client_id='confidential',
+                    client_secret='confidential',
+                    grant_type='refresh_token',
+                    refresh_token=refresh_token,
+                )
+            )
+            assert r.status_code == 200
+            resp_json = json.loads(r.get_data())
+            assert resp_json['access_token']
+            assert resp_json['refresh_token']
+            assert resp_json['expires_in'] > 0
+            assert resp_json['access_token'] != old_access_token
+            assert resp_json['refresh_token'] != refresh_token
+            assert resp_json['scope'] == 'test:scope'
+            assert resp_json['token_type'] == 'Bearer'
+
+            # New access token valid
+            r = client.get(url_for('invenio_oauth2server.info',
+                                   access_token=resp_json['access_token']))
+            assert r.status_code == 200
+
+            # Old access token no longer valid
+            r = client.get(url_for('invenio_oauth2server.info',
+                                   access_token=old_access_token))
+            assert r.status_code == 401
+
+
+def test_not_allowed_public_refresh_flow(expiration_fixture):
+    """Public token should not allow refreshing."""
+    app = expiration_fixture
+    # First login on provider site
+    with app.test_request_context():
+        with app.test_client() as client:
+            login(client)
+
+            data = dict(
+                redirect_uri=url_for('oauth2test.authorized', _external=True),
+                scope='test:scope',
+                response_type='code',
+                client_id='dev',
+                state='mystate'
+            )
+
+            r = client.get(url_for('invenio_oauth2server.authorize', **data))
+            assert r.status_code == 200
+
+            data['confirm'] = 'yes'
+            data['scope'] = 'test:scope'
+            data['state'] = 'mystate'
+
+            # Obtain one time code
+            r = client.post(
+                url_for('invenio_oauth2server.authorize'), data=data
+            )
+            assert r.status_code == 302
+            next_url, res_data = parse_redirect(r.location)
+            assert res_data['code']
+            assert res_data['state'] == 'mystate'
+
+            # Exchange one time code for access token
+            r = client.post(
+                url_for('invenio_oauth2server.access_token'), data=dict(
+                    client_id='dev',
+                    client_secret='dev',
+                    grant_type='authorization_code',
+                    code=res_data['code'],
+                )
+            )
+            assert r.status_code == 200
+            json_resp = json.loads(r.get_data())
+            assert json_resp['access_token']
+            assert json_resp['refresh_token']
+            assert json_resp['expires_in'] > 0
+            assert json_resp['scope'] == 'test:scope'
+            assert json_resp['token_type'] == 'Bearer'
+            refresh_token = json_resp['refresh_token']
+            old_access_token = json_resp['access_token']
+
+            # Access token valid
+            r = client.get(url_for('invenio_oauth2server.info',
+                                   access_token=old_access_token))
+            assert r.status_code == 200
+
+            Token.query.filter_by(access_token=old_access_token).update(
+                dict(expires=datetime.utcnow() - timedelta(seconds=1))
+            )
+            db.session.commit()
+
+            # Access token is expired
+            r = client.get(url_for('invenio_oauth2server.info',
+                           access_token=old_access_token),
+                           follow_redirects=True)
+            assert r.status_code == 401
+
+            # Obtain new access token with refresh token
+            r = client.post(
+                url_for('invenio_oauth2server.access_token'), data=dict(
+                    client_id='dev',
+                    client_secret='dev',
+                    grant_type='refresh_token',
+                    refresh_token=refresh_token,
+                ),
+                follow_redirects=True
+            )
+
+            # Only confidential clients can refresh expired token.
+            assert r.status_code == 401

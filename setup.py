@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015 CERN.
+# Copyright (C) 2015, 2016 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -34,7 +34,6 @@ readme = open('README.rst').read()
 history = open('CHANGES.rst').read()
 
 tests_require = [
-    'Flask-httpretty>=1.3.0',
     'check-manifest>=0.25',
     'coverage>=4.0',
     'isort>=4.2.2',
@@ -49,6 +48,9 @@ tests_require = [
 extras_require = {
     'docs': [
         "Sphinx>=1.3",
+    ],
+    'redis': [
+        'redis>=2.10.5',
     ],
     'tests': tests_require,
 }
@@ -74,7 +76,6 @@ install_requires = [
     'SQLAlchemy-Utils[encrypted]>=0.31.0',
     'WTForms-Alchemy>=0.13.3',
     'oauthlib==0.7.2',
-    'redis>=2.10.5',
     'six>=1.7.2',
 ]
 

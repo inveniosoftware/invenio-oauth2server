@@ -92,6 +92,21 @@ def app(request):
 
 
 @pytest.fixture
+def settings_fixture(app):
+    """Fixture for testing settings views."""
+    from invenio_oauth2server.proxies import current_oauth2server
+    with app.app_context():
+        with db.session.begin_nested():
+            datastore = app.extensions['security'].datastore
+            datastore.create_user(email='info@invenio-software.org',
+                                  password='tester')
+        db.session.commit()
+        current_oauth2server.register_scope(Scope('test:scope'))
+        current_oauth2server.register_scope(Scope('test:scope2'))
+    return app
+
+
+@pytest.fixture
 def models_fixture(app):
     """Fixture that contains the test data for models tests."""
     from invenio_oauth2server.proxies import current_oauth2server
@@ -217,6 +232,15 @@ def provider_fixture(app):
         app.user1_id = user1.id
         app.personal_token = personal_token.access_token
     return app
+
+
+@pytest.fixture
+def expiration_fixture(provider_fixture):
+    """Fixture for testing expiration."""
+    provider_fixture.config.update(
+        OAUTH2_PROVIDER_TOKEN_EXPIRES_IN=1,
+    )
+    return provider_fixture
 
 
 @pytest.fixture
