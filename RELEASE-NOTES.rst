@@ -2,7 +2,7 @@
  Invenio-OAuth2Server v1.0.0
 =============================
 
-Invenio-OAuth2Server v1.0.0 was released on TBD, 2015.
+Invenio-OAuth2Server v1.0.0 was released on December 7, 2015.
 
 About
 -----
