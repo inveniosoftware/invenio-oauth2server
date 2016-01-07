@@ -131,7 +131,7 @@ def access_token():
     return None
 
 
-@blueprint.route('/errors/')
+@blueprint.route('/errors')
 def errors():
     """Error view in case of invalid oauth requests."""
     from oauthlib.oauth2.rfc6749.errors import raise_from_error
@@ -142,14 +142,14 @@ def errors():
         return render_template('invenio_oauth2server/errors.html', error=e)
 
 
-@blueprint.route('/ping/', methods=['GET', 'POST'])
+@blueprint.route('/ping', methods=['GET', 'POST'])
 @oauth2.require_oauth()
 def ping():
     """Test to verify that you have been authenticated."""
     return jsonify(dict(ping="pong"))
 
 
-@blueprint.route('/info/')
+@blueprint.route('/info')
 @oauth2.require_oauth('test:scope')
 def info():
     """Test to verify that you have been authenticated."""
@@ -163,7 +163,7 @@ def info():
         abort(404)
 
 
-@blueprint.route('/invalid/')
+@blueprint.route('/invalid')
 @oauth2.require_oauth('invalid_scope')
 def invalid():
     """Test to verify that you have been authenticated."""
