@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015 CERN.
+# Copyright (C) 2015, 2016 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -206,12 +206,12 @@ class Client(db.Model):
     @property
     def allowed_grant_types(self):
         """Return allowed grant types."""
-        return current_app.config['OAUTH2_ALLOWED_GRANT_TYPES']
+        return current_app.config['OAUTH2SERVER_ALLOWED_GRANT_TYPES']
 
     @property
     def allowed_response_types(self):
         """Return allowed response types."""
-        return current_app.config['OAUTH2_ALLOWED_RESPONSE_TYPES']
+        return current_app.config['OAUTH2SERVER_ALLOWED_RESPONSE_TYPES']
 
     # def validate_scopes(self, scopes):
     #     return self._validate_scopes
@@ -280,13 +280,13 @@ class Client(db.Model):
     def reset_client_id(self):
         """Reset client id."""
         self.client_id = gen_salt(
-            current_app.config.get('OAUTH2_CLIENT_ID_SALT_LEN')
+            current_app.config.get('OAUTH2SERVER_CLIENT_ID_SALT_LEN')
         )
 
     def reset_client_secret(self):
         """Reset client secret."""
         self.client_secret = gen_salt(
-            current_app.config.get('OAUTH2_CLIENT_SECRET_SALT_LEN')
+            current_app.config.get('OAUTH2SERVER_CLIENT_SECRET_SALT_LEN')
         )
 
 
@@ -393,7 +393,8 @@ class Token(db.Model):
                 client_id=c.client_id,
                 user_id=user_id,
                 access_token=gen_salt(
-                    current_app.config.get('OAUTH2_TOKEN_PERSONAL_SALT_LEN')
+                    current_app.config.get(
+                        'OAUTH2SERVER_TOKEN_PERSONAL_SALT_LEN')
                 ),
                 expires=None,
                 _scopes=scopes,

@@ -1,6 +1,6 @@
 {#
 # This file is part of Invenio.
-# Copyright (C) 2014 CERN.
+# Copyright (C) 2014, 2016 CERN.
 #
 # Invenio is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -95,7 +95,7 @@
         <ul>
           <li>client_id (required).</li>
           <li>client_secret (required).</li>
-          <li>grant_type (required, use {% for c in config.OAUTH2_ALLOWED_GRANT_TYPES %}<code>{{c}}</code>{% if not loop.last %}, {% endif %}{% endfor %}).</li>
+          <li>grant_type (required, use {% for c in config.OAUTH2SERVER_ALLOWED_GRANT_TYPES %}<code>{{c}}</code>{% if not loop.last %}, {% endif %}{% endfor %}).</li>
           <li>code (required for grant_type <code>authorization code</code>).</li>
           <li>scope (required for grant_type <code>client_credentials</code>).</li>
           <li>refresh_token (required for grant_type <code>refresh_token</code>).</li>

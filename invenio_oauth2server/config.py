@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2014, 2015 CERN.
+# Copyright (C) 2014, 2015, 2016 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -33,16 +33,16 @@ OAUTH2_PROVIDER_ERROR_ENDPOINT = 'invenio_oauth2server.errors'
 OAUTH2_PROVIDER_TOKEN_EXPIRES_IN = 3600
 """ Life time of an access token """
 
-OAUTH2_CLIENT_ID_SALT_LEN = 40
+OAUTH2SERVER_CLIENT_ID_SALT_LEN = 40
 """ Length of client id """
 
-OAUTH2_CLIENT_SECRET_SALT_LEN = 60
+OAUTH2SERVER_CLIENT_SECRET_SALT_LEN = 60
 """ Length of the client secret """
 
-OAUTH2_TOKEN_PERSONAL_SALT_LEN = 60
+OAUTH2SERVER_TOKEN_PERSONAL_SALT_LEN = 60
 """ Length of the personal access token """
 
-OAUTH2_ALLOWED_GRANT_TYPES = [
+OAUTH2SERVER_ALLOWED_GRANT_TYPES = [
     'authorization_code', 'client_credentials', 'refresh_token',
 ]
 """
@@ -52,7 +52,7 @@ disabled, as it requires the client application to gain access to the username
 and password of the resource owner
 """
 
-OAUTH2_ALLOWED_RESPONSE_TYPES = [
+OAUTH2SERVER_ALLOWED_RESPONSE_TYPES = [
     "code", "token"
 ]
 """

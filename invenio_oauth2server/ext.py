@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015 CERN.
+# Copyright (C) 2015, 2016 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -27,6 +27,7 @@
 from __future__ import absolute_import, print_function
 
 import os
+from warnings import warn
 
 import pkg_resources
 from flask_oauthlib.contrib.oauth2 import bind_cache_grant, bind_sqlalchemy
@@ -120,5 +121,5 @@ class InvenioOAuth2Server(object):
                            'invenio_oauth2server/settings/base.html'))
 
         for k in dir(config):
-            if k.startswith('OAUTH2_'):
+            if k.startswith('OAUTH2SERVER_') or k.startswith('OAUTH2_'):
                 app.config.setdefault(k, getattr(config, k))

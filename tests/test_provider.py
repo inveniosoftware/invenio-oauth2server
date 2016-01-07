@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015 CERN.
+# Copyright (C) 2015, 2016 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -45,9 +45,9 @@ def test_client_salt(provider_fixture):
 
             client.gen_salt()
             assert len(client.client_id) == \
-                app.config['OAUTH2_CLIENT_ID_SALT_LEN']
+                app.config['OAUTH2SERVER_CLIENT_ID_SALT_LEN']
             assert len(client.client_secret) == \
-                app.config['OAUTH2_CLIENT_SECRET_SALT_LEN']
+                app.config['OAUTH2SERVER_CLIENT_SECRET_SALT_LEN']
 
             db.session.add(client)
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015 CERN.
+# Copyright (C) 2015, 2016 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -56,7 +56,7 @@ app.config.update(
     CELERY_CACHE_BACKEND="memory",
     CELERY_EAGER_PROPAGATES_EXCEPTIONS=True,
     CELERY_RESULT_BACKEND="cache",
-    OAUTH2_CACHE_TYPE='simple',
+    OAUTH2SERVER_CACHE_TYPE='simple',
     OAUTHLIB_INSECURE_TRANSPORT=True,
     SECRET_KEY='test_key',
     SECURITY_PASSWORD_HASH='plaintext',
