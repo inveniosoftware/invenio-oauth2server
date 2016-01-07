@@ -60,7 +60,7 @@ def app(request):
         SECRET_KEY='test_key',
         SQLALCHEMY_TRACK_MODIFICATIONS=True,
         SQLALCHEMY_DATABASE_URI=os.getenv('SQLALCHEMY_DATABASE_URI',
-                                          'sqlite:///test.db'),
+                                          'sqlite://'),
         WTF_CSRF_ENABLED=False,
         OAUTHLIB_INSECURE_TRANSPORT=True,
         OAUTH2_CACHE_TYPE='simple',
