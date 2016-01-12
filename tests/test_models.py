@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (c) 2015 CERN.
+# Copyright (c) 2015, 2016 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -43,7 +43,7 @@ def test_empty_redirect_uri_and_scope(models_fixture):
             name='dev2',
             description='',
             is_confidential=False,
-            user=app.test_user,
+            user=app.test_user(),
             _redirect_uris='',
             _default_scopes=""
         )
@@ -74,13 +74,13 @@ def test_token_scopes(models_fixture):
             name='dev2',
             description='',
             is_confidential=False,
-            user=app.test_user,
+            user=app.test_user(),
             _redirect_uris='',
             _default_scopes=""
         )
         token = Token(
             client=client,
-            user=app.test_user,
+            user=app.test_user(),
             token_type='bearer',
             access_token='dev_access',
             refresh_token='dev_refresh',
@@ -115,191 +115,158 @@ def test_deletion_of_consumer_resource_owner(models_fixture):
     """Test deleting of connected user."""
     app = models_fixture
     with app.app_context():
-        uid_1 = app.resource_owner.id
-        cid_1 = app.u1c1.client_id
-        tid_1 = app.u1c1u1t1.id
-        tid_2 = app.u1c1u2t2.id
-
-        # start testing
-
         # delete consumer
         with db.session.begin_nested():
-            db.session.delete(app.consumer)
+            db.session.delete(User.query.get(app.consumer_id))
 
         # assert that t2 deleted
             assert db.session.query(
                 Token.query.filter(
-                    Token.id == tid_2).exists()).scalar() is False
+                    Token.id == app.u1c1u2t2_id).exists()).scalar() is False
         # still exist resource_owner and client_1 and token_1
             assert db.session.query(
-                User.query.filter(User.id == uid_1).exists()).scalar() is True
+                User.query.filter(User.id == app.resource_owner_id).exists()
+                ).scalar() is True
 
             assert db.session.query(
                 Client.query.filter(
-                    Client.client_id == cid_1).exists()).scalar() is True
+                    Client.client_id == app.u1c1_id).exists()).scalar() is True
 
             assert db.session.query(
-                Token.query.filter(Token.id == tid_1).exists()).scalar() is \
-                True
+                Token.query.filter(Token.id == app.u1c1u1t1_id).exists()
+                ).scalar() is True
 
         # delete resource_owner
-            db.session.delete(app.resource_owner)
+            db.session.delete(User.query.get(app.resource_owner_id))
 
         # still resource_owner and client_1 and token_1 deleted
             assert db.session.query(
                 Client.query.filter(
-                    Client.client_id == cid_1).exists()).scalar() is False
+                    Client.client_id == app.u1c1_id).exists()
+                ).scalar() is False
 
             assert db.session.query(
-                Token.query.filter(Token.id == tid_1).exists()).scalar() is \
-                False
+                Token.query.filter(Token.id == app.u1c1u1t1_id).exists()
+                ).scalar() is False
 
 
 def test_deletion_of_resource_owner_consumer(models_fixture):
     """Test deleting of connected user."""
     app = models_fixture
 
-    uid_consumer = app.consumer.id
-    cid_1 = app.u1c1.client_id
-    tid_1 = app.u1c1u1t1.id
-    tid_2 = app.u1c1u2t2.id
-
-    # start testing
-
-    # delete consumer
     with app.app_context():
         with db.session.begin_nested():
-            db.session.delete(app.resource_owner)
+            db.session.delete(User.query.get(app.resource_owner_id))
 
         # assert that c1, t1, t2 deleted
         assert db.session.query(
             Client.query.filter(
-                Client.client_id == cid_1).exists()).scalar() is False
+                Client.client_id == app.u1c1_id).exists()).scalar() is False
 
         assert db.session.query(
             Token.query.filter(
-                Token.id == tid_1).exists()).scalar() is False
+                Token.id == app.u1c1u1t1_id).exists()).scalar() is False
 
         assert db.session.query(
             Token.query.filter(
-                Token.id == tid_2).exists()).scalar() is False
+                Token.id == app.u1c1u2t2_id).exists()).scalar() is False
 
         # still exist consumer
         assert db.session.query(
             User.query.filter(
-                User.id == uid_consumer).exists()).scalar() is True
+                User.id == app.consumer_id).exists()).scalar() is True
 
         # delete consumer
-        db.session.delete(app.consumer)
+        db.session.delete(User.query.get(app.consumer_id))
 
 
 def test_deletion_of_client1(models_fixture):
     """Test deleting of connected user."""
     app = models_fixture
 
-    uid_resource_manager = app.resource_owner.id
-    uid_consumer = app.consumer.id
-    tid_1 = app.u1c1u1t1.id
-    tid_2 = app.u1c1u2t2.id
-
-    # start testing
-
     # delete client_1
     with app.app_context():
         with db.session.begin_nested():
-            db.session.delete(app.u1c1)
+            db.session.delete(Client.query.get(app.u1c1_id))
 
             # assert that token_1, token_2 deleted
             assert db.session.query(
                 Token.query.filter(
-                    Token.id == tid_1).exists()).scalar() is False
+                    Token.id == app.u1c1u1t1_id).exists()).scalar() is False
 
             assert db.session.query(
                 Token.query.filter(
-                    Token.id == tid_2).exists()).scalar() is False
+                    Token.id == app.u1c1u2t2_id).exists()).scalar() is False
 
             # still exist resource_owner, consumer
             assert db.session.query(
                 User.query.filter(
-                    User.id == uid_resource_manager).exists()
+                    User.id == app.resource_owner_id).exists()
                 ).scalar() is True
 
             assert db.session.query(
                 User.query.filter(
-                    User.id == uid_consumer).exists()).scalar() is True
+                    User.id == app.consumer_id).exists()).scalar() is True
 
             # delete consumer
-            db.session.delete(app.consumer)
+            db.session.delete(User.query.get(app.consumer_id))
 
 
 def test_deletion_of_token1(models_fixture):
     """Test deleting of connected user."""
     app = models_fixture
 
-    uid_resource_manager = app.resource_owner.id
-    uid_consumer = app.consumer.id
-    cid_1 = app.u1c1.client_id
-    tid_2 = app.u1c1u2t2.id
-
-    # start testing
-
     # delete token_1
     with app.app_context():
         with db.session.begin_nested():
-            db.session.delete(app.u1c1u1t1)
+            db.session.delete(Token.query.get(app.u1c1u1t1_id))
 
         # still exist resource_owner, consumer, client_1, token_2
         assert db.session.query(
             User.query.filter(
-                User.id == uid_resource_manager).exists()).scalar() is True
+                User.id == app.resource_owner_id).exists()).scalar() is True
 
         assert db.session.query(
             User.query.filter(
-                User.id == uid_consumer).exists()).scalar() is True
+                User.id == app.consumer_id).exists()).scalar() is True
 
         assert db.session.query(
             Client.query.filter(
-                Client.client_id == cid_1).exists()).scalar() is True
+                Client.client_id == app.u1c1_id).exists()).scalar() is True
 
         assert db.session.query(
             Token.query.filter(
-                Token.id == tid_2).exists()).scalar() is True
+                Token.id == app.u1c1u2t2_id).exists()).scalar() is True
 
         # delete consumer
-        db.session.delete(app.consumer)
+        db.session.delete(User.query.get(app.consumer_id))
 
 
 def test_deletion_of_token2(models_fixture):
     """Test deleting of connected user."""
     app = models_fixture
-    uid_resource_manager = app.resource_owner.id
-    uid_consumer = app.consumer.id
-    cid_1 = app.u1c1.client_id
-    tid_1 = app.u1c1u1t1.id
-
-    # start testing
 
     # delete token_2
     with app.app_context():
         with db.session.begin_nested():
-            db.session.delete(app.u1c1u2t2)
+            db.session.delete(Token.query.get(app.u1c1u2t2_id))
 
         # still exist resource_owner, consumer, client_1, token_1
         assert db.session.query(
             User.query.filter(
-                User.id == uid_resource_manager).exists()).scalar() is True
+                User.id == app.resource_owner_id).exists()).scalar() is True
 
         assert db.session.query(
             User.query.filter(
-                User.id == uid_consumer).exists()).scalar() is True
+                User.id == app.consumer_id).exists()).scalar() is True
 
         assert db.session.query(
             Client.query.filter(
-                Client.client_id == cid_1).exists()).scalar() is True
+                Client.client_id == app.u1c1_id).exists()).scalar() is True
 
         assert db.session.query(
             Token.query.filter(
-                Token.id == tid_1).exists()).scalar() is True
+                Token.id == app.u1c1u1t1_id).exists()).scalar() is True
 
         # delete consumer
-        db.session.delete(app.consumer)
+        db.session.delete(User.query.get(app.consumer_id))

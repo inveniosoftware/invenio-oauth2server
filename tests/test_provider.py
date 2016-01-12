@@ -302,7 +302,7 @@ def web_auth_flow(provider_fixture):
                 assert r.status_code == 200
                 json_resp = json.loads(r.get_data())
                 assert json_resp['client'] == 'confidential'
-                assert json_resp['user'] == app.user1.id
+                assert json_resp['user'] == app.user1_id
                 assert json_resp['scopes'] == [u'test:scope']
 
                 # Access token doesn't provide access to this URL.
@@ -373,7 +373,7 @@ def test_implicit_flow(provider_fixture):
                                        access_token=data['access_token']))
                 assert r.status_code == 200
                 assert json.loads(r.get_data()).get('client') == client_id
-                assert json.loads(r.get_data()).get('user') == app.user1.id
+                assert json.loads(r.get_data()).get('user') == app.user1_id
                 assert json.loads(r.get_data()).get('scopes') \
                     == [u'test:scope']
 
@@ -422,7 +422,7 @@ def test_client_flow(provider_fixture):
                                    access_token=data['access_token']))
             assert r.status_code == 200
             assert json.loads(r.get_data()).get('client') == 'confidential'
-            assert json.loads(r.get_data()).get('user') == app.user1.id
+            assert json.loads(r.get_data()).get('user') == app.user1_id
             assert json.loads(r.get_data()).get('scopes') == [u'test:scope']
 
 
@@ -466,7 +466,7 @@ def test_personal_access_token(provider_fixture):
             r = client.get(
                 url_for('invenio_oauth2server.ping'),
                 query_string="access_token={0}".format(
-                    app.personal_token.access_token)
+                    app.personal_token)
             )
             assert r.status_code == 200
             assert json.loads(r.get_data()) == dict(ping='pong')
@@ -475,7 +475,7 @@ def test_personal_access_token(provider_fixture):
             r = client.get(
                 url_for('invenio_oauth2server.info'),
                 query_string="access_token={0}".format(
-                    app.personal_token.access_token),
+                    app.personal_token),
             )
             assert r.status_code == 401
 
@@ -488,7 +488,7 @@ def test_resource_auth_methods(provider_fixture):
             r = client.get(
                 url_for('invenio_oauth2server.ping'),
                 query_string="access_token={0}".format(
-                    app.personal_token.access_token)
+                    app.personal_token)
             )
             r.status_code == 200
             assert json.loads(r.get_data()) == dict(ping='pong')
@@ -496,7 +496,7 @@ def test_resource_auth_methods(provider_fixture):
             # POST request body
             r = client.post(
                 url_for('invenio_oauth2server.ping'),
-                data=dict(access_token=app.personal_token.access_token),
+                data=dict(access_token=app.personal_token),
             )
             assert r.status_code == 200
             assert json.loads(r.get_data()) == dict(ping='pong')
@@ -506,7 +506,7 @@ def test_resource_auth_methods(provider_fixture):
                 url_for('invenio_oauth2server.ping'),
                 headers=[
                     ("Authorization",
-                     "Bearer {0}".format(app.personal_token.access_token))]
+                     "Bearer {0}".format(app.personal_token))]
                 )
             assert r.status_code == 200
             assert json.loads(r.get_data()) == dict(ping='pong')

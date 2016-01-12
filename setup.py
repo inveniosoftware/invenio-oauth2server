@@ -70,7 +70,7 @@ install_requires = [
     'Flask-WTF>=0.10.2',
     'Flask>=0.10.1',
     'Invenio-Accounts>=1.0.0a6',
-    'Invenio-DB>=1.0.0a5',
+    'Invenio-DB>=1.0.0a9',
     'SQLAlchemy-Utils[encrypted]>=0.31.0',
     'WTForms-Alchemy>=0.13.3',
     'oauthlib==0.7.2',

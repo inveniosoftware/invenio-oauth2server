@@ -39,6 +39,7 @@ from flask_mail import Mail
 from flask_menu import Menu
 from helpers import create_oauth_client, patch_request
 from invenio_accounts import InvenioAccounts
+from invenio_accounts.models import User
 from invenio_accounts.views import blueprint as accounts_blueprint
 from invenio_db import InvenioDB, db
 from mock import MagicMock
@@ -101,51 +102,62 @@ def models_fixture(app):
                                                   internal=True))
         datastore = app.extensions['security'].datastore
         with db.session.begin_nested():
-            app.test_user = datastore.create_user(
+            test_user = datastore.create_user(
                 email='info@invenio-software.org', password='tester',
             )
-            app.resource_owner = datastore.create_user(
+            resource_owner = datastore.create_user(
                 email='resource_owner@invenio-software.org', password='test'
             )
-            app.consumer = datastore.create_user(
+            consumer = datastore.create_user(
                 email='consumer@invenio-software.org', password='test'
             )
 
             # create resource_owner -> client_1
-            app.u1c1 = Client(client_id='client_test_u1c1',
-                              client_secret='client_test_u1c1',
-                              name='client_test_u1c1',
-                              description='',
-                              is_confidential=False,
-                              user=app.resource_owner,
-                              _redirect_uris='',
-                              _default_scopes=""
-                              )
+            u1c1 = Client(client_id='client_test_u1c1',
+                          client_secret='client_test_u1c1',
+                          name='client_test_u1c1',
+                          description='',
+                          is_confidential=False,
+                          user=resource_owner,
+                          _redirect_uris='',
+                          _default_scopes=""
+                          )
             # create resource_owner -> client_1 / resource_owner -> token_1
-            app.u1c1u1t1 = Token(client=app.u1c1,
-                                 user=app.resource_owner,
-                                 token_type='u',
-                                 access_token='dev_access_1',
-                                 refresh_token='dev_refresh_1',
-                                 expires=None,
-                                 is_personal=False,
-                                 is_internal=False,
-                                 _scopes='',
-                                 )
+
+            u1c1u1t1 = Token(client=u1c1,
+                             user=resource_owner,
+                             token_type='u',
+                             access_token='dev_access_1',
+                             refresh_token='dev_refresh_1',
+                             expires=None,
+                             is_personal=False,
+                             is_internal=False,
+                             _scopes='',
+                             )
+
             # create consumer -> client_1 / resource_owner -> token_2
-            app.u1c1u2t2 = Token(client=app.u1c1,
-                                 user=app.consumer,
-                                 token_type='u',
-                                 access_token='dev_access_2',
-                                 refresh_token='dev_refresh_2',
-                                 expires=None,
-                                 is_personal=False,
-                                 is_internal=False,
-                                 _scopes='',
-                                 )
-            db.session.add(app.u1c1)
-            db.session.add(app.u1c1u1t1)
-            db.session.add(app.u1c1u2t2)
+
+            u1c1u2t2 = Token(client=u1c1,
+                             user=consumer,
+                             token_type='u',
+                             access_token='dev_access_2',
+                             refresh_token='dev_refresh_2',
+                             expires=None,
+                             is_personal=False,
+                             is_internal=False,
+                             _scopes='',
+                             )
+            db.session.add(u1c1)
+            db.session.add(u1c1u1t1)
+            db.session.add(u1c1u2t2)
+        db.session.commit()
+        test_user_id = test_user.get_id()
+        app.test_user = lambda: User.query.get(test_user_id)
+        app.resource_owner_id = resource_owner.get_id()
+        app.consumer_id = consumer.get_id()
+        app.u1c1_id = u1c1.client_id
+        app.u1c1u1t1_id = u1c1u1t1.id
+        app.u1c1u2t2_id = u1c1u2t2.id
     return app
 
 
@@ -163,45 +175,47 @@ def provider_fixture(app):
         with db.session.begin_nested():
             current_oauth2server.register_scope(Scope('test:scope'))
 
-            app.user1 = datastore.create_user(
+            user1 = datastore.create_user(
                 email='info@invenio-software.org', password='tester',
                 active=True,
             )
-            app.user2 = datastore.create_user(
+            user2 = datastore.create_user(
                 email='abuse@invenio-software.org', password='tester2',
                 active=True
             )
 
-            app.c1 = Client(client_id='dev',
-                            client_secret='dev',
-                            name='dev',
-                            description='',
-                            is_confidential=False,
-                            user=app.user1,
-                            _redirect_uris=url_for(
-                                'oauth2test.authorized', _external=True
-                            ),
-                            _default_scopes='test:scope'
-                            )
+            c1 = Client(client_id='dev',
+                        client_secret='dev',
+                        name='dev',
+                        description='',
+                        is_confidential=False,
+                        user=user1,
+                        _redirect_uris=url_for(
+                            'oauth2test.authorized', _external=True
+                        ),
+                        _default_scopes='test:scope'
+                        )
+            c2 = Client(client_id='confidential',
+                        client_secret='confidential',
+                        name='confidential',
+                        description='',
+                        is_confidential=True,
+                        user=user1,
+                        _redirect_uris=url_for(
+                            'oauth2test.authorized', _external=True
+                        ),
+                        _default_scopes='test:scope'
+                        )
+            db.session.add(c1)
+            db.session.add(c2)
+        personal_token = Token.create_personal('test-personal',
+                                               user1.id,
+                                               scopes=[],
+                                               is_internal=True)
+        db.session.commit()
 
-            app.c2 = Client(client_id='confidential',
-                            client_secret='confidential',
-                            name='confidential',
-                            description='',
-                            is_confidential=True,
-                            user=app.user1,
-                            _redirect_uris=url_for(
-                                'oauth2test.authorized', _external=True
-                            ),
-                            _default_scopes='test:scope'
-                            )
-            db.session.add(app.c1)
-            db.session.add(app.c2)
-        app.personal_token = Token.create_personal('test-personal',
-                                                   app.user1.id,
-                                                   scopes=[],
-                                                   is_internal=True)
-
+        app.user1_id = user1.id
+        app.personal_token = personal_token.access_token
     return app
 
 
@@ -267,24 +281,26 @@ def resource_fixture(app):
 
         # Create tokens
         app.token = Token.create_personal(
-            'test-', app.user.id, scopes=['test:testscope'], is_internal=True)
+            'test-', app.user.id, scopes=['test:testscope'], is_internal=True
+            ).access_token
         app.token_noscope = Token.create_personal(
-            'test-', app.user.id, scopes=[], is_internal=True)
+            'test-', app.user.id, scopes=[], is_internal=True).access_token
+        db.session.commit()
 
     with app.test_request_context():
         app.url_for_test1resource = url_for('test1resource')
         app.url_for_test2resource = url_for('test2resource')
         app.url_for_test1resource_token = url_for(
-            'test1resource', access_token=app.token.access_token
+            'test1resource', access_token=app.token
         )
         app.url_for_test2resource_token = url_for(
-            'test2resource', access_token=app.token.access_token
+            'test2resource', access_token=app.token
         )
         app.url_for_test1resource_token_noscope = url_for(
-            'test1resource', access_token=app.token_noscope.access_token
+            'test1resource', access_token=app.token_noscope
         )
         app.url_for_test2resource_token_noscope = url_for(
-            'test2resource', access_token=app.token_noscope.access_token
+            'test2resource', access_token=app.token_noscope
         )
 
     return app
