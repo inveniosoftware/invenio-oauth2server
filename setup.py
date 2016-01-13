@@ -52,11 +52,22 @@ extras_require = {
     'redis': [
         'redis>=2.10.5',
     ],
+    'mysql': [
+        'invenio-db[mysql]>=1.0.0a9',
+    ],
+    'postgresql': [
+        'invenio-db[postgresql]>=1.0.0a9',
+    ],
+    'sqlite': [
+        'invenio-db>=1.0.0a9',
+    ],
     'tests': tests_require,
 }
 
 extras_require['all'] = []
-for reqs in extras_require.values():
+for name, reqs in extras_require.items():
+    if name in ('mysql', 'postgresql', 'sqlite'):
+        continue
     extras_require['all'].extend(reqs)
 
 setup_requires = [
@@ -72,7 +83,6 @@ install_requires = [
     'Flask-WTF>=0.10.2',
     'Flask>=0.10.1',
     'Invenio-Accounts>=1.0.0a6',
-    'Invenio-DB>=1.0.0a9',
     'SQLAlchemy-Utils[encrypted]>=0.31.0',
     'WTForms-Alchemy>=0.13.3',
     'oauthlib==0.7.2',

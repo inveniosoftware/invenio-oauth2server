@@ -32,6 +32,7 @@ from flask_babelex import lazy_gettext as _
 from flask_login import current_user
 from invenio_accounts.models import User
 from invenio_db import db
+from sqlalchemy.schema import Index
 from sqlalchemy_utils.types import URLType
 from sqlalchemy_utils.types.encrypted import AesEngine, EncryptedType
 from werkzeug.security import gen_salt
@@ -64,7 +65,7 @@ class NoneAesEngine(AesEngine):
 class String255EncryptedType(EncryptedType):
     """String encrypted type."""
 
-    impl = db.String(255)
+    impl = db.Binary
 
 
 class OAuthUserProxy(object):
@@ -293,7 +294,17 @@ class Client(db.Model):
 class Token(db.Model):
     """A bearer token is the final token that can be used by the client."""
 
-    __tablename__ = 'oauth2TOKEN'
+    __tablename__ = 'oauth2server_token'
+    __table_args__ = (
+        Index('ix_oauth2server_token_access_token',
+              'access_token',
+              unique=True,
+              mysql_length=255),
+        Index('ix_oauth2server_token_refresh_token',
+              'refresh_token',
+              unique=True,
+              mysql_length=255),
+    )
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     """Object ID."""
@@ -329,17 +340,20 @@ class Token(db.Model):
     token_type = db.Column(db.String(255), default='bearer')
     """Token type - only bearer is supported at the moment."""
 
-    access_token = db.Column(String255EncryptedType(
-        type_in=db.String(255),
-        key=secret_key),
-        unique=True
+    access_token = db.Column(
+        String255EncryptedType(
+            type_in=db.String(255),
+            key=secret_key,
+        ),
     )
 
-    refresh_token = db.Column(String255EncryptedType(
-        type_in=db.String(255),
-        key=secret_key,
-        engine=NoneAesEngine),
-        unique=True, nullable=True
+    refresh_token = db.Column(
+        String255EncryptedType(
+            type_in=db.String(255),
+            key=secret_key,
+            engine=NoneAesEngine,
+        ),
+        nullable=True,
     )
 
     expires = db.Column(db.DateTime, nullable=True)

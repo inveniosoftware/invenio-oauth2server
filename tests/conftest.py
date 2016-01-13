@@ -28,6 +28,8 @@
 from __future__ import absolute_import, print_function
 
 import os
+import shutil
+import tempfile
 
 import pytest
 from flask import Flask, url_for
@@ -43,6 +45,8 @@ from invenio_accounts.models import User
 from invenio_accounts.views import blueprint as accounts_blueprint
 from invenio_db import InvenioDB, db
 from mock import MagicMock
+from sqlalchemy_utils.functions import create_database, database_exists, \
+    drop_database
 
 from invenio_oauth2server import InvenioOAuth2Server
 from invenio_oauth2server.decorators import require_api_auth, \
@@ -54,6 +58,7 @@ from invenio_oauth2server.views import server_blueprint, settings_blueprint
 @pytest.fixture()
 def app(request):
     """Flask application fixture."""
+    instance_path = tempfile.mkdtemp()
     app = Flask('testapp')
     app.config.update(
         TESTING=True,
@@ -81,11 +86,16 @@ def app(request):
     app.register_blueprint(settings_blueprint)
 
     with app.app_context():
+        if str(db.engine.url) != 'sqlite://' and \
+           not database_exists(str(db.engine.url)):
+                create_database(str(db.engine.url))
         db.create_all()
 
     def teardown():
         with app.app_context():
-            db.drop_all()
+            if str(db.engine.url) != 'sqlite://':
+                drop_database(str(db.engine.url))
+            shutil.rmtree(instance_path)
 
     request.addfinalizer(teardown)
     return app

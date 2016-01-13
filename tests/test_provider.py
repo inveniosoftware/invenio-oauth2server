@@ -544,7 +544,7 @@ def test_settings_index(provider_fixture):
                     name='Test',
                     description='Test description',
                     website='http://invenio-software.org',
-                    is_confidential=1,
+                    is_confidential=True,
                     redirect_uris="http://localhost/oauth/authorized/"
                 )
             )
@@ -557,7 +557,7 @@ def test_settings_index(provider_fixture):
                     name='Test',
                     description='Test description',
                     website='http://invenio-software.org',
-                    is_confidential=1,
+                    is_confidential=True,
                     redirect_uris="http://example.org/oauth/authorized/"
                 )
             )
@@ -570,7 +570,7 @@ def test_settings_index(provider_fixture):
                     name='Test',
                     description='Test description',
                     website='http://invenio-software.org',
-                    is_confidential=1,
+                    is_confidential=True,
                     redirect_uris="https://example.org/oauth/authorized/\n"
                                   "http://localhost:4000/oauth/authorized/"
                 )
