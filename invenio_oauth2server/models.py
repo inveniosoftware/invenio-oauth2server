@@ -136,7 +136,7 @@ class Client(db.Model):
         validate_scopes: A function to validate scopes
     """
 
-    __tablename__ = 'oauth2CLIENT'
+    __tablename__ = 'oauth2server_client'
 
     name = db.Column(
         db.String(40),
