@@ -62,12 +62,6 @@ class NoneAesEngine(AesEngine):
             return super(NoneAesEngine, self).decrypt(value)
 
 
-class String255EncryptedType(EncryptedType):
-    """String encrypted type."""
-
-    impl = db.Binary
-
-
 class OAuthUserProxy(object):
     """Proxy object to an Invenio User."""
 
@@ -341,14 +335,14 @@ class Token(db.Model):
     """Token type - only bearer is supported at the moment."""
 
     access_token = db.Column(
-        String255EncryptedType(
+        EncryptedType(
             type_in=db.String(255),
             key=secret_key,
         ),
     )
 
     refresh_token = db.Column(
-        String255EncryptedType(
+        EncryptedType(
             type_in=db.String(255),
             key=secret_key,
             engine=NoneAesEngine,
