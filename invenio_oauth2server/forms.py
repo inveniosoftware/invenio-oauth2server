@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2014, 2015 CERN.
+# Copyright (C) 2014, 2015, 2016 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -118,6 +118,8 @@ class ClientFormBase(model_form_factory(Form)):
     """Base class for Client form."""
 
     class Meta:
+        """Metadata class."""
+
         model = Client
         exclude = [
             'client_secret',

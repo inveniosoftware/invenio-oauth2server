@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015 CERN.
+# Copyright (C) 2015, 2016 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -46,7 +46,7 @@ def require_api_auth():
 
         @wraps(f)
         def decorated(*args, **kwargs):
-            """OAuth 2.0 Authentication."""
+            """Require OAuth 2.0 Authentication."""
             resp = f_oauth_required(*args, **kwargs)
             return resp
         return decorated
