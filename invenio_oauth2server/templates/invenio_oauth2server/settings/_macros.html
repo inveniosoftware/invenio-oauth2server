@@ -24,6 +24,9 @@
 #}
 
 {% macro render_field(field, icon="", placeholder='', autofocus=False) %}
+{%- if field.widget.input_type == 'hidden' %}
+  {{ field() }}
+{%- else %}
   <div class="form-group {% if icon %} has-feedback{% endif %}{% if field.errors %} has-error{% endif %}">
     {{ field.label }}
     {%- set extras = dict(autofocus="") if autofocus else dict() %}
@@ -43,4 +46,5 @@
     </div>
     {%- endif %}
   </div>
+{%- endif %}
 {% endmacro %}

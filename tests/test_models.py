@@ -29,7 +29,7 @@ from invenio_accounts.models import User
 from invenio_db import db
 
 from invenio_oauth2server.errors import ScopeDoesNotExists
-from invenio_oauth2server.models import Client, Scope, Token
+from invenio_oauth2server.models import Client, Token
 from invenio_oauth2server.proxies import current_oauth2server
 
 

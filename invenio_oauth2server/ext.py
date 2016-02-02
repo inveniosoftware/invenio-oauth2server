@@ -117,7 +117,7 @@ class InvenioOAuth2Server(object):
                            'invenio_oauth2server/base.html'))
         app.config.setdefault(
             'OAUTH2SERVER_SETTINGS_TEMPLATE',
-            app.config.get('BASE_SETTINGS_TEMPLATE',
+            app.config.get('SETTINGS_TEMPLATE',
                            'invenio_oauth2server/settings/base.html'))
 
         for k in dir(config):
