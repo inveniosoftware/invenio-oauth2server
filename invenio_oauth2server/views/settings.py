@@ -101,7 +101,8 @@ def token_getter(is_personal=True, is_internal=False):
     blueprint, 'settings.applications',
     _('%(icon)s Applications', icon='<i class="fa fa-shield fa-fw"></i>'),
     order=5,
-    active_when=lambda: request.endpoint.startswith("oauth2server_settings.")
+    active_when=lambda: request.endpoint.startswith(
+        "invenio_oauth2server_settings.")
 )
 @register_breadcrumb(
     blueprint, 'breadcrumbs.settings.applications', _('Applications')
