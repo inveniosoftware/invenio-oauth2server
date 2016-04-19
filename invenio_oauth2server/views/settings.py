@@ -212,6 +212,7 @@ def token_new():
         t = Token.create_personal(
             form.data['name'], current_user.get_id(), scopes=form.scopes.data
         )
+        db.session.commit()
         flash('Please copy the personal access token now. You won\'t see it'
               ' again!', category='info')
         session['show_personal_access_token'] = True
