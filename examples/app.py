@@ -23,14 +23,41 @@
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
 
-"""Minimal Flask application example for development.
+r"""Minimal Flask application example for development.
 
 Run example development server:
 
 .. code-block:: console
 
+   $ pip install -e .[all]
    $ cd examples
-   $ python app.py
+   $ pip install -r requirements.txt --src=/src
+   $ flask -a app.py db init
+   $ flask -a app.py db create
+   $ flask -a app.py fixtures users
+
+Open the admin page to generate a token:
+
+.. code-block:: console
+
+   $ open http://0.0.0.0:5000/account/settings/applications
+
+Make a login with:
+
+    username: admin@invenio-software.org
+    password: 123456
+
+Click on "New token" and compile the form:
+insert the name "foobar", check scope "test:scope" and click "create".
+The server will show you the generated Access Token.
+
+Make a request to test the token:
+
+.. code-block:: console
+
+    curl -i -X GET -H "Content-Type:application/json" http://0.0.0.0:5000/ \
+        -H 'Authorization:Bearer oZ754OMPjhLUXlsRtLc1f9wonfWjsWjMI4ln8lC4mOJ\
+        UvrxG18hjoNctAtyu'
 """
 
 from __future__ import absolute_import, print_function
@@ -42,12 +69,18 @@ from flask_babelex import Babel
 from flask_cli import FlaskCLI
 from flask_mail import Mail
 from flask_menu import Menu
+from flask_breadcrumbs import Breadcrumbs
+from flask_oauthlib.provider import OAuth2Provider
+
 from invenio_accounts import InvenioAccounts
 from invenio_accounts.views import blueprint as accounts_blueprint
 from invenio_db import InvenioDB, db
+from invenio_admin import InvenioAdmin
 
-from invenio_oauth2server import InvenioOAuth2Server
+from invenio_oauth2server import InvenioOAuth2Server, current_oauth2server, \
+    require_oauth_scopes, require_api_auth
 from invenio_oauth2server.views import server_blueprint, settings_blueprint
+from invenio_oauth2server.models import Scope
 
 # Create Flask application
 app = Flask(__name__)
@@ -58,9 +91,11 @@ app.config.update(
     CELERY_RESULT_BACKEND="cache",
     OAUTH2SERVER_CACHE_TYPE='simple',
     OAUTHLIB_INSECURE_TRANSPORT=True,
+    TESTING=True,
     SECRET_KEY='test_key',
     SECURITY_PASSWORD_HASH='plaintext',
     SECURITY_PASSWORD_SCHEMES=['plaintext'],
+    LOGIN_DISABLED=False,
     SQLALCHEMY_TRACK_MODIFICATIONS=True,
     SQLALCHEMY_DATABASE_URI=os.getenv('SQLALCHEMY_DATABASE_URI',
                                       'sqlite:///example.db'),
@@ -69,14 +104,31 @@ FlaskCLI(app)
 Babel(app)
 Mail(app)
 Menu(app)
+Breadcrumbs(app)
 InvenioDB(app)
+InvenioAdmin(app)
+OAuth2Provider(app)
 
 accounts = InvenioAccounts(app)
 app.register_blueprint(accounts_blueprint)
 
 InvenioOAuth2Server(app)
+
+# register blueprints
 app.register_blueprint(settings_blueprint)
 app.register_blueprint(server_blueprint)
+
+with app.app_context():
+    # Register a test scope
+    current_oauth2server.register_scope(Scope('test:scope'))
+
+
+@app.route('/', methods=['GET'])
+@require_api_auth()
+@require_oauth_scopes('test:scope')
+def example():
+    """Index."""
+    return "hello world"
 
 
 @app.cli.group()

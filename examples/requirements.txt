@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015 CERN.
+# Copyright (C) 2016 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -22,19 +22,4 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Invenio module that implements OAuth 2 server."""
-
-from __future__ import absolute_import, print_function
-
-from .ext import InvenioOAuth2Server
-from .proxies import current_oauth2server
-from .version import __version__
-from .decorators import require_api_auth, require_oauth_scopes
-
-__all__ = (
-    '__version__',
-    'InvenioOAuth2Server',
-    'require_api_auth',
-    'require_oauth_scopes',
-    'current_oauth2server'
-)
+-e git+git://github.com/inveniosoftware/invenio-admin.git#egg=invenio-admin
