@@ -57,7 +57,15 @@ Make a request to test the token:
 
     TOKEN=<generated Access Token>
     curl -i -X GET -H "Content-Type:application/json" http://0.0.0.0:5000/ \
-        -H 'Authorization:Bearer $TOKEN
+        -H 'Authorization:Bearer $TOKEN'
+
+Or, if you are logged in through the browser, try to open the homepage with it:
+
+
+.. code-block:: console
+
+   $ open http://0.0.0.0:5000/
+
 """
 
 from __future__ import absolute_import, print_function

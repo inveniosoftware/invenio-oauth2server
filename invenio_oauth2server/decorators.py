@@ -27,6 +27,7 @@
 from functools import wraps
 
 from flask import abort, request
+from flask_security import current_user
 
 from .provider import oauth2
 
@@ -47,8 +48,12 @@ def require_api_auth():
         @wraps(f)
         def decorated(*args, **kwargs):
             """Require OAuth 2.0 Authentication."""
-            resp = f_oauth_required(*args, **kwargs)
-            return resp
+            if current_user.is_authenticated:
+                # fully logged in with normal session
+                return f(*args, **kwargs)
+            else:
+                # otherwise, try oauth2
+                return f_oauth_required(*args, **kwargs)
         return decorated
     return wrapper
 
