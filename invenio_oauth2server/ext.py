@@ -91,7 +91,7 @@ class _OAuth2ServerState(object):
     def load_entry_point_group(self, entry_point_group):
         """Load actions from an entry point group."""
         for ep in pkg_resources.iter_entry_points(group=entry_point_group):
-            self.register_scope(ep.load())
+            self.register_scope(ep.load()())
 
 
 class InvenioOAuth2Server(object):
