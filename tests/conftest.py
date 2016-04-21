@@ -39,6 +39,7 @@ from flask_breadcrumbs import Breadcrumbs
 from flask_cli import FlaskCLI
 from flask_mail import Mail
 from flask_menu import Menu
+from flask_security import login_required
 from helpers import create_oauth_client, patch_request
 from invenio_accounts import InvenioAccounts
 from invenio_accounts.models import User
@@ -204,7 +205,7 @@ def provider_fixture(app):
                 email='info@invenio-software.org', password='tester',
                 active=True,
             )
-            user2 = datastore.create_user(
+            datastore.create_user(
                 email='abuse@invenio-software.org', password='tester2',
                 active=True
             )
@@ -289,6 +290,12 @@ def resource_fixture(app):
             assert request.oauth.access_token
             return "success", 200
 
+    class Test3Resource(MethodView):
+
+        @login_required
+        def post(self):
+            return "success", 200
+
     # Register API resources
     app.add_url_rule(
         '/api/test1/decoratorstestcase/',
@@ -297,6 +304,10 @@ def resource_fixture(app):
     app.add_url_rule(
         '/api/test2/decoratorstestcase/',
         view_func=Test2Resource.as_view('test2resource'),
+    )
+    app.add_url_rule(
+        '/api/test3/loginrequiredstestcase/',
+        view_func=Test3Resource.as_view('test3resource'),
     )
 
     datastore = app.extensions['security'].datastore
@@ -324,6 +335,7 @@ def resource_fixture(app):
     with app.test_request_context():
         app.url_for_test1resource = url_for('test1resource')
         app.url_for_test2resource = url_for('test2resource')
+        app.url_for_test3resource = url_for('test3resource')
         app.url_for_test1resource_token = url_for(
             'test1resource', access_token=app.token
         )

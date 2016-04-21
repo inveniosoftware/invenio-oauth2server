@@ -24,14 +24,18 @@
 
 """OAuth2Server decorators test cases."""
 
+from flask_security import url_for_security
+
 
 def test_require_api_auth_test1(resource_fixture):
     app = resource_fixture
     with app.test_client() as client:
         res = client.get(app.url_for_test1resource)
         assert 401 == res.status_code
+        assert 'Set-Cookie' not in res.headers
         res = client.get(app.url_for_test1resource_token)
         assert 200 == res.status_code
+        assert 'Set-Cookie' not in res.headers
 
 
 def test_require_api_auth_test2(resource_fixture):
@@ -39,8 +43,10 @@ def test_require_api_auth_test2(resource_fixture):
     with app.test_client() as client:
         res = client.get(app.url_for_test2resource)
         assert 401 == res.status_code
+        assert 'Set-Cookie' not in res.headers
         res = client.get(app.url_for_test2resource_token)
         assert 200 == res.status_code
+        assert 'Set-Cookie' not in res.headers
 
 
 def test_require_oauth_scopes_test1(resource_fixture):
@@ -48,8 +54,10 @@ def test_require_oauth_scopes_test1(resource_fixture):
     with app.test_client() as client:
         res = client.post(app.url_for_test1resource_token)
         assert 200 == res.status_code
+        assert 'Set-Cookie' not in res.headers
         res = client.post(app.url_for_test1resource_token_noscope)
         assert 403 == res.status_code
+        assert 'Set-Cookie' not in res.headers
 
 
 def test_require_oauth_scopes_test2(resource_fixture):
@@ -57,5 +65,44 @@ def test_require_oauth_scopes_test2(resource_fixture):
     with app.test_client() as client:
         res = client.post(app.url_for_test2resource_token)
         assert 200 == res.status_code
+        assert 'Set-Cookie' not in res.headers
         res = client.post(app.url_for_test2resource_token_noscope)
         assert 403 == res.status_code
+        assert 'Set-Cookie' not in res.headers
+
+
+def test_access_login_required(resource_fixture):
+    app = resource_fixture
+    with app.test_client() as client:
+        # try to access to login_required zone (and redirected to login)
+        res = client.post(app.url_for_test3resource)
+        assert 302 == res.status_code
+        assert 'Set-Cookie' in res.headers
+        assert res.headers[
+            'Location'].startswith('http://localhost/login/?next=')
+        # try to access a scope protected zone (and pass)
+        res = client.post(app.url_for_test2resource_token)
+        assert 200 == res.status_code
+        # try to access to login_required zone (and redirected to login)
+        res = client.post(app.url_for_test3resource)
+        assert 302 == res.status_code
+        assert 'Set-Cookie' in res.headers
+        # try to access a scope protected zone (and fail)
+        assert res.headers[
+            'Location'].startswith('http://localhost/login/?next=')
+        res = client.post(app.url_for_test2resource_token_noscope)
+        assert 403 == res.status_code
+        # try to access to login_required zone (and redirected to login)
+        res = client.post(app.url_for_test3resource)
+        assert 302 == res.status_code
+        assert 'Set-Cookie' in res.headers
+        # login
+        res = client.post(url_for_security('login'), data=dict(
+            email="info@invenio-software.org",
+            password="tester"
+        ))
+        assert 'Set-Cookie' in res.headers
+        # try to access to login_required zone (and pass)
+        res = client.post(app.url_for_test3resource)
+        assert 200 == res.status_code
+        assert 'Set-Cookie' not in res.headers
