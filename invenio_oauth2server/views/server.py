@@ -28,11 +28,11 @@ from __future__ import absolute_import, print_function
 
 from functools import wraps
 
-from flask import Blueprint, abort, current_app, jsonify, redirect, \
-    render_template, request
+from flask import Blueprint, _request_ctx_stack, abort, current_app, jsonify, \
+    redirect, render_template, request
 from flask_babelex import lazy_gettext as _
 from flask_breadcrumbs import register_breadcrumb
-from flask_security import login_required, login_user
+from flask_security import login_required
 from oauthlib.oauth2.rfc6749.errors import OAuth2Error
 from werkzeug.urls import url_encode
 
@@ -53,7 +53,7 @@ blueprint = Blueprint(
 def login_oauth2_user(valid, oauth):
     """Log in a user after having been verified."""
     if valid:
-        login_user(oauth.user)
+        _request_ctx_stack.top.user = oauth.user
 
     return valid, oauth
 

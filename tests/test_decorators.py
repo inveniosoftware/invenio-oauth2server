@@ -48,7 +48,6 @@ def test_require_oauth_scopes_test1(resource_fixture):
     with app.test_client() as client:
         res = client.post(app.url_for_test1resource_token)
         assert 200 == res.status_code
-    with app.test_client() as client:
         res = client.post(app.url_for_test1resource_token_noscope)
         assert 403 == res.status_code
 
@@ -58,6 +57,5 @@ def test_require_oauth_scopes_test2(resource_fixture):
     with app.test_client() as client:
         res = client.post(app.url_for_test2resource_token)
         assert 200 == res.status_code
-    with app.test_client() as client:
         res = client.post(app.url_for_test2resource_token_noscope)
         assert 403 == res.status_code
