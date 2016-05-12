@@ -24,10 +24,13 @@
 
 """Useful decorators for checking authentication and scopes."""
 
+import sys
 from functools import wraps
 
 from flask import abort, request
 from flask_security import current_user
+from six import reraise
+from werkzeug.exceptions import Unauthorized
 
 from .provider import oauth2
 
@@ -35,11 +38,11 @@ from .provider import oauth2
 #
 # Decorators
 #
-def require_api_auth():
-    """Decorator to require API authentication using either API key or OAuth.
+def require_api_auth(allow_anonymous=False):
+    """Decorator to require API authentication using OAuth token.
 
-    Note, API key usage will be deprecated. Personal OAuth access tokens
-    provide the same features as API keys.
+    :param allow_anonymous: Allow access without OAuth token
+        (default: ``False``).
     """
     def wrapper(f):
         """Wrap function with oauth require decorator."""
@@ -53,7 +56,12 @@ def require_api_auth():
                 return f(*args, **kwargs)
             else:
                 # otherwise, try oauth2
-                return f_oauth_required(*args, **kwargs)
+                try:
+                    return f_oauth_required(*args, **kwargs)
+                except Unauthorized:
+                    if allow_anonymous:
+                        return f(*args, **kwargs)
+                    reraise(*sys.exc_info())
         return decorated
     return wrapper
 

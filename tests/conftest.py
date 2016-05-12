@@ -296,6 +296,13 @@ def resource_fixture(app):
         def post(self):
             return "success", 200
 
+    class Test4Resource(MethodView):
+
+        @require_api_auth(allow_anonymous=True)
+        def get(self):
+            from flask_login import current_user
+            return str(current_user.get_id()), 200
+
     # Register API resources
     app.add_url_rule(
         '/api/test1/decoratorstestcase/',
@@ -308,6 +315,10 @@ def resource_fixture(app):
     app.add_url_rule(
         '/api/test3/loginrequiredstestcase/',
         view_func=Test3Resource.as_view('test3resource'),
+    )
+    app.add_url_rule(
+        '/api/test4/allowanonymous/',
+        view_func=Test4Resource.as_view('test4resource'),
     )
 
     datastore = app.extensions['security'].datastore
@@ -325,6 +336,7 @@ def resource_fixture(app):
             )
 
         # Create tokens
+        app.user_id = app.user.id
         app.token = Token.create_personal(
             'test-', app.user.id, scopes=['test:testscope'], is_internal=True
             ).access_token
@@ -336,6 +348,7 @@ def resource_fixture(app):
         app.url_for_test1resource = url_for('test1resource')
         app.url_for_test2resource = url_for('test2resource')
         app.url_for_test3resource = url_for('test3resource')
+        app.url_for_test4resource = url_for('test4resource')
         app.url_for_test1resource_token = url_for(
             'test1resource', access_token=app.token
         )
@@ -347,6 +360,9 @@ def resource_fixture(app):
         )
         app.url_for_test2resource_token_noscope = url_for(
             'test2resource', access_token=app.token_noscope
+        )
+        app.url_for_test4resource_token = url_for(
+            'test4resource', access_token=app.token
         )
 
     return app

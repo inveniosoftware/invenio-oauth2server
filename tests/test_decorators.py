@@ -71,6 +71,20 @@ def test_require_oauth_scopes_test2(resource_fixture):
         assert 'Set-Cookie' not in res.headers
 
 
+def test_require_oauth_scopes_allow_anonymous(resource_fixture):
+    app = resource_fixture
+    with app.test_client() as client:
+        res = client.get(app.url_for_test4resource)
+        assert 200 == res.status_code
+        assert b'None' == res.data
+        assert 'Set-Cookie' not in res.headers
+
+        res = client.get(app.url_for_test4resource_token)
+        assert 200 == res.status_code
+        assert u'{0}'.format(app.user_id).encode('utf-8') == res.data
+        assert 'Set-Cookie' not in res.headers
+
+
 def test_access_login_required(resource_fixture):
     app = resource_fixture
     with app.test_client() as client:
