@@ -29,7 +29,8 @@ from __future__ import absolute_import, print_function
 
 from flask import Flask
 
-from invenio_oauth2server import InvenioOAuth2Server
+from invenio_oauth2server import InvenioOAuth2Server, InvenioOAuth2ServerREST
+from invenio_oauth2server.ext import verify_oauth_token_and_set_current_user
 
 
 def test_version():
@@ -49,3 +50,19 @@ def test_init():
     assert 'invenio-oauth2server' not in app.extensions
     ext.init_app(app)
     assert 'invenio-oauth2server' in app.extensions
+
+
+def test_init_rest():
+    """Test REST extension initialization."""
+    app = Flask('testapp')
+    ext = InvenioOAuth2ServerREST(app)
+    assert verify_oauth_token_and_set_current_user in \
+        app.before_request_funcs[None]
+
+    app = Flask('testapp')
+    ext = InvenioOAuth2ServerREST()
+    assert verify_oauth_token_and_set_current_user not in \
+        app.before_request_funcs.get(None, [])
+    ext.init_app(app)
+    assert verify_oauth_token_and_set_current_user in \
+        app.before_request_funcs[None]

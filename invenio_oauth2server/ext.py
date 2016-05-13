@@ -30,6 +30,7 @@ import os
 from warnings import warn
 
 import pkg_resources
+from flask import request
 from flask_oauthlib.contrib.oauth2 import bind_cache_grant, bind_sqlalchemy
 from flask_security import current_user
 from invenio_db import db
@@ -123,3 +124,40 @@ class InvenioOAuth2Server(object):
         for k in dir(config):
             if k.startswith('OAUTH2SERVER_') or k.startswith('OAUTH2_'):
                 app.config.setdefault(k, getattr(config, k))
+
+
+def verify_oauth_token_and_set_current_user():
+    """Verify OAuth token and set current user on request stack.
+
+    This function should be used **only** on REST application.
+
+    .. code-block:: python
+
+        app.before_request(verify_oauth_token_and_set_current_user)
+    """
+    from flask_oauthlib.utils import extract_params
+    from .views.server import login_oauth2_user
+
+    if not hasattr(request, 'oauth') or not request.oauth:
+        scopes = []
+        # FIXME Replace by oauth2.verify_request() when using
+        #       Flask-OAuthlib>=0.8.0
+        # valid, req = oauth2.verify_request(scopes)
+        uri, http_method, body, headers = extract_params()
+        valid, req = oauth2.server.verify_request(
+            uri, http_method, body, headers, scopes
+        )
+        login_oauth2_user(valid, req)
+
+
+class InvenioOAuth2ServerREST(object):
+    """Invenio-OAuth2Server REST extension."""
+
+    def __init__(self, app=None, **kwargs):
+        """Extension initialization."""
+        if app:
+            self.init_app(app, **kwargs)
+
+    def init_app(self, app, **kwargs):
+        """Flask application initialization."""
+        app.before_request(verify_oauth_token_and_set_current_user)

@@ -303,6 +303,10 @@ def resource_fixture(app):
             from flask_login import current_user
             return str(current_user.get_id()), 200
 
+        def post(self):
+            from flask_login import current_user
+            return str(current_user.get_id()), 200
+
     # Register API resources
     app.add_url_rule(
         '/api/test1/decoratorstestcase/',

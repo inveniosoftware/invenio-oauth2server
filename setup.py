@@ -151,6 +151,8 @@ setup(
         ],
         'invenio_base.api_apps': [
             'invenio_oauth2server = invenio_oauth2server:InvenioOAuth2Server',
+            'invenio_oauth2server_rest ='
+            ' invenio_oauth2server:InvenioOAuth2ServerREST',
         ],
         'invenio_base.blueprints': [
             'invenio_oauth2server ='
