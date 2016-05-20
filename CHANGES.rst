@@ -24,7 +24,7 @@
 Changes
 =======
 
-Version 1.0.0a3 (released 2016-05-12)
+Version 1.0.0a5 (released 2016-05-20)
 -------------------------------------
 
 - Refactores package.
