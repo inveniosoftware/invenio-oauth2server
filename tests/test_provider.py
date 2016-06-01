@@ -510,9 +510,22 @@ def test_resource_auth_methods(provider_fixture):
                 headers=[
                     ("Authorization",
                      "Bearer {0}".format(app.personal_token))]
-                )
+            )
             assert r.status_code == 200
             assert json.loads(r.get_data()) == dict(ping='pong')
+
+
+def test_oauthlib_urldecoding_issue(provider_fixture):
+    app = provider_fixture
+    with app.test_request_context():
+        with app.test_client() as client:
+            # Query string with colon in value
+            for v in ['ping', 'info']:
+                assert client.get(
+                    url_for('invenio_oauth2server.{0}'.format(v)),
+                    query_string="access_token={0}&q=title:TEST".format(
+                        app.personal_token)
+                ).status_code in [200, 401]
 
 
 def test_settings_index(provider_fixture):

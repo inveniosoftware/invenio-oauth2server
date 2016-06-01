@@ -34,11 +34,11 @@ from flask_babelex import lazy_gettext as _
 from flask_breadcrumbs import register_breadcrumb
 from flask_security import login_required
 from oauthlib.oauth2.rfc6749.errors import OAuth2Error
-from werkzeug.urls import url_encode
 
 from ..models import Client
 from ..provider import oauth2
 from ..proxies import current_oauth2server
+from ..utils import urlreencode
 
 blueprint = Blueprint(
     'invenio_oauth2server',
@@ -72,21 +72,6 @@ def error_handler(f):
                 return redirect(e.in_uri(e.redirect_uri))
             else:
                 return redirect(e.in_uri(oauth2.error_uri))
-    return decorated
-
-
-def urlreencode(f):
-    """Re-encode query string.
-
-    OAuthLib's URL decoding is very strict and very often chokes on
-    common user mistakes like not encoding colons, hence let Flask decode the
-    request args and reencode them.
-    """
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        if request.args:
-            request.url = request.base_url + "?" + url_encode(request.args)
-        return f(*args, **kwargs)
     return decorated
 
 
@@ -144,6 +129,7 @@ def errors():
 
 
 @blueprint.route('/ping', methods=['GET', 'POST'])
+@urlreencode
 @oauth2.require_oauth()
 def ping():
     """Test to verify that you have been authenticated."""
@@ -151,6 +137,7 @@ def ping():
 
 
 @blueprint.route('/info')
+@urlreencode
 @oauth2.require_oauth('test:scope')
 def info():
     """Test to verify that you have been authenticated."""
@@ -165,6 +152,7 @@ def info():
 
 
 @blueprint.route('/invalid')
+@urlreencode
 @oauth2.require_oauth('invalid_scope')
 def invalid():
     """Test to verify that you have been authenticated."""

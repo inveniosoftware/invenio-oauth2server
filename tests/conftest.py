@@ -73,6 +73,7 @@ def app(request):
         OAUTH2_CACHE_TYPE='simple',
         SECURITY_PASSWORD_HASH='plaintext',
         SECURITY_PASSWORD_SCHEMES=['plaintext'],
+        SECURITY_DEPRECATED_PASSWORD_SCHEMES=[],
     )
     FlaskCLI(app)
     Babel(app)
@@ -343,7 +344,7 @@ def resource_fixture(app):
         app.user_id = app.user.id
         app.token = Token.create_personal(
             'test-', app.user.id, scopes=['test:testscope'], is_internal=True
-            ).access_token
+        ).access_token
         app.token_noscope = Token.create_personal(
             'test-', app.user.id, scopes=[], is_internal=True).access_token
         db.session.commit()

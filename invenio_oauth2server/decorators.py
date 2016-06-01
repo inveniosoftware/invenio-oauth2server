@@ -33,6 +33,7 @@ from six import reraise
 from werkzeug.exceptions import Unauthorized
 
 from .provider import oauth2
+from .utils import request_urlreencode
 
 
 #
@@ -57,6 +58,7 @@ def require_api_auth(allow_anonymous=False):
             else:
                 # otherwise, try oauth2
                 try:
+                    request_urlreencode()
                     return f_oauth_required(*args, **kwargs)
                 except Unauthorized:
                     if allow_anonymous:

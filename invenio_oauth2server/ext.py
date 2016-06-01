@@ -27,7 +27,6 @@
 from __future__ import absolute_import, print_function
 
 import os
-from warnings import warn
 
 import pkg_resources
 from flask import request
@@ -38,6 +37,7 @@ from invenio_db import db
 from . import config
 from .models import Client, OAuthUserProxy, Scope
 from .provider import oauth2
+from .utils import request_urlreencode
 
 
 class _OAuth2ServerState(object):
@@ -143,6 +143,7 @@ def verify_oauth_token_and_set_current_user():
         # FIXME Replace by oauth2.verify_request() when using
         #       Flask-OAuthlib>=0.8.0
         # valid, req = oauth2.verify_request(scopes)
+        request_urlreencode()
         uri, http_method, body, headers = extract_params()
         valid, req = oauth2.server.verify_request(
             uri, http_method, body, headers, scopes

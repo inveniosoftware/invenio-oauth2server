@@ -27,6 +27,13 @@
 from flask_security import url_for_security
 
 
+def test_require_api_auth_oauthlib_urldecode_issue(resource_fixture):
+    app = resource_fixture
+    with app.test_client() as client:
+        res = client.get(app.url_for_test1resource, query_string='q=k:v')
+        assert 401 == res.status_code
+
+
 def test_require_api_auth_test1(resource_fixture):
     app = resource_fixture
     with app.test_client() as client:
