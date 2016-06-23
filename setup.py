@@ -78,14 +78,13 @@ install_requires = [
     'Flask-BabelEx>=0.9.2',
     'Flask-Breadcrumbs>=0.3.0',
     'Flask-Login>=0.3.0',
-    'Flask-OAuthlib>=0.6.0,<0.7',
+    'Flask-OAuthlib>=0.9.3',
     'Flask-Security>=1.7.5',
     'Flask-WTF>=0.10.2',
     'Flask>=0.10.1',
     'invenio-accounts>=1.0.0a10',
     'SQLAlchemy-Utils[encrypted]>=0.31.0',
     'WTForms-Alchemy>=0.15.0',
-    'oauthlib==0.7.2',
     'six>=1.7.2',
 ]
 

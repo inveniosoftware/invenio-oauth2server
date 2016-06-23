@@ -28,12 +28,13 @@ from __future__ import absolute_import, print_function
 
 from functools import wraps
 
-from flask import Blueprint, _request_ctx_stack, abort, current_app, jsonify, \
-    redirect, render_template, request
+from flask import Blueprint, Response, _request_ctx_stack, abort, \
+    current_app, jsonify, redirect, render_template, request
 from flask_babelex import lazy_gettext as _
 from flask_breadcrumbs import register_breadcrumb
 from flask_security import login_required
-from oauthlib.oauth2.rfc6749.errors import OAuth2Error
+from oauthlib.oauth2.rfc6749.errors import InvalidClientError, OAuth2Error
+from werkzeug.urls import url_encode
 
 from ..models import Client
 from ..provider import oauth2
@@ -110,6 +111,20 @@ def authorize(*args, **kwargs):
 @oauth2.token_handler
 def access_token():
     """Token view handles exchange/refresh access tokens."""
+    client = Client.query.filter_by(
+        client_id=request.form.get('client_id')
+    ).first()
+
+    if not client:
+        abort(404)
+
+    if not client.is_confidential and \
+            'client_credentials' == request.form.get('grant_type'):
+        error = InvalidClientError()
+        response = jsonify(dict(error.twotuples))
+        response.status_code = error.status_code
+        abort(response)
+
     # Return None or a dictionary. Dictionary will be merged with token
     # returned to the client requesting the access token.
     # Response is in application/json

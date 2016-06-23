@@ -62,18 +62,18 @@ def app(request):
     instance_path = tempfile.mkdtemp()
     app = Flask('testapp')
     app.config.update(
-        TESTING=True,
         LOGIN_DISABLED=False,
+        OAUTH2_CACHE_TYPE='simple',
+        OAUTHLIB_INSECURE_TRANSPORT=True,
         SECRET_KEY='test_key',
+        SECURITY_DEPRECATED_PASSWORD_SCHEMES=[],
+        SECURITY_PASSWORD_HASH='plaintext',
+        SECURITY_PASSWORD_SCHEMES=['plaintext'],
         SQLALCHEMY_TRACK_MODIFICATIONS=True,
         SQLALCHEMY_DATABASE_URI=os.getenv('SQLALCHEMY_DATABASE_URI',
                                           'sqlite://'),
+        TESTING=True,
         WTF_CSRF_ENABLED=False,
-        OAUTHLIB_INSECURE_TRANSPORT=True,
-        OAUTH2_CACHE_TYPE='simple',
-        SECURITY_PASSWORD_HASH='plaintext',
-        SECURITY_PASSWORD_SCHEMES=['plaintext'],
-        SECURITY_DEPRECATED_PASSWORD_SCHEMES=[],
     )
     FlaskCLI(app)
     Babel(app)

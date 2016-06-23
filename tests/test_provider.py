@@ -107,7 +107,7 @@ def test_invalid_authorize_requests(provider_fixture):
                 ))
                 assert r.status_code == 302
                 next_url, data = parse_redirect(r.location)
-                assert data['error'] == 'unauthorized_client'
+                assert data['error'] == 'unsupported_response_type'
                 assert next_url == redirect_uri
 
                 # Missing response_type
@@ -133,7 +133,7 @@ def test_invalid_authorize_requests(provider_fixture):
                 assert r.status_code == 302
                 next_url, data = parse_redirect(r.location)
                 assert data['error'] == 'invalid_request'
-                assert next_url == redirect_uri
+                assert next_url == error_url
 
                 # Invalid client_id
                 r = client.get(url_for(
@@ -145,11 +145,11 @@ def test_invalid_authorize_requests(provider_fixture):
                 ))
                 assert r.status_code == 302
                 next_url, data = parse_redirect(r.location)
-                assert data['error'] == 'invalid_client_id'
+                assert data['error'] == 'invalid_request'
                 assert error_url in next_url
 
                 r = client.get(next_url, query_string=data)
-                assert 'invalid_client_id' in str(r.data)
+                assert 'invalid_request' in str(r.data)
 
                 # Invalid redirect uri
                 r = client.get(url_for(
@@ -161,7 +161,7 @@ def test_invalid_authorize_requests(provider_fixture):
                 ))
                 assert r.status_code == 302
                 next_url, data = parse_redirect(r.location)
-                assert data['error'] == 'mismatching_redirect_uri'
+                assert data['error'] == 'invalid_request'
                 assert error_url in next_url
 
 

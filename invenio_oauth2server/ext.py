@@ -135,19 +135,12 @@ def verify_oauth_token_and_set_current_user():
 
         app.before_request(verify_oauth_token_and_set_current_user)
     """
-    from flask_oauthlib.utils import extract_params
     from .views.server import login_oauth2_user
 
     if not hasattr(request, 'oauth') or not request.oauth:
         scopes = []
-        # FIXME Replace by oauth2.verify_request() when using
-        #       Flask-OAuthlib>=0.8.0
-        # valid, req = oauth2.verify_request(scopes)
         request_urlreencode()
-        uri, http_method, body, headers = extract_params()
-        valid, req = oauth2.server.verify_request(
-            uri, http_method, body, headers, scopes
-        )
+        valid, req = oauth2.verify_request(scopes)
         login_oauth2_user(valid, req)
 
 
