@@ -556,7 +556,7 @@ def test_settings_index(provider_fixture):
                 data=dict(
                     name='Test',
                     description='Test description',
-                    website='http://invenio-software.org',
+                    website='http://inveniosoftware.org',
                     is_confidential=True,
                     redirect_uris="http://localhost/oauth/authorized/"
                 )
@@ -569,7 +569,7 @@ def test_settings_index(provider_fixture):
                 data=dict(
                     name='Test',
                     description='Test description',
-                    website='http://invenio-software.org',
+                    website='http://inveniosoftware.org',
                     is_confidential=True,
                     redirect_uris="http://example.org/oauth/authorized/"
                 )
@@ -582,7 +582,7 @@ def test_settings_index(provider_fixture):
                 data=dict(
                     name='Test',
                     description='Test description',
-                    website='http://invenio-software.org',
+                    website='http://inveniosoftware.org',
                     is_confidential=True,
                     redirect_uris="https://example.org/oauth/authorized/\n"
                                   "http://localhost:4000/oauth/authorized/"

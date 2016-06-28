@@ -139,7 +139,7 @@ setup(
     keywords='invenio OAuth2 server',
     license='GPLv2',
     author='CERN',
-    author_email='info@invenio-software.org',
+    author_email='info@inveniosoftware.org',
     url='https://github.com/inveniosoftware/invenio-oauth2server',
     packages=packages,
     zip_safe=False,

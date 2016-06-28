@@ -44,7 +44,7 @@ Open the admin page to generate a token:
 
 Make a login with:
 
-    username: admin@invenio-software.org
+    username: admin@inveniosoftware.org
     password: 123456
 
 Click on "New token" and compile the form:
@@ -147,12 +147,12 @@ def fixtures():
 def users():
     """Load user fixtures."""
     accounts.datastore.create_user(
-        email='admin@invenio-software.org',
+        email='admin@inveniosoftware.org',
         password='123456',
         active=True,
     )
     accounts.datastore.create_user(
-        email='reader@invenio-software.org',
+        email='reader@inveniosoftware.org',
         password='123456',
         active=True,
     )

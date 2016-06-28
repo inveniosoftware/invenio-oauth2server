@@ -66,7 +66,7 @@ def parse_redirect(location, parse_fragment=False):
     )
 
 
-def login(test_client, email='info@invenio-software.org', password='tester'):
+def login(test_client, email='info@inveniosoftware.org', password='tester'):
     return test_client.post(
         url_for_security('login'),
         data={

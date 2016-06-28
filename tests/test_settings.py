@@ -114,7 +114,7 @@ def test_client_management(settings_fixture):
                 data=dict(
                     name='Test_Client',
                     description='Test description for Test_Client.',
-                    website='http://invenio-software.org/',
+                    website='http://inveniosoftware.org/',
                     redirect_uris=url_for(
                         'invenio_oauth2server_settings.index', _external=True),
                     is_confditential=1
@@ -150,7 +150,7 @@ def test_client_management(settings_fixture):
                 data=dict(
                     name='Test_Client',
                     description='Test description for Test_Client',
-                    website='http://invenio-software.org/',
+                    website='http://inveniosoftware.org/',
                     redirect_uris='https:/invalid',
                 )
             )

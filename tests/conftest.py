@@ -110,7 +110,7 @@ def settings_fixture(app):
     with app.app_context():
         with db.session.begin_nested():
             datastore = app.extensions['security'].datastore
-            datastore.create_user(email='info@invenio-software.org',
+            datastore.create_user(email='info@inveniosoftware.org',
                                   password='tester')
         db.session.commit()
         current_oauth2server.register_scope(Scope('test:scope'))
@@ -130,13 +130,13 @@ def models_fixture(app):
         datastore = app.extensions['security'].datastore
         with db.session.begin_nested():
             test_user = datastore.create_user(
-                email='info@invenio-software.org', password='tester',
+                email='info@inveniosoftware.org', password='tester',
             )
             resource_owner = datastore.create_user(
-                email='resource_owner@invenio-software.org', password='test'
+                email='resource_owner@inveniosoftware.org', password='test'
             )
             consumer = datastore.create_user(
-                email='consumer@invenio-software.org', password='test'
+                email='consumer@inveniosoftware.org', password='test'
             )
 
             # create resource_owner -> client_1
@@ -203,11 +203,11 @@ def provider_fixture(app):
             current_oauth2server.register_scope(Scope('test:scope'))
 
             user1 = datastore.create_user(
-                email='info@invenio-software.org', password='tester',
+                email='info@inveniosoftware.org', password='tester',
                 active=True,
             )
             datastore.create_user(
-                email='abuse@invenio-software.org', password='tester2',
+                email='abuse@inveniosoftware.org', password='tester2',
                 active=True
             )
 
@@ -336,7 +336,7 @@ def resource_fixture(app):
         ))
         with db.session.begin_nested():
             app.user = datastore.create_user(
-                email='info@invenio-software.org', password='tester',
+                email='info@inveniosoftware.org', password='tester',
                 active=True,
             )
 

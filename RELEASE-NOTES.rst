@@ -29,8 +29,8 @@ Documentation
 Happy hacking and thanks for flying Invenio-OAuth2Server.
 
 | Invenio Development Team
-|   Email: info@invenio-software.org
+|   Email: info@inveniosoftware.org
 |   IRC: #invenio on irc.freenode.net
 |   Twitter: http://twitter.com/inveniosoftware
 |   GitHub: https://github.com/inveniosoftware/invenio-oauth2server
-|   URL: http://invenio-software.org
+|   URL: http://inveniosoftware.org

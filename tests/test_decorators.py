@@ -135,7 +135,7 @@ def test_access_login_required(resource_fixture):
         assert 'Set-Cookie' in res.headers
         # login
         res = client.post(url_for_security('login'), data=dict(
-            email="info@invenio-software.org",
+            email="info@inveniosoftware.org",
             password="tester"
         ))
         assert 'Set-Cookie' in res.headers
