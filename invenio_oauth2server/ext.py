@@ -141,6 +141,7 @@ def verify_oauth_token_and_set_current_user():
         scopes = []
         request_urlreencode()
         valid, req = oauth2.verify_request(scopes)
+        request.oauth = req
         login_oauth2_user(valid, req)
 
 
