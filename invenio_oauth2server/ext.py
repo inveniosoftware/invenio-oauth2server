@@ -29,7 +29,7 @@ from __future__ import absolute_import, print_function
 import os
 
 import pkg_resources
-from flask import request
+from flask import abort, request
 from flask_oauthlib.contrib.oauth2 import bind_cache_grant, bind_sqlalchemy
 from flask_security import current_user
 from invenio_db import db
@@ -135,14 +135,19 @@ def verify_oauth_token_and_set_current_user():
 
         app.before_request(verify_oauth_token_and_set_current_user)
     """
-    from .views.server import login_oauth2_user
+    for func in oauth2._before_request_funcs:
+        func()
 
     if not hasattr(request, 'oauth') or not request.oauth:
         scopes = []
         request_urlreencode()
         valid, req = oauth2.verify_request(scopes)
-        request.oauth = req
-        login_oauth2_user(valid, req)
+
+        for func in oauth2._after_request_funcs:
+            valid, req = func(valid, req)
+
+        if valid:
+            request.oauth = req
 
 
 class InvenioOAuth2ServerREST(object):

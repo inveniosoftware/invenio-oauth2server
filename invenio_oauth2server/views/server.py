@@ -28,13 +28,12 @@ from __future__ import absolute_import, print_function
 
 from functools import wraps
 
-from flask import Blueprint, Response, _request_ctx_stack, abort, \
-    current_app, jsonify, redirect, render_template, request
+from flask import Blueprint, _request_ctx_stack, abort, current_app, jsonify, \
+    redirect, render_template, request
 from flask_babelex import lazy_gettext as _
 from flask_breadcrumbs import register_breadcrumb
 from flask_security import login_required
 from oauthlib.oauth2.rfc6749.errors import InvalidClientError, OAuth2Error
-from werkzeug.urls import url_encode
 
 from ..models import Client
 from ..provider import oauth2
