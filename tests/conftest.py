@@ -32,7 +32,7 @@ import shutil
 import tempfile
 
 import pytest
-from flask import Flask, url_for
+from flask import Flask, g, url_for
 from flask.views import MethodView
 from flask_babelex import Babel
 from flask_breadcrumbs import Breadcrumbs
@@ -46,10 +46,12 @@ from invenio_accounts.models import User
 from invenio_accounts.views import blueprint as accounts_blueprint
 from invenio_db import InvenioDB, db
 from mock import MagicMock
+from six import get_method_self
 from sqlalchemy_utils.functions import create_database, database_exists, \
     drop_database
+from werkzeug.wsgi import DispatcherMiddleware
 
-from invenio_oauth2server import InvenioOAuth2Server
+from invenio_oauth2server import InvenioOAuth2Server, InvenioOAuth2ServerREST
 from invenio_oauth2server.decorators import require_api_auth, \
     require_oauth_scopes
 from invenio_oauth2server.models import Client, Scope, Token
@@ -60,32 +62,50 @@ from invenio_oauth2server.views import server_blueprint, settings_blueprint
 def app(request):
     """Flask application fixture."""
     instance_path = tempfile.mkdtemp()
-    app = Flask('testapp')
-    app.config.update(
-        LOGIN_DISABLED=False,
-        OAUTH2_CACHE_TYPE='simple',
-        OAUTHLIB_INSECURE_TRANSPORT=True,
-        SECRET_KEY='test_key',
-        SECURITY_DEPRECATED_PASSWORD_SCHEMES=[],
-        SECURITY_PASSWORD_HASH='plaintext',
-        SECURITY_PASSWORD_SCHEMES=['plaintext'],
-        SQLALCHEMY_TRACK_MODIFICATIONS=True,
-        SQLALCHEMY_DATABASE_URI=os.getenv('SQLALCHEMY_DATABASE_URI',
-                                          'sqlite://'),
-        TESTING=True,
-        WTF_CSRF_ENABLED=False,
+
+    def init_app(app):
+        app.config.update(
+            LOGIN_DISABLED=False,
+            OAUTH2_CACHE_TYPE='simple',
+            OAUTHLIB_INSECURE_TRANSPORT=True,
+            SECRET_KEY='test_key',
+            SECURITY_DEPRECATED_PASSWORD_SCHEMES=[],
+            SECURITY_PASSWORD_HASH='plaintext',
+            SECURITY_PASSWORD_SCHEMES=['plaintext'],
+            SQLALCHEMY_TRACK_MODIFICATIONS=True,
+            SQLALCHEMY_DATABASE_URI=os.getenv('SQLALCHEMY_DATABASE_URI',
+                                              'sqlite:///' +
+                                              os.path.join(instance_path,
+                                                           'test.db')),
+            TESTING=True,
+            WTF_CSRF_ENABLED=False,
+        )
+        FlaskCLI(app)
+        Babel(app)
+        Mail(app)
+        Menu(app)
+        Breadcrumbs(app)
+        InvenioDB(app)
+        InvenioAccounts(app)
+        InvenioOAuth2Server(app)
+
+    api_app = Flask('testapiapp', instance_path=instance_path)
+    api_app.config.update(
+        APPLICATION_ROOT='/api',
+        ACCOUNTS_REGISTER_BLUEPRINT=False
     )
-    FlaskCLI(app)
-    Babel(app)
-    Mail(app)
-    Menu(app)
-    Breadcrumbs(app)
-    InvenioDB(app)
-    InvenioAccounts(app)
+    init_app(api_app)
+    InvenioOAuth2ServerREST(api_app)
+
+    app = Flask('testapp', instance_path=instance_path)
+    init_app(app)
     app.register_blueprint(accounts_blueprint)
-    InvenioOAuth2Server(app)
     app.register_blueprint(server_blueprint)
     app.register_blueprint(settings_blueprint)
+
+    app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
+        '/api': api_app.wsgi_app
+    })
 
     with app.app_context():
         if str(db.engine.url) != 'sqlite://' and \
@@ -101,6 +121,12 @@ def app(request):
 
     request.addfinalizer(teardown)
     return app
+
+
+@pytest.fixture()
+def api_app(app):
+    """Retrieve the REST API application."""
+    return get_method_self(app.wsgi_app.mounts['/api'])
 
 
 @pytest.fixture
@@ -256,12 +282,18 @@ def expiration_fixture(provider_fixture):
 
 
 @pytest.fixture
-def resource_fixture(app):
+def resource_fixture(app, api_app):
     """Fixture that contains the test data for models tests."""
     from flask import request
     from invenio_oauth2server.proxies import current_oauth2server
 
     # Setup API resources
+    class Test0Resource(MethodView):
+
+        def get(self):
+            app.identity = g.identity
+            return "success", 200
+
     class Test1Resource(MethodView):
         # NOTE: Method decorators are applied in reverse order
         decorators = [
@@ -271,6 +303,7 @@ def resource_fixture(app):
 
         def get(self):
             assert request.oauth.access_token
+            app.identity = g.identity
             return "success", 200
 
         def post(self):
@@ -309,20 +342,25 @@ def resource_fixture(app):
             return str(current_user.get_id()), 200
 
     # Register API resources
-    app.add_url_rule(
-        '/api/test1/decoratorstestcase/',
+    api_app.add_url_rule(
+        '/test0/identitytestcase/',
+        view_func=Test0Resource.as_view('test0resource'),
+    )
+    api_app.add_url_rule(
+        '/test1/decoratorstestcase/',
         view_func=Test1Resource.as_view('test1resource'),
     )
-    app.add_url_rule(
-        '/api/test2/decoratorstestcase/',
+    api_app.add_url_rule(
+        '/test2/decoratorstestcase/',
         view_func=Test2Resource.as_view('test2resource'),
     )
+    # This one is a UI resource using login_required
     app.add_url_rule(
-        '/api/test3/loginrequiredstestcase/',
+        '/test3/loginrequiredstestcase/',
         view_func=Test3Resource.as_view('test3resource'),
     )
-    app.add_url_rule(
-        '/api/test4/allowanonymous/',
+    api_app.add_url_rule(
+        '/test4/allowanonymous/',
         view_func=Test4Resource.as_view('test4resource'),
     )
 
@@ -350,10 +388,16 @@ def resource_fixture(app):
         db.session.commit()
 
     with app.test_request_context():
+        app.url_for_test3resource = url_for('test3resource')
+
+    with api_app.test_request_context():
+        app.url_for_test0resource = url_for('test0resource')
         app.url_for_test1resource = url_for('test1resource')
         app.url_for_test2resource = url_for('test2resource')
-        app.url_for_test3resource = url_for('test3resource')
         app.url_for_test4resource = url_for('test4resource')
+        app.url_for_test0resource_token = url_for(
+            'test0resource', access_token=app.token
+        )
         app.url_for_test1resource_token = url_for(
             'test1resource', access_token=app.token
         )

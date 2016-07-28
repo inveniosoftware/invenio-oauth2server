@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (c) 2015 CERN.
+# Copyright (c) 2015, 2016 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -93,9 +93,7 @@ def test_require_oauth_scopes_allow_anonymous(resource_fixture):
 
 
 def test_rest_extension(resource_fixture):
-    from invenio_oauth2server import InvenioOAuth2ServerREST
     app = resource_fixture
-    InvenioOAuth2ServerREST(app)
     with app.test_client() as client:
         res = client.post(app.url_for_test4resource)
         assert 200 == res.status_code

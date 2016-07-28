@@ -32,6 +32,7 @@ from flask import Blueprint, _request_ctx_stack, abort, current_app, jsonify, \
     redirect, render_template, request
 from flask_babelex import lazy_gettext as _
 from flask_breadcrumbs import register_breadcrumb
+from flask_principal import Identity, identity_changed
 from flask_security import login_required
 from oauthlib.oauth2.rfc6749.errors import InvalidClientError, OAuth2Error
 
@@ -54,6 +55,8 @@ def login_oauth2_user(valid, oauth):
     """Log in a user after having been verified."""
     if valid:
         _request_ctx_stack.top.user = oauth.user
+        identity_changed.send(current_app._get_current_object(),
+                              identity=Identity(oauth.user.id))
 
     return valid, oauth
 
