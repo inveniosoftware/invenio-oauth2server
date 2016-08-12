@@ -83,8 +83,9 @@ from invenio_accounts.views import blueprint as accounts_blueprint
 from invenio_admin import InvenioAdmin
 from invenio_db import InvenioDB, db
 
-from invenio_oauth2server import InvenioOAuth2Server, current_oauth2server, \
-    require_api_auth, require_oauth_scopes
+from invenio_oauth2server import InvenioOAuth2Server, \
+    InvenioOAuth2ServerREST, current_oauth2server, require_api_auth, \
+    require_oauth_scopes
 from invenio_oauth2server.models import Scope
 from invenio_oauth2server.views import server_blueprint, settings_blueprint
 
@@ -101,6 +102,7 @@ app.config.update(
     SECRET_KEY='test_key',
     SECURITY_PASSWORD_HASH='plaintext',
     SECURITY_PASSWORD_SCHEMES=['plaintext'],
+    SECURITY_DEPRECATED_PASSWORD_SCHEMES=[],
     LOGIN_DISABLED=False,
     SQLALCHEMY_TRACK_MODIFICATIONS=True,
     SQLALCHEMY_DATABASE_URI=os.getenv('SQLALCHEMY_DATABASE_URI',
@@ -113,6 +115,7 @@ Breadcrumbs(app)
 InvenioDB(app)
 InvenioAdmin(app)
 OAuth2Provider(app)
+InvenioOAuth2ServerREST(app)
 
 accounts = InvenioAccounts(app)
 app.register_blueprint(accounts_blueprint)
