@@ -75,7 +75,6 @@ import os
 from flask import Flask
 from flask_babelex import Babel
 from flask_breadcrumbs import Breadcrumbs
-from flask_cli import FlaskCLI
 from flask_mail import Mail
 from flask_menu import Menu
 from flask_oauthlib.provider import OAuth2Provider
@@ -107,7 +106,6 @@ app.config.update(
     SQLALCHEMY_DATABASE_URI=os.getenv('SQLALCHEMY_DATABASE_URI',
                                       'sqlite:///example.db'),
 )
-FlaskCLI(app)
 Babel(app)
 Mail(app)
 Menu(app)

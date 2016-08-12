@@ -36,7 +36,6 @@ from flask import Flask, g, url_for
 from flask.views import MethodView
 from flask_babelex import Babel
 from flask_breadcrumbs import Breadcrumbs
-from flask_cli import FlaskCLI
 from flask_mail import Mail
 from flask_menu import Menu
 from flask_security import login_required
@@ -80,7 +79,6 @@ def app(request):
             TESTING=True,
             WTF_CSRF_ENABLED=False,
         )
-        FlaskCLI(app)
         Babel(app)
         Mail(app)
         Menu(app)
