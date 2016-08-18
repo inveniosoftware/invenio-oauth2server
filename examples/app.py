@@ -31,10 +31,12 @@ Run example development server:
 
    $ pip install -e .[all]
    $ cd examples
-   $ pip install -r requirements.txt --src=/src
-   $ flask -a app.py db init
-   $ flask -a app.py db create
-   $ flask -a app.py fixtures users
+   $ pip install -r requirements.txt
+   $ export FLASK_APP=app.py
+   $ flask db init
+   $ flask db create
+   $ flask fixtures users
+   $ flask run
 
 Open the admin page to generate a token:
 
@@ -55,9 +57,9 @@ Make a request to test the token:
 
 .. code-block:: console
 
-    TOKEN=<generated Access Token>
+    export TOKEN=<generated Access Token>
     curl -i -X GET -H "Content-Type:application/json" http://0.0.0.0:5000/ \
-        -H 'Authorization:Bearer $TOKEN'
+        -H "Authorization:Bearer $TOKEN"
 
 Or, if you are logged in through the browser, try to open the homepage with it:
 
@@ -73,7 +75,6 @@ from __future__ import absolute_import, print_function
 import os
 
 from flask import Flask
-from flask_babelex import Babel
 from flask_breadcrumbs import Breadcrumbs
 from flask_mail import Mail
 from flask_menu import Menu
@@ -82,6 +83,7 @@ from invenio_accounts import InvenioAccounts
 from invenio_accounts.views import blueprint as accounts_blueprint
 from invenio_admin import InvenioAdmin
 from invenio_db import InvenioDB, db
+from invenio_i18n import InvenioI18N
 
 from invenio_oauth2server import InvenioOAuth2Server, \
     InvenioOAuth2ServerREST, current_oauth2server, require_api_auth, \
@@ -93,9 +95,9 @@ from invenio_oauth2server.views import server_blueprint, settings_blueprint
 app = Flask(__name__)
 app.config.update(
     CELERY_ALWAYS_EAGER=True,
-    CELERY_CACHE_BACKEND="memory",
+    CELERY_CACHE_BACKEND='memory',
     CELERY_EAGER_PROPAGATES_EXCEPTIONS=True,
-    CELERY_RESULT_BACKEND="cache",
+    CELERY_RESULT_BACKEND='cache',
     OAUTH2SERVER_CACHE_TYPE='simple',
     OAUTHLIB_INSECURE_TRANSPORT=True,
     TESTING=True,
@@ -107,8 +109,10 @@ app.config.update(
     SQLALCHEMY_TRACK_MODIFICATIONS=True,
     SQLALCHEMY_DATABASE_URI=os.getenv('SQLALCHEMY_DATABASE_URI',
                                       'sqlite:///example.db'),
+    I18N_LANGUAGES=[('fr', 'French'), ('de', 'German'), ('it', 'Italian'),
+                    ('es', 'Spanish')],
 )
-Babel(app)
+InvenioI18N(app)
 Mail(app)
 Menu(app)
 Breadcrumbs(app)
@@ -136,7 +140,7 @@ with app.app_context():
 @require_oauth_scopes('test:scope')
 def example():
     """Index."""
-    return "hello world"
+    return 'hello world'
 
 
 @app.cli.group()
