@@ -141,7 +141,7 @@ class ClientForm(ClientFormBase):
     redirect_uris = RedirectURIField(
         label=_("Redirect URIs (one per line)"),
         description=_(
-            "One redirect URI per line. This is your applications"
+            "One redirect URI per line. This is your application's"
             " authorization callback URLs. HTTPS must be used for all "
             "hosts except localhost (for testing purposes)."),
         validators=[RedirectURIValidator(), validators.DataRequired()],
@@ -173,7 +173,7 @@ class TokenForm(Form):
         widget=scopes_multi_checkbox,
         choices=[],  # Must be dynamically provided in view.
         description=_(
-            "Scopes assigns permissions to your personal access token."
+            "Scopes assign permissions to your personal access token."
             " A personal access token works just like a normal OAuth "
             " access token for authentication against the API.")
     )
