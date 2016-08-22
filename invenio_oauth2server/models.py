@@ -362,19 +362,28 @@ class Token(db.Model):
 
     @property
     def scopes(self):
-        """Return all scopes."""
+        """Return all scopes.
+
+        :returns: A list of scopes.
+        """
         if self._scopes:
             return self._scopes.split()
         return []
 
     @scopes.setter
     def scopes(self, scopes):
-        """Set scopes."""
+        """Set scopes.
+
+        :param scopes: The list of scopes.
+        """
         validate_scopes(scopes)
         self._scopes = " ".join(set(scopes)) if scopes else ""
 
     def get_visible_scopes(self):
-        """Get list of non-internal scopes for token."""
+        """Get list of non-internal scopes for token.
+
+        :returns: A list of scopes.
+        """
         return [k for k, s in current_oauth2server.scope_choices()
                 if k in self.scopes]
 
@@ -384,6 +393,13 @@ class Token(db.Model):
 
         A token that is bound to a specific user and which doesn't expire, i.e.
         similar to the concept of an API key.
+
+        :param name: Client name.
+        :param user_id: User ID.
+        :param scopes: The list of permitted scopes. (Default: ``None``)
+        :param is_internal: If ``True`` it's a internal access token.
+             (Default: ``False``)
+        :returns: A new access token.
         """
         with db.session.begin_nested():
             scopes = " ".join(scopes) if scopes else ""

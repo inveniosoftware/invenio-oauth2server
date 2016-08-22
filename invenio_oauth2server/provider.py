@@ -43,7 +43,12 @@ def get_user(username, password, *args, **kwargs):
 
     Needed for grant type 'password'. Note, grant type password is by default
     disabled.
+
+    :param username: User name.
+    :param password: Password.
+    :returns: The user instance or ``None``.
     """
+    # FIXME username doesn't exists anymore in invenio_accounts user model.
     user = User.query.filter_by(username=username).first()
     if user.check_password(password):
         return user
@@ -53,7 +58,12 @@ def get_user(username, password, *args, **kwargs):
 def get_token(access_token=None, refresh_token=None):
     """Load an access token.
 
-    Add support for personal access tokens compared to flask-oauthlib
+    Add support for personal access tokens compared to flask-oauthlib.
+    If the access token is ``None``, it looks for the refresh token.
+
+    :param access_token: The access token. (Default: ``None``)
+    :param refresh_token: The refresh token. (Default: ``None``)
+    :returns: The token instance or ``None``.
     """
     if access_token:
         t = Token.query.filter_by(access_token=access_token).first()
@@ -76,7 +86,12 @@ def get_token(access_token=None, refresh_token=None):
 
 @oauth2.tokensetter
 def save_token(token, request, *args, **kwargs):
-    """Token persistence."""
+    """Token persistence.
+
+    :param token: A dictionary with the token data.
+    :param request: The request instance.
+    :returns: A :class:`invenio_oauth2server.models.Token` instance.
+    """
     # Exclude the personal access tokens which doesn't expire.
     uid = request.user.id if request.user else current_user.get_id()
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015 CERN.
+# Copyright (C) 2015, 2016 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -39,6 +39,8 @@ def validate_redirect_uri(value):
 
     Redirect URIs must be a valid URL and use https unless the host is
     localhost for which http is accepted.
+
+    :param value: The redirect URI.
     """
     sch, netloc, path, par, query, fra = urlparse(value)
     if not (sch and netloc):
@@ -51,7 +53,13 @@ def validate_redirect_uri(value):
 
 
 def validate_scopes(value_list):
-    """Validate if each element in a list is a registered scope."""
+    """Validate if each element in a list is a registered scope.
+
+    :param value_list: The list of scopes.
+    :raises invenio_oauth2server.errors.ScopeDoesNotExists: The exception is
+        raised if a scope is not registered.
+    :returns: ``True`` if it's successfully validate.
+    """
     for value in value_list:
         if value not in current_oauth2server.scopes:
             raise ScopeDoesNotExists(value)

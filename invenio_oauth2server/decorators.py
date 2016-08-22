@@ -35,9 +35,6 @@ from werkzeug.exceptions import Unauthorized
 from .provider import oauth2
 
 
-#
-# Decorators
-#
 def require_api_auth(allow_anonymous=False):
     """Decorator to require API authentication using OAuth token.
 
@@ -67,10 +64,12 @@ def require_api_auth(allow_anonymous=False):
 
 
 def require_oauth_scopes(*scopes):
-    """Decorator to require a list of OAuth scopes.
+    r"""Decorator to require a list of OAuth scopes.
 
     Decorator must be preceded by a ``require_api_auth()`` decorator.
     Note, API key authentication is bypassing this check.
+
+    :param \*scopes: List of scopes required.
     """
     required_scopes = set(scopes)
 

@@ -77,21 +77,32 @@ class _OAuth2ServerState(object):
             self.load_entry_point_group(entry_point_group)
 
     def scope_choices(self, exclude_internal=True):
-        """Return list of scope choices."""
+        """Return list of scope choices.
+
+        :param exclude_internal: Exclude or not internal scopes.
+            (Default: ``True``)
+        :returns: A list of tuple (id, scope).
+        """
         return [
             (k, scope) for k, scope in sorted(self.scopes.items())
             if not exclude_internal or not scope.is_internal
         ]
 
     def register_scope(self, scope):
-        """Register a scope."""
+        """Register a scope.
+
+        :param scope: A :class:`invenio_oauth2server.models.Scope` instance.
+        """
         if not isinstance(scope, Scope):
             raise TypeError("Invalid scope type.")
         assert scope.id not in self.scopes
         self.scopes[scope.id] = scope
 
     def load_entry_point_group(self, entry_point_group):
-        """Load actions from an entry point group."""
+        """Load actions from an entry point group.
+
+        :param entry_point_group: The entrypoint group name to load plugins.
+        """
         for ep in pkg_resources.iter_entry_points(group=entry_point_group):
             self.register_scope(ep.load())
 
@@ -100,20 +111,31 @@ class InvenioOAuth2Server(object):
     """Invenio-OAuth2Server extension."""
 
     def __init__(self, app=None, **kwargs):
-        """Extension initialization."""
+        """Extension initialization.
+
+        :param app: An instance of :class:`flask.Flask`.
+        """
         if app:
             self._state = self.init_app(app, **kwargs)
 
     def init_app(self, app, entry_point_group='invenio_oauth2server.scopes',
                  **kwargs):
-        """Flask application initialization."""
+        """Flask application initialization.
+
+        :param app: An instance of :class:`flask.Flask`.
+        :param entry_point_group: The entrypoint group name to load plugins.
+            (Default: ``'invenio_oauth2server.scopes'``)
+        """
         self.init_config(app)
         state = _OAuth2ServerState(app, entry_point_group=entry_point_group)
         app.extensions['invenio-oauth2server'] = state
         return state
 
     def init_config(self, app):
-        """Initialize configuration."""
+        """Initialize configuration.
+
+        :param app: An instance of :class:`flask.Flask`.
+        """
         app.config.setdefault(
             'OAUTH2SERVER_BASE_TEMPLATE',
             app.config.get('BASE_TEMPLATE',
@@ -159,12 +181,18 @@ class InvenioOAuth2ServerREST(object):
     """Invenio-OAuth2Server REST extension."""
 
     def __init__(self, app=None, **kwargs):
-        """Extension initialization."""
+        """Extension initialization.
+
+        :param app: An instance of :class:`flask.Flask`.
+        """
         if app:
             self.init_app(app, **kwargs)
 
     def init_app(self, app, **kwargs):
-        """Flask application initialization."""
+        """Flask application initialization.
+
+        :param app: An instance of :class:`flask.Flask`.
+        """
         self.init_config(app)
 
         allowed_urlencode_chars = app.config.get(
