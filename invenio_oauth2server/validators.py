@@ -58,7 +58,7 @@ def validate_scopes(value_list):
     :param value_list: The list of scopes.
     :raises invenio_oauth2server.errors.ScopeDoesNotExists: The exception is
         raised if a scope is not registered.
-    :returns: ``True`` if it's successfully validate.
+    :returns: ``True`` if it's successfully validated.
     """
     for value in value_list:
         if value not in current_oauth2server.scopes:

@@ -42,10 +42,10 @@ OAUTH2SERVER_CLIENT_SECRET_SALT_LEN = 60
 OAUTH2SERVER_TOKEN_PERSONAL_SALT_LEN = 60
 """Length of the personal access token."""
 
-OAUTH2SERVER_ALLOWED_GRANT_TYPES = [
+OAUTH2SERVER_ALLOWED_GRANT_TYPES = {
     'authorization_code', 'client_credentials', 'refresh_token',
-]
-"""A list of allowed grant types.
+}
+"""A set of allowed grant types.
 
 The allowed values are ``authorization_code``, ``password``,
 ``client_credentials``, ``refresh_token``). By default password is disabled,
@@ -53,10 +53,10 @@ as it requires the client application to gain access to the username and
 password of the resource owner.
 """
 
-OAUTH2SERVER_ALLOWED_RESPONSE_TYPES = [
-    'code', 'token'
-]
-"""A list of allowed response types.
+OAUTH2SERVER_ALLOWED_RESPONSE_TYPES = {
+    'code', 'token',
+}
+"""A set of allowed response types.
 
 The allowed values are ``code`` and ``token``.
 

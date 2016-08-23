@@ -79,9 +79,9 @@ class _OAuth2ServerState(object):
     def scope_choices(self, exclude_internal=True):
         """Return list of scope choices.
 
-        :param exclude_internal: Exclude or not internal scopes.
+        :param exclude_internal: Exclude internal scopes or not.
             (Default: ``True``)
-        :returns: A list of tuple (id, scope).
+        :returns: A list of tuples (id, scope).
         """
         return [
             (k, scope) for k, scope in sorted(self.scopes.items())

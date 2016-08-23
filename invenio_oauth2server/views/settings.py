@@ -73,7 +73,7 @@ def token_getter(is_personal=True, is_internal=False):
     """Decorator to retrieve Token object and check user permission.
 
     :param is_personal: Search for a personal token. (Default: ``True``)
-    :param is_internal: Search for a internal token. (Default: ``True``)
+    :param is_internal: Search for a internal token. (Default: ``False``)
     """
     def wrapper(f):
         @wraps(f)

@@ -853,3 +853,31 @@ def test_not_allowed_public_refresh_flow(expiration_fixture):
 
             # Only confidential clients can refresh expired token.
             assert r.status_code == 401
+
+
+def test_password_grant_type(provider_fixture):
+    app = provider_fixture
+    app.config['OAUTH2SERVER_ALLOWED_GRANT_TYPES'] = ('password', )
+    with app.test_request_context():
+        with app.test_client() as client:
+            data = dict(
+                client_id='dev',
+                client_secret='dev',
+                grant_type='password',
+                username='info@inveniosoftware.org',
+                password='tester',
+                scope='test:scope',
+            )
+
+            r = client.post(url_for(
+                'invenio_oauth2server.access_token'
+            ), data=data)
+            assert r.status_code == 200
+            assert 'Bearer' == json.loads(r.get_data())['token_type']
+
+            data['password'] = 'invalid'
+
+            r = client.post(url_for(
+                'invenio_oauth2server.access_token'
+            ), data=data)
+            assert r.status_code == 401

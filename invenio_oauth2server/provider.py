@@ -29,28 +29,30 @@ from datetime import datetime, timedelta
 from flask import current_app
 from flask_login import current_user
 from flask_oauthlib.provider import OAuth2Provider
+from flask_security.utils import verify_password
 from invenio_accounts.models import User
 from invenio_db import db
+from werkzeug.local import LocalProxy
 
 from .models import Client, Token
 
 oauth2 = OAuth2Provider()
+datastore = LocalProxy(lambda: current_app.extensions['security'].datastore)
 
 
 @oauth2.usergetter
-def get_user(username, password, *args, **kwargs):
+def get_user(email, password, *args, **kwargs):
     """Get user for grant type password.
 
     Needed for grant type 'password'. Note, grant type password is by default
     disabled.
 
-    :param username: User name.
+    :param email: User email.
     :param password: Password.
     :returns: The user instance or ``None``.
     """
-    # FIXME username doesn't exists anymore in invenio_accounts user model.
-    user = User.query.filter_by(username=username).first()
-    if user.check_password(password):
+    user = datastore.find_user(email=email)
+    if user and verify_password(password, user.password):
         return user
 
 
