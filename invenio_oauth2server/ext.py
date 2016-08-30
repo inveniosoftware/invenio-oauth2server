@@ -37,7 +37,6 @@ from invenio_db import db
 from . import config
 from .models import Client, OAuthUserProxy, Scope
 from .provider import oauth2
-from .utils import request_urlreencode
 
 
 class _OAuth2ServerState(object):
@@ -140,7 +139,6 @@ def verify_oauth_token_and_set_current_user():
 
     if not hasattr(request, 'oauth') or not request.oauth:
         scopes = []
-        request_urlreencode()
         valid, req = oauth2.verify_request(scopes)
 
         for func in oauth2._after_request_funcs:

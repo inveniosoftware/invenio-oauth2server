@@ -39,7 +39,6 @@ from oauthlib.oauth2.rfc6749.errors import InvalidClientError, OAuth2Error
 from ..models import Client
 from ..provider import oauth2
 from ..proxies import current_oauth2server
-from ..utils import urlreencode
 
 blueprint = Blueprint(
     'invenio_oauth2server',
@@ -85,7 +84,6 @@ def error_handler(f):
 @register_breadcrumb(blueprint, '.', _('Authorize application'))
 @login_required
 @error_handler
-@urlreencode
 @oauth2.authorize_handler
 def authorize(*args, **kwargs):
     """View for rendering authorization request."""
@@ -146,7 +144,6 @@ def errors():
 
 
 @blueprint.route('/ping', methods=['GET', 'POST'])
-@urlreencode
 @oauth2.require_oauth()
 def ping():
     """Test to verify that you have been authenticated."""
@@ -154,7 +151,6 @@ def ping():
 
 
 @blueprint.route('/info')
-@urlreencode
 @oauth2.require_oauth('test:scope')
 def info():
     """Test to verify that you have been authenticated."""
@@ -169,7 +165,6 @@ def info():
 
 
 @blueprint.route('/invalid')
-@urlreencode
 @oauth2.require_oauth('invalid_scope')
 def invalid():
     """Test to verify that you have been authenticated."""
