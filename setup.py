@@ -85,8 +85,8 @@ install_requires = [
     'SQLAlchemy-Utils[encrypted]>=0.31.0',
     'WTForms-Alchemy>=0.15.0',
     'invenio-accounts>=1.0.0b1',
-    'six>=1.10.0',
     'oauthlib>=1.1.2,<2.0.0',  # FIXME compatiblity issue with 2.x version
+    'six>=1.10.0',
 ]
 
 packages = find_packages()
