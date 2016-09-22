@@ -65,17 +65,19 @@ def app(request):
     def init_app(app):
         app.config.update(
             LOGIN_DISABLED=False,
+            MAIL_SUPPRESS_SEND=True,
             OAUTH2_CACHE_TYPE='simple',
             OAUTHLIB_INSECURE_TRANSPORT=True,
-            SECRET_KEY='test_key',
+            SECRET_KEY='CHANGE_ME',
             SECURITY_DEPRECATED_PASSWORD_SCHEMES=[],
             SECURITY_PASSWORD_HASH='plaintext',
+            SECURITY_PASSWORD_SALT='CHANGE_ME_ALSO',
             SECURITY_PASSWORD_SCHEMES=['plaintext'],
-            SQLALCHEMY_TRACK_MODIFICATIONS=True,
             SQLALCHEMY_DATABASE_URI=os.getenv('SQLALCHEMY_DATABASE_URI',
                                               'sqlite:///' +
                                               os.path.join(instance_path,
                                                            'test.db')),
+            SQLALCHEMY_TRACK_MODIFICATIONS=True,
             TESTING=True,
             WTF_CSRF_ENABLED=False,
         )

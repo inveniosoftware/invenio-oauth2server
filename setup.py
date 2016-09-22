@@ -42,31 +42,30 @@ tests_require = [
     'pytest-cov>=1.8.0',
     'pytest-pep8>=1.0.6',
     'pytest>=2.8.0',
-    'six>=1.10.0',
 ]
 
 extras_require = {
     'docs': [
-        "Sphinx>=1.4.2",
+        'Sphinx>=1.4.2',
     ],
     'redis': [
         'redis>=2.10.5',
     ],
     'mysql': [
-        'invenio-db[mysql]>=1.0.0b1',
+        'invenio-db[mysql]>=1.0.0b2',
     ],
     'postgresql': [
-        'invenio-db[postgresql]>=1.0.0b1',
+        'invenio-db[postgresql]>=1.0.0b2',
     ],
     'sqlite': [
-        'invenio-db>=1.0.0b1',
+        'invenio-db>=1.0.0b2',
     ],
     'tests': tests_require,
 }
 
 extras_require['all'] = []
 for name, reqs in extras_require.items():
-    if name in ('mysql', 'postgresql', 'sqlite'):
+    if name in {'mysql', 'postgresql', 'sqlite'}:
         continue
     extras_require['all'].extend(reqs)
 
@@ -82,11 +81,12 @@ install_requires = [
     'Flask-OAuthlib>=0.9.3',
     'Flask-Security>=1.7.5',
     'Flask-WTF>=0.10.2',
-    'Flask>=0.11',
+    'Flask>=0.11.1',
     'SQLAlchemy-Utils[encrypted]>=0.31.0',
     'WTForms-Alchemy>=0.15.0',
-    'invenio-accounts>=1.0.0a13',
-    'six>=1.7.2',
+    'invenio-accounts>=1.0.0a14',
+    'six>=1.10.0',
+    'oauthlib>=1.1.2,<2.0.0',  # FIXME compatiblity issue with 2.x version
 ]
 
 packages = find_packages()
