@@ -24,7 +24,7 @@ Installation
 Documentation
 -------------
 
-   http://pythonhosted.org/invenio-oauth2server/
+   http://invenio-oauth2server.readthedocs.io/
 
 Happy hacking and thanks for flying Invenio-OAuth2Server.
 
