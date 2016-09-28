@@ -38,7 +38,6 @@ from flask_babelex import Babel
 from flask_breadcrumbs import Breadcrumbs
 from flask_mail import Mail
 from flask_menu import Menu
-from flask_security import login_required
 from helpers import create_oauth_client, patch_request
 from invenio_accounts import InvenioAccounts
 from invenio_accounts.models import User
@@ -326,7 +325,7 @@ def resource_fixture(app, api_app):
 
     class Test3Resource(MethodView):
 
-        @login_required
+        @require_api_auth()
         def post(self):
             return "success", 200
 
