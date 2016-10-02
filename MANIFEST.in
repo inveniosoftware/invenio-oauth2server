@@ -32,7 +32,9 @@ recursive-include invenio_oauth2server *.po *.pot *.mo
 include *.rst
 include *.sh
 include *.txt
+include .lgtm
 include LICENSE
+include MAINTAINERS
 include babel.ini
 include docs/requirements.txt
 include pytest.ini
