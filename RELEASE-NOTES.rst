@@ -1,8 +1,8 @@
-===============================
- Invenio-OAuth2Server v1.0.0a9
-===============================
+================================
+ Invenio-OAuth2Server v1.0.0a10
+================================
 
-Invenio-OAuth2Server v1.0.0a9 was released on July 29, 2016.
+Invenio-OAuth2Server v1.0.0a10 was released on October 3, 2016.
 
 About
 -----
@@ -19,18 +19,18 @@ What's new
 Installation
 ------------
 
-   $ pip install invenio-oauth2server==1.0.0a9
+   $ pip install invenio-oauth2server==1.0.0a10
 
 Documentation
 -------------
 
-   http://invenio-oauth2server.readthedocs.io/
+   https://invenio-oauth2server.readthedocs.io/
 
 Happy hacking and thanks for flying Invenio-OAuth2Server.
 
 | Invenio Development Team
 |   Email: info@inveniosoftware.org
 |   IRC: #invenio on irc.freenode.net
-|   Twitter: http://twitter.com/inveniosoftware
+|   Twitter: https://twitter.com/inveniosoftware
 |   GitHub: https://github.com/inveniosoftware/invenio-oauth2server
 |   URL: http://inveniosoftware.org
