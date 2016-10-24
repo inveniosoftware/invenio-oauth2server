@@ -27,9 +27,11 @@
 from __future__ import absolute_import, print_function
 
 import os
+import warnings
 
+import oauthlib.common as oauthlib_commmon
 import pkg_resources
-from flask import abort, request
+from flask import request
 from flask_oauthlib.contrib.oauth2 import bind_cache_grant, bind_sqlalchemy
 from flask_security import current_user
 from invenio_db import db
@@ -158,4 +160,64 @@ class InvenioOAuth2ServerREST(object):
 
     def init_app(self, app, **kwargs):
         """Flask application initialization."""
+        self.init_config(app)
+
+        allowed_urlencode_chars = app.config.get(
+            'OAUTH2SERVER_ALLOWED_URLENCODE_CHARACTERS')
+        if allowed_urlencode_chars:
+            InvenioOAuth2ServerREST.monkeypatch_oauthlib_urlencode_chars(
+                allowed_urlencode_chars)
         app.before_request(verify_oauth_token_and_set_current_user)
+
+    def init_config(self, app):
+        """Initialize configuration."""
+        app.config.setdefault(
+            'OAUTH2SERVER_ALLOWED_URLENCODE_CHARACTERS',
+            getattr(config, 'OAUTH2SERVER_ALLOWED_URLENCODE_CHARACTERS'))
+
+    @staticmethod
+    def monkeypatch_oauthlib_urlencode_chars(chars):
+        """Monkeypatch OAuthlib set of "URL encoded"-safe characters.
+
+        .. note::
+
+            OAuthlib keeps a set of characters that it considers as valid
+            inside an URL-encoded query-string during parsing of requests. The
+            issue is that this set of characters wasn't designed to be
+            configurable since it should technically follow various RFC
+            specifications about URIs, like for example `RFC3986
+            <https://www.ietf.org/rfc/rfc3986.txt>`_. Many online services and
+            frameworks though have designed their APIs in ways that aim at
+            keeping things practical and readable to the API consumer, making
+            use of special characters to mark or seperate query-string
+            arguments. Such an example is the usage of embedded JSON strings
+            inside query-string arguments, which of course have to contain the
+            "colon" character (:) for key/value pair definitions.
+
+            Users of the OAuthlib library, in order to integrate with these
+            services and frameworks, end up either circumventing these "static"
+            restrictions of OAuthlib by pre-processing query-strings, or -in
+            search of a more permanent solution- directly make Pull Requests
+            to OAuthlib to include additional characters in the set, and
+            explain the logic behind their decision (one can witness these
+            efforts inside the git history of the source file that includes
+            this set of characters `here
+            <https://github.com/idan/oauthlib/commits/master/oauthlib/common.py>`_).
+            This kind of tactic leads easily to misconceptions about the
+            ability one has over the usage of specific features of services and
+            frameworks. In order to tackle this issue in Invenio-OAuth2Server,
+            we are monkey-patching this set of characters using a configuration
+            variable, so that usage of any special characters is a conscious
+            decision of the package user.
+        """
+        modified_chars = set(chars)
+        always_safe = set(oauthlib_commmon.always_safe)
+        original_special_chars = oauthlib_commmon.urlencoded - always_safe
+        if modified_chars != original_special_chars:
+            warnings.warn(
+                'You are overriding the default OAuthlib "URL encoded" set of '
+                'valid characters. Make sure that the characters defined in '
+                'oauthlib.common.urlencoded are indeed limitting your needs.',
+                RuntimeWarning
+            )
+            oauthlib_commmon.urlencoded = always_safe | modified_chars

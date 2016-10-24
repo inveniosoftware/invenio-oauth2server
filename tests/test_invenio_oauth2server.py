@@ -27,6 +27,7 @@
 
 from __future__ import absolute_import, print_function
 
+import pytest
 from flask import Flask
 
 from invenio_oauth2server import InvenioOAuth2Server, InvenioOAuth2ServerREST
@@ -66,3 +67,23 @@ def test_init_rest():
     ext.init_app(app)
     assert verify_oauth_token_and_set_current_user in \
         app.before_request_funcs[None]
+
+
+def test_init_rest_with_oauthlib_monkeypatch():
+    """Test REST OAuthlib monkeypatching."""
+    app = Flask('testapp')
+
+    from oauthlib.common import urlencoded
+    assert '^' not in urlencoded
+    old_urlencoded = set(urlencoded)
+
+    app.config['OAUTH2SERVER_ALLOWED_URLENCODE_CHARACTERS'] = '^'
+
+    with pytest.warns(RuntimeWarning):
+        InvenioOAuth2ServerREST(app)
+    assert verify_oauth_token_and_set_current_user in \
+        app.before_request_funcs[None]
+
+    from oauthlib.common import urlencoded
+    assert old_urlencoded != urlencoded
+    assert '^' in urlencoded

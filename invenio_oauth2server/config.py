@@ -61,3 +61,14 @@ A list of allowed response types - allowed values are `code` and `token`.
 - ``code`` is used for authorization_code grant types
 - ``token`` is used for implicit grant types
 """
+
+OAUTH2SERVER_ALLOWED_URLENCODE_CHARACTERS = '=&;:%+~,*@!()/?'
+"""
+A string of special characters that should be valid inside a query string.
+
+.. seealso::
+
+    See :py:func:`monkeypatch_oauthlib_urlencode_chars
+    <invenio_oauth2server.ext.InvenioOAuth2ServerREST.monkeypatch_oauthlib_urlencode_chars>`
+    for a full explanation.
+"""

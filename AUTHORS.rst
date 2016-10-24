@@ -38,3 +38,4 @@ Invenio module that implements OAuth 2 server.
 - Roman Chyla <roman.chyla@gmail.com>
 - Sami Hiltunen <sami.mikael.hiltunen@cern.ch>
 - Tibor Simko <tibor.simko@cern.ch>
+- Alexander Ioannidis <a.ioannidis@cern.ch>

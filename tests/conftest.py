@@ -128,6 +128,12 @@ def api_app(app):
     return get_method_self(app.wsgi_app.mounts['/api'])
 
 
+@pytest.fixture()
+def api_app_with_test_view(api_app):
+    api_app.add_url_rule('/test', 'test', view_func=lambda: 'OK')
+    return api_app
+
+
 @pytest.fixture
 def settings_fixture(app):
     """Fixture for testing settings views."""

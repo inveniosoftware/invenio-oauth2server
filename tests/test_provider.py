@@ -28,10 +28,12 @@ from __future__ import absolute_import, print_function
 
 from datetime import datetime, timedelta
 
+import pytest
 from flask import json, url_for
 from helpers import login, parse_redirect
 from invenio_db import db
 
+from invenio_oauth2server.ext import InvenioOAuth2ServerREST
 from invenio_oauth2server.models import Client, Token
 
 
@@ -515,17 +517,52 @@ def test_resource_auth_methods(provider_fixture):
             assert json.loads(r.get_data()) == dict(ping='pong')
 
 
-def test_oauthlib_urldecoding_issue(provider_fixture):
-    app = provider_fixture
+@pytest.mark.parametrize(('query_string', 'valid_qs'), (
+    # Valid query strings
+    ('q=RegularArg', True),
+    ('a=1&b=2&c=3', True),
+    ('q=text+with+spaces', True),
+    ('q=title:TheTitle', True),
+    ('q=properly%20encoded%24', True),
+
+    # Invalid query strings
+    ('$type=search', False),
+    ('q=Joan+D\'Arc', False),
+    ('with regular spaces', False),
+    ('json_data={a: 42}', False),
+    ('array=[1, 2, 3]', False),
+))
+def test_oauthlib_urldecoding_issue(api_app_with_test_view, query_string,
+                                    valid_qs):
+    app = api_app_with_test_view
     with app.test_request_context():
         with app.test_client() as client:
-            # Query string with colon in value
-            for v in ['ping', 'info']:
-                assert client.get(
-                    url_for('invenio_oauth2server.{0}'.format(v)),
-                    query_string="access_token={0}&q=title:TEST".format(
-                        app.personal_token)
-                ).status_code in [200, 401]
+            # Remove '/api' since our client is not aware of the the WSGI mount
+            test_url = url_for('test').replace('/api', '')
+            if valid_qs:
+                assert (client.get(test_url, query_string=query_string)
+                        .status_code == 200)
+            else:
+                with pytest.raises(ValueError):
+                    client.get(test_url, query_string=query_string)
+
+
+def test_oauthlib_monkeypatch(api_app_with_test_view):
+    app = api_app_with_test_view
+    InvenioOAuth2ServerREST.monkeypatch_oauthlib_urlencode_chars('$:')
+
+    with app.test_request_context():
+        with app.test_client() as client:
+            # Remove '/api' since our client is not aware of the the WSGI mount
+            test_url = url_for('test').replace('/api', '')
+
+            # '$' and ':' should be valid characters after this patch
+            assert (client.get(test_url, query_string='$type:search')
+                    .status_code == 200)
+
+            with pytest.raises(ValueError):
+                # '=' is not considered a valid character after this patch
+                client.get(test_url, query_string='q=RegularArg')
 
 
 def test_settings_index(provider_fixture):
