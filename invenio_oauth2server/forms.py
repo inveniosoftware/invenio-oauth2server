@@ -44,7 +44,7 @@ def scopes_multi_checkbox(field, **kwargs):
     kwargs.setdefault('type', 'checkbox')
     field_id = kwargs.pop('id', field.id)
 
-    html = ['<div class="row">']
+    html = [u'<div class="row">']
 
     for value, label, checked in field.iter_choices():
         choice_id = u'%s-%s' % (field_id, value)
@@ -61,11 +61,13 @@ def scopes_multi_checkbox(field, **kwargs):
             options['checked'] = 'checked'
 
         html.append(u'<div class="col-md-3">')
-        html.append(u'<label for="%s" class="checkbox-inline">' % field_id)
-        html.append(u'<input %s /> ' % widgets.html_params(**options))
-        html.append("%s <br/><small class='text-muted'>%s</small>" % (
-            value, label.help_text)
-        )
+        html.append(u'<label for="{0}" class="checkbox-inline">'.format(
+            field_id
+        ))
+        html.append(u'<input {0} /> '.format(widgets.html_params(**options)))
+        html.append(u'%s <br/><small class="text-muted">{0}</small>'.format(
+            value, label.help_text
+        ))
         html.append(u'</label></div>')
     html.append(u'</div>')
 
@@ -81,14 +83,14 @@ class RedirectURIField(fields.TextAreaField):
     def process_formdata(self, valuelist):
         """Process form data."""
         if valuelist:
-            self.data = "\n".join([
+            self.data = '\n'.join([
                 x.strip() for x in
-                filter(lambda x: x, "\n".join(valuelist).splitlines())
+                filter(lambda x: x, '\n'.join(valuelist).splitlines())
             ])
 
     def process_data(self, value):
         """Process data."""
-        self.data = "\n".join(value)
+        self.data = '\n'.join(value)
 
 
 class RedirectURIValidator(object):
@@ -107,7 +109,7 @@ class RedirectURIValidator(object):
 
         if errors:
             raise validators.ValidationError(
-                _("Invalid redirect URIs: %(urls)s", urls=", ".join(errors))
+                _('Invalid redirect URIs: %(urls)s', urls=', '.join(errors))
             )
 
 
@@ -139,11 +141,11 @@ class ClientForm(ClientFormBase):
 
     # Trick to make redirect_uris render in the bottom of the form.
     redirect_uris = RedirectURIField(
-        label=_("Redirect URIs (one per line)"),
+        label=_('Redirect URIs (one per line)'),
         description=_(
             "One redirect URI per line. This is your application's"
-            " authorization callback URLs. HTTPS must be used for all "
-            "hosts except localhost (for testing purposes)."),
+            ' authorization callback URLs. HTTPS must be used for all '
+            'hosts except localhost (for testing purposes).'),
         validators=[RedirectURIValidator(), validators.DataRequired()],
         default='',
     )
@@ -166,14 +168,14 @@ class TokenForm(Form):
     """Token form."""
 
     name = fields.StringField(
-        description=_("Name of personal access token."),
+        description=_('Name of personal access token.'),
         validators=[validators.DataRequired()],
     )
     scopes = fields.SelectMultipleField(
         widget=scopes_multi_checkbox,
         choices=[],  # Must be dynamically provided in view.
         description=_(
-            "Scopes assign permissions to your personal access token."
-            " A personal access token works just like a normal OAuth "
-            " access token for authentication against the API.")
+            'Scopes assign permissions to your personal access token.'
+            ' A personal access token works just like a normal OAuth '
+            ' access token for authentication against the API.')
     )

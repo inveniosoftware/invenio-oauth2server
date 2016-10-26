@@ -45,12 +45,14 @@ def test_init():
     app = Flask('testapp')
     ext = InvenioOAuth2Server(app)
     assert 'invenio-oauth2server' in app.extensions
+    assert ext.app is app
 
     app = Flask('testapp')
     ext = InvenioOAuth2Server()
     assert 'invenio-oauth2server' not in app.extensions
-    ext.init_app(app)
+    state = ext.init_app(app)
     assert 'invenio-oauth2server' in app.extensions
+    assert state.app is app
 
 
 def test_init_rest():

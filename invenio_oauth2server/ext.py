@@ -102,7 +102,7 @@ class InvenioOAuth2Server(object):
     def __init__(self, app=None, **kwargs):
         """Extension initialization."""
         if app:
-            self.init_app(app, **kwargs)
+            self._state = self.init_app(app, **kwargs)
 
     def init_app(self, app, entry_point_group='invenio_oauth2server.scopes',
                  **kwargs):
@@ -110,6 +110,7 @@ class InvenioOAuth2Server(object):
         self.init_config(app)
         state = _OAuth2ServerState(app, entry_point_group=entry_point_group)
         app.extensions['invenio-oauth2server'] = state
+        return state
 
     def init_config(self, app):
         """Initialize configuration."""
@@ -125,6 +126,10 @@ class InvenioOAuth2Server(object):
         for k in dir(config):
             if k.startswith('OAUTH2SERVER_') or k.startswith('OAUTH2_'):
                 app.config.setdefault(k, getattr(config, k))
+
+    def __getattr__(self, name):
+        """Proxy to state object."""
+        return getattr(self._state, name, None)
 
 
 def verify_oauth_token_and_set_current_user():
