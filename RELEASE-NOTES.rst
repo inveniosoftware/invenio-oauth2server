@@ -1,8 +1,8 @@
 ================================
- Invenio-OAuth2Server v1.0.0a10
+ Invenio-OAuth2Server v1.0.0a11
 ================================
 
-Invenio-OAuth2Server v1.0.0a10 was released on October 3, 2016.
+Invenio-OAuth2Server v1.0.0a11 was released on October 31, 2016.
 
 About
 -----
@@ -14,12 +14,12 @@ Invenio module that implements OAuth 2 server.
 What's new
 ----------
 
-- Refactores package.
+- Refactors package.
 
 Installation
 ------------
 
-   $ pip install invenio-oauth2server==1.0.0a10
+   $ pip install invenio-oauth2server==1.0.0a11
 
 Documentation
 -------------

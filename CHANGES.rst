@@ -24,10 +24,10 @@
 Changes
 =======
 
-Version 1.0.0a10 (released 2016-10-03)
+Version 1.0.0a11 (released 2016-10-31)
 --------------------------------------
 
-- Refactores package.
+- Refactors package.
 
 Version 0.2.0 (released 2015-10-06)
 -----------------------------------
