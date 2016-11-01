@@ -28,7 +28,7 @@ import sys
 from functools import wraps
 
 from flask import abort, request
-from flask_security import current_user
+from flask_login import current_user
 from six import reraise
 from werkzeug.exceptions import Unauthorized
 
