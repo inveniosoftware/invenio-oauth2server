@@ -32,8 +32,8 @@ import warnings
 import oauthlib.common as oauthlib_commmon
 import pkg_resources
 from flask import request
+from flask_login import current_user
 from flask_oauthlib.contrib.oauth2 import bind_cache_grant, bind_sqlalchemy
-from flask_security import current_user
 from invenio_db import db
 
 from . import config

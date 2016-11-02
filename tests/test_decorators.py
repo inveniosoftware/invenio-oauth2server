@@ -24,7 +24,7 @@
 
 """OAuth2Server decorators test cases."""
 
-from flask_security import url_for_security
+from flask import url_for
 
 
 def test_require_api_auth_oauthlib_urldecode_issue(resource_fixture):
@@ -128,7 +128,7 @@ def test_access_login_required(resource_fixture):
         assert 401 == res.status_code
         assert 'Set-Cookie' not in res.headers
         # login
-        res = client.post(url_for_security('login'), data=dict(
+        res = client.post(url_for('security.login'), data=dict(
             email='info@inveniosoftware.org',
             password='tester'
         ))
@@ -138,7 +138,7 @@ def test_access_login_required(resource_fixture):
         assert 200 == res.status_code
         assert 'Set-Cookie' not in res.headers
         # logout
-        res = client.get(url_for_security('logout'))
+        res = client.get(url_for('security.logout'))
         assert 302 == res.status_code
         # try to access to login_required zone (and pass)
         res = client.post(app.url_for_test3resource)

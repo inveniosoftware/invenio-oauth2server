@@ -28,7 +28,6 @@ from __future__ import absolute_import, print_function
 
 from flask import Blueprint, abort, jsonify, request, session, url_for
 from flask_oauthlib.client import OAuth, prepare_request
-from flask_security import url_for_security
 from mock import MagicMock
 from six.moves.urllib.parse import urlparse
 from werkzeug.urls import url_decode, url_parse, url_unparse
@@ -68,7 +67,7 @@ def parse_redirect(location, parse_fragment=False):
 
 def login(test_client, email='info@inveniosoftware.org', password='tester'):
     return test_client.post(
-        url_for_security('login'),
+        url_for('security.login'),
         data={
             'email': email,
             'password': password,
