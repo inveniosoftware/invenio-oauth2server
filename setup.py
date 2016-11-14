@@ -33,6 +33,7 @@ readme = open('README.rst').read()
 history = open('CHANGES.rst').read()
 
 tests_require = [
+    'SQLAlchemy-Continuum>=1.2.1',
     'check-manifest>=0.25',
     'coverage>=4.0',
     'isort>=4.2.2',
@@ -52,13 +53,13 @@ extras_require = {
         'redis>=2.10.5',
     ],
     'mysql': [
-        'invenio-db[mysql]>=1.0.0b2',
+        'invenio-db[mysql]>=1.0.0b3',
     ],
     'postgresql': [
-        'invenio-db[postgresql]>=1.0.0b2',
+        'invenio-db[postgresql]>=1.0.0b3',
     ],
     'sqlite': [
-        'invenio-db>=1.0.0b2',
+        'invenio-db>=1.0.0b3',
     ],
     'tests': tests_require,
 }
@@ -83,7 +84,7 @@ install_requires = [
     'Flask>=0.11.1',
     'SQLAlchemy-Utils[encrypted]>=0.31.0',
     'WTForms-Alchemy>=0.15.0',
-    'invenio-accounts>=1.0.0a15',
+    'invenio-accounts>=1.0.0b1',
     'six>=1.10.0',
     'oauthlib>=1.1.2,<2.0.0',  # FIXME compatiblity issue with 2.x version
 ]
@@ -124,6 +125,9 @@ setup(
             ' invenio_oauth2server.views.server:blueprint',
             'invenio_oauth2server_settings ='
             ' invenio_oauth2server.views.settings:blueprint',
+        ],
+        'invenio_db.alembic': [
+            'invenio_oauth2server = invenio_oauth2server:alembic',
         ],
         'invenio_db.models': [
             'invenio_oauth2server = invenio_oauth2server.models',
