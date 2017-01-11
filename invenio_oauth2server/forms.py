@@ -65,7 +65,7 @@ def scopes_multi_checkbox(field, **kwargs):
             field_id
         ))
         html.append(u'<input {0} /> '.format(widgets.html_params(**options)))
-        html.append(u'%s <br/><small class="text-muted">{0}</small>'.format(
+        html.append(u'{0} <br/><small class="text-muted">{1}</small>'.format(
             value, label.help_text
         ))
         html.append(u'</label></div>')
