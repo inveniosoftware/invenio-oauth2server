@@ -31,7 +31,6 @@ Run example development server:
 
    $ pip install -e .[all]
    $ cd examples
-   $ pip install -r requirements.txt
    $ export FLASK_APP=app.py
    $ flask db init
    $ flask db create

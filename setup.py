@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015, 2016 CERN.
+# Copyright (C) 2015, 2016, 2017 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -36,6 +36,7 @@ tests_require = [
     'SQLAlchemy-Continuum>=1.2.1',
     'check-manifest>=0.25',
     'coverage>=4.0',
+    'invenio-i18n>=1.0.0b2',
     'isort>=4.2.2',
     'mock>=1.3.0',
     'pydocstyle>=1.0.0',
@@ -46,8 +47,11 @@ tests_require = [
 ]
 
 extras_require = {
+    'admin': [
+        'invenio-admin>=1.0.0b1'
+    ],
     'docs': [
-        'Sphinx>=1.4.2',
+        'Sphinx>=1.5.1',
     ],
     'redis': [
         'redis>=2.10.5',
@@ -80,7 +84,7 @@ install_requires = [
     'Flask-Breadcrumbs>=0.3.0',
     'Flask-Login>=0.3.0',
     'Flask-OAuthlib>=0.9.3',
-    'Flask-WTF>=0.13',
+    'Flask-WTF==0.13.1',
     'Flask>=0.11.1',
     'SQLAlchemy-Utils[encrypted]>=0.31.0',
     'WTForms-Alchemy>=0.15.0',
@@ -156,6 +160,6 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: Implementation :: CPython',
-        'Development Status :: 1 - Planning',
+        'Development Status :: 4 - Beta',
     ],
 )
