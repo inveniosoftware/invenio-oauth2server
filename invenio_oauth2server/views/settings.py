@@ -257,3 +257,13 @@ def token_view(token):
         form=form,
         show_token=show_token,
     )
+
+
+@blueprint.route("/tokens/<string:token_id>/revoke/", methods=['GET', ])
+@login_required
+@token_getter(is_personal=False, is_internal=False)
+def token_revoke(token):
+    """Revoke Authorized Application token."""
+    db.session.delete(token)
+    db.session.commit()
+    return redirect(url_for('.index'))

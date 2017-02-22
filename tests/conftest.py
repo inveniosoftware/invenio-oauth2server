@@ -150,6 +150,44 @@ def settings_fixture(app):
 
 
 @pytest.fixture
+def developer_app_fixture(settings_fixture):
+    """Fixture for testing developer application use cases."""
+    settings_app = settings_fixture
+    with settings_app.app_context():
+        with db.session.begin_nested():
+            datastore = settings_app.extensions['security'].datastore
+            dev_user = datastore.create_user(
+                email='dev@inveniosoftware.org', password='dev', active=True
+            )
+
+            dev_client = Client(client_id='dev',
+                                client_secret='dev',
+                                name='Test name',
+                                description='Test description',
+                                is_confidential=False,
+                                user=dev_user,
+                                website='http://inveniosoftware.org',
+                                _redirect_uris='',
+                                _default_scopes='test:scope')
+
+            user = datastore.get_user('info@inveniosoftware.org')
+            user_token = Token(client=dev_client,
+                               user=user,
+                               token_type='bearer',
+                               access_token='dev_access_1',
+                               refresh_token='dev_refresh_1',
+                               expires=None,
+                               is_personal=False,
+                               is_internal=False,
+                               _scopes='test:scope')
+
+            db.session.add(dev_client)
+            db.session.add(user_token)
+        db.session.commit()
+    return settings_app
+
+
+@pytest.fixture
 def models_fixture(app):
     """Fixture that contains the test data for models tests."""
     from invenio_oauth2server.proxies import current_oauth2server
