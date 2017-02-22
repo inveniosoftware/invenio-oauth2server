@@ -32,7 +32,7 @@ import shutil
 import tempfile
 
 import pytest
-from flask import Flask, g, url_for
+from flask import Flask, url_for
 from flask.views import MethodView
 from flask_babelex import Babel
 from flask_breadcrumbs import Breadcrumbs
@@ -327,7 +327,7 @@ def expiration_fixture(provider_fixture):
 @pytest.fixture
 def resource_fixture(app, api_app):
     """Fixture that contains the test data for models tests."""
-    from flask import request
+    from flask import g, request
     from invenio_oauth2server.proxies import current_oauth2server
 
     # Setup API resources
