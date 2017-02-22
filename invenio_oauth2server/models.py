@@ -173,10 +173,13 @@ class Client(db.Model):
     )
     """Client application secret."""
 
-    is_confidential = db.Column(db.Boolean, default=True)
+    is_confidential = db.Column(
+        db.Boolean(name='is_confidential'),
+        default=True
+    )
     """Determine if client application is public or not."""
 
-    is_internal = db.Column(db.Boolean, default=False)
+    is_internal = db.Column(db.Boolean(name='is_internal'), default=False)
     """Determins if client application is an internal application."""
 
     _redirect_uris = db.Column(db.Text)
@@ -354,10 +357,10 @@ class Token(db.Model):
 
     _scopes = db.Column(db.Text)
 
-    is_personal = db.Column(db.Boolean, default=False)
+    is_personal = db.Column(db.Boolean(name='is_personal'), default=False)
     """Personal accesss token."""
 
-    is_internal = db.Column(db.Boolean, default=False)
+    is_internal = db.Column(db.Boolean(name='is_internal'), default=False)
     """Determines if token is an internally generated token."""
 
     @property

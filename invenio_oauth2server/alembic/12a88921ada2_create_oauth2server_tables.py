@@ -47,8 +47,14 @@ def upgrade():
         sa.Column('user_id', sa.Integer(), nullable=True),
         sa.Column('client_id', sa.String(length=255), nullable=False),
         sa.Column('client_secret', sa.String(length=255), nullable=False),
-        sa.Column('is_confidential', sa.Boolean(), nullable=True),
-        sa.Column('is_internal', sa.Boolean(), nullable=True),
+        sa.Column(
+            'is_confidential',
+            sa.Boolean(name='is_confidential'),
+            nullable=True),
+        sa.Column(
+            'is_internal',
+            sa.Boolean(name='is_internal'),
+            nullable=True),
         sa.Column('_redirect_uris', sa.Text(), nullable=True),
         sa.Column('_default_scopes', sa.Text(), nullable=True),
         sa.ForeignKeyConstraint(['user_id'], [u'accounts_user.id'], ),
@@ -76,8 +82,14 @@ def upgrade():
             nullable=True),
         sa.Column('expires', sa.DateTime(), nullable=True),
         sa.Column('_scopes', sa.Text(), nullable=True),
-        sa.Column('is_personal', sa.Boolean(), nullable=True),
-        sa.Column('is_internal', sa.Boolean(), nullable=True),
+        sa.Column(
+            'is_personal',
+            sa.Boolean(name='is_personal'),
+            nullable=True),
+        sa.Column(
+            'is_internal',
+            sa.Boolean(name='is_internal'),
+            nullable=True),
         sa.ForeignKeyConstraint(
             ['client_id'], [u'oauth2server_client.client_id'], ),
         sa.ForeignKeyConstraint(
