@@ -256,7 +256,7 @@ def test_refresh_flow(provider_fixture):
 
 def web_auth_flow(provider_fixture):
         app = provider_fixture
-        # Go to login - should redirect to oauth2 server for login an
+        # Go to login - should redirect to OAuth 2 server for login an
         # authorization
         with app.app_context():
             with app.test_client() as client:

@@ -28,12 +28,6 @@ API Docs
 .. automodule:: invenio_oauth2server.ext
    :members:
 
-Configuration
--------------
-
-.. automodule:: invenio_oauth2server.config
-   :members:
-
 Decorators
 ----------
 

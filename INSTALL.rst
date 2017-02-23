@@ -1,7 +1,7 @@
 Installation
 ============
 
-Invenio-OAuth2server is on PyPI so all you need is:
+Invenio-OAuth2Server is on PyPI so all you need is:
 
 .. code-block:: console
 
