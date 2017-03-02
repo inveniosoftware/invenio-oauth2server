@@ -176,7 +176,7 @@ def client_view(client):
         db.session.commit()
         return redirect(url_for('.index'))
 
-    form = ClientForm(request.form, client)
+    form = ClientForm(request.form, obj=client)
     if form.validate_on_submit():
         form.populate_obj(client)
         db.session.commit()
