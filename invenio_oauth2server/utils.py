@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015, 2016 CERN.
+# Copyright (C) 2017 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -22,34 +22,20 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-[aliases]
-test=pytest
+"""Utility function for handling SECRET_KEY changes."""
+from flask import current_app
+from invenio_db.utils import rebuild_encrypted_properties
 
-[build_sphinx]
-source-dir = docs/
-build-dir = docs/_build
-all_files = 1
+from invenio_oauth2server.models import Token
 
-[bdist_wheel]
-universal = 1
 
-[compile_catalog]
-directory = invenio_oauth2server/translations/
+def rebuild_access_tokens(old_key):
+    """Rebuild the access_token field when the SECRET_KEY is changed.
 
-[extract_messages]
-copyright_holder = CERN
-msgid_bugs_address = info@inveniosoftware.org
-mapping-file = babel.ini
-output-file = invenio_oauth2server/translations/messages.pot
-add-comments = NOTE
+    Needed to fix the access tokens used in the REST API calls.
 
-[init_catalog]
-input-file = invenio_oauth2server/translations/messages.pot
-output-dir = invenio_oauth2server/translations/
-
-[update_catalog]
-input-file = invenio_oauth2server/translations/messages.pot
-output-dir = invenio_oauth2server/translations/
-
-[pydocstyle]
-add_ignore = D401
+    :param old_key: the old SECRET_KEY.
+    """
+    current_app.logger.info('rebuilding Token.access_token...')
+    rebuild_encrypted_properties(old_key, Token,
+                                 ['access_token', 'refresh_token'])
