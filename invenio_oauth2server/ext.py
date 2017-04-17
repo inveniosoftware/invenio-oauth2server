@@ -104,7 +104,7 @@ class _OAuth2ServerState(object):
         :param entry_point_group: The entrypoint group name to load plugins.
         """
         for ep in pkg_resources.iter_entry_points(group=entry_point_group):
-            self.register_scope(ep.load())
+            self.register_scope(ep.load()())
 
 
 class InvenioOAuth2Server(object):
