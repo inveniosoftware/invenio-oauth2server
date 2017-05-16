@@ -25,7 +25,6 @@
 """Invenio module that implements OAuth 2 server."""
 
 import os
-import sys
 
 from setuptools import find_packages, setup
 
@@ -43,7 +42,7 @@ tests_require = [
     'pytest-cache>=1.0',
     'pytest-cov>=1.8.0',
     'pytest-pep8>=1.0.6',
-    'pytest>=2.8.0',
+    'pytest>=2.8.3',
 ]
 
 extras_require = {
@@ -57,13 +56,13 @@ extras_require = {
         'redis>=2.10.5',
     ],
     'mysql': [
-        'invenio-db[mysql]>=1.0.0b3',
+        'invenio-db[mysql]>=1.0.0b5',
     ],
     'postgresql': [
-        'invenio-db[postgresql]>=1.0.0b3',
+        'invenio-db[postgresql]>=1.0.0b5',
     ],
     'sqlite': [
-        'invenio-db>=1.0.0b3',
+        'invenio-db>=1.0.0b5',
     ],
     'tests': tests_require,
 }
@@ -88,7 +87,7 @@ install_requires = [
     'Flask>=0.11.1',
     'SQLAlchemy-Utils[encrypted]>=0.31.0',
     'WTForms-Alchemy>=0.15.0',
-    'invenio-accounts>=1.0.0b1',
+    'invenio-accounts>=1.0.0b3',
     'oauthlib>=1.1.2,!=2.0.0',
     'six>=1.10.0',
 ]
@@ -141,6 +140,10 @@ setup(
         ],
         'invenio_i18n.translations': [
             'messages = invenio_oauth2server',
+        ],
+        'invenio_base.secret_key': [
+            'invenio_oauth2server = '
+            'invenio_oauth2server.utils:rebuild_access_tokens',
         ],
     },
     extras_require=extras_require,
