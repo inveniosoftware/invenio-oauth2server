@@ -22,11 +22,20 @@
 # waive the privileges and immunities granted to it by virtue of its status
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
-"""Utility function for handling SECRET_KEY changes."""
+"""Utility functions."""
+
 from flask import current_app
+from flask_login import current_user
+from future.utils import raise_from
+from invenio_accounts.errors import JWTDecodeError as _JWTDecodeError
+from invenio_accounts.errors import JWTExpiredToken as _JWTExpiredToken
+from invenio_accounts.proxies import current_accounts
+from invenio_accounts.utils import jwt_decode_token
 from invenio_db.utils import rebuild_encrypted_properties
 
-from invenio_oauth2server.models import Token
+from .errors import JWTDecodeError, JWTExpiredToken, JWTInvalidHeaderError, \
+    JWTInvalidIssuer
+from .models import Token
 
 
 def rebuild_access_tokens(old_key):
@@ -39,3 +48,40 @@ def rebuild_access_tokens(old_key):
     current_app.logger.info('rebuilding Token.access_token...')
     rebuild_encrypted_properties(old_key, Token,
                                  ['access_token', 'refresh_token'])
+
+
+def jwt_verify_token(headers):
+    """Verify the JWT token.
+
+    :param dict headers: The request headers.
+    :returns: The token data.
+    :rtype: dict
+    """
+    # Get the token from headers
+    token = headers.get(
+        current_app.config['OAUTH2SERVER_JWT_AUTH_HEADER']
+    )
+    if token is None:
+        raise JWTInvalidHeaderError
+    # Get authentication type
+    authentication_type = \
+        current_app.config['OAUTH2SERVER_JWT_AUTH_HEADER_TYPE']
+    # Check if the type should be checked
+    if authentication_type is not None:
+        # Get the prefix and the token
+        prefix, token = token.split()
+        # Check if the type matches
+        if prefix != authentication_type:
+            raise JWTInvalidHeaderError
+
+    try:
+        # Get the token data
+        decode = jwt_decode_token(token)
+        # Check the integrity of the user
+        if current_user.get_id() != decode.get('sub'):
+            raise JWTInvalidIssuer
+        return decode
+    except _JWTDecodeError as exc:
+        raise_from(JWTDecodeError(), exc)
+    except _JWTExpiredToken as exc:
+        raise_from(JWTExpiredToken(), exc)
