@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015, 2016 CERN.
+# Copyright (C) 2015, 2016, 2017 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -73,16 +73,16 @@ from __future__ import absolute_import, print_function
 
 import os
 
-from flask import Flask
+from flask import Flask, render_template
 from flask_breadcrumbs import Breadcrumbs
-from flask_mail import Mail
-from flask_menu import Menu
 from flask_oauthlib.provider import OAuth2Provider
 from invenio_accounts import InvenioAccounts
 from invenio_accounts.views import blueprint as accounts_blueprint
 from invenio_admin import InvenioAdmin
+from invenio_assets import InvenioAssets
 from invenio_db import InvenioDB, db
 from invenio_i18n import InvenioI18N
+from invenio_theme import InvenioTheme
 
 from invenio_oauth2server import InvenioOAuth2Server, \
     InvenioOAuth2ServerREST, current_oauth2server, require_api_auth, \
@@ -105,15 +105,16 @@ app.config.update(
     SECURITY_PASSWORD_SCHEMES=['plaintext'],
     SECURITY_DEPRECATED_PASSWORD_SCHEMES=[],
     LOGIN_DISABLED=False,
+    TEMPLATE_AUTO_RELOAD=True,
     SQLALCHEMY_TRACK_MODIFICATIONS=True,
     SQLALCHEMY_DATABASE_URI=os.getenv('SQLALCHEMY_DATABASE_URI',
                                       'sqlite:///example.db'),
     I18N_LANGUAGES=[('fr', 'French'), ('de', 'German'), ('it', 'Italian'),
                     ('es', 'Spanish')],
 )
+InvenioAssets(app)
+InvenioTheme(app)
 InvenioI18N(app)
-Mail(app)
-Menu(app)
 Breadcrumbs(app)
 InvenioDB(app)
 InvenioAdmin(app)
@@ -134,11 +135,17 @@ with app.app_context():
     current_oauth2server.register_scope(Scope('test:scope'))
 
 
-@app.route('/', methods=['GET'])
+@app.route('/jwt', methods=['GET'])
+def jwt():
+    """JWT."""
+    return render_template('jwt.html')
+
+
+@app.route('/', methods=['GET', 'POST'])
 @require_api_auth()
 @require_oauth_scopes('test:scope')
-def example():
-    """Index."""
+def index():
+    """Protected endpoint."""
     return 'hello world'
 
 

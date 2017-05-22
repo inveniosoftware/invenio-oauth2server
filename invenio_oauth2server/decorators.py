@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015, 2016 CERN.
+# Copyright (C) 2015, 2016, 2017 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -27,12 +27,14 @@
 import sys
 from functools import wraps
 
-from flask import abort, request
+from flask import abort, current_app, request
 from flask_login import current_user
 from six import reraise
 from werkzeug.exceptions import Unauthorized
 
 from .provider import oauth2
+from .proxies import current_oauth2server
+from .utils import jwt_authorization_header, jwt_verify_token
 
 
 def require_api_auth(allow_anonymous=False):
@@ -49,6 +51,10 @@ def require_api_auth(allow_anonymous=False):
         def decorated(*args, **kwargs):
             """Require OAuth 2.0 Authentication."""
             if current_user.is_authenticated:
+                if current_app.config['OAUTH2SERVER_JWT_ENABLE']:
+                    # Verify the token
+                    current_oauth2server.jwt_veryfication_factory(
+                        request.headers)
                 # fully logged in with normal session
                 return f(*args, **kwargs)
             else:

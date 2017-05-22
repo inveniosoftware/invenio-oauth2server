@@ -110,3 +110,12 @@ def test_alembic(app):
 
         assert not ext.alembic.compare_metadata()
         ext.alembic.downgrade(target='96e796392533')
+
+
+def test_jwt_init():
+    """Test extension initialization."""
+    app = Flask('testapp')
+    ext = InvenioOAuth2Server(app)
+    assert 'invenio-oauth2server' in app.extensions
+    assert ext.app.config.get('OAUTH2SERVER_JWT_SECRET_KEY') == \
+        ext.app.config.get('SECRET_KEY')
