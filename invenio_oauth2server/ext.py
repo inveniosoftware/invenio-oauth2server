@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015, 2016 CERN.
+# Copyright (C) 2015, 2016, 2017 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -31,10 +31,12 @@ import warnings
 
 import oauthlib.common as oauthlib_commmon
 import pkg_resources
+import six
 from flask import request
 from flask_login import current_user
 from flask_oauthlib.contrib.oauth2 import bind_cache_grant, bind_sqlalchemy
 from invenio_db import db
+from werkzeug.utils import cached_property, import_string
 
 from . import config
 from .models import Client, OAuthUserProxy, Scope
@@ -106,6 +108,33 @@ class _OAuth2ServerState(object):
         for ep in pkg_resources.iter_entry_points(group=entry_point_group):
             self.register_scope(ep.load())
 
+    def load_obj_or_import_string(self, value):
+        """Import string or return object.
+
+        :params value: Import path or class object to instantiate.
+        :params default: Default object to return if the import fails.
+        :returns: The imported object.
+        """
+        imp = self.app.config.get(value)
+        if isinstance(imp, six.string_types):
+            return import_string(imp)
+        elif imp:
+            return imp
+
+    @cached_property
+    def jwt_veryfication_factory(self):
+        """Load default JWT veryfication factory."""
+        return self.load_obj_or_import_string(
+            'OAUTH2SERVER_JWT_VERYFICATION_FACTORY'
+        )
+
+    @cached_property
+    def jwt_creation_factory(self):
+        """Load default JWT creation factory."""
+        return self.load_obj_or_import_string(
+            'OAUTH2SERVER_JWT_CREATION_FACTORY'
+        )
+
 
 class InvenioOAuth2Server(object):
     """Invenio-OAuth2Server extension."""
@@ -128,6 +157,12 @@ class InvenioOAuth2Server(object):
         """
         self.init_config(app)
         state = _OAuth2ServerState(app, entry_point_group=entry_point_group)
+
+        if app.config['OAUTH2SERVER_JWT_DOM_TOKEN']:
+            from invenio_oauth2server.context_processors.jwt import \
+                jwt_proccessor
+            app.context_processor(jwt_proccessor)
+
         app.extensions['invenio-oauth2server'] = state
         return state
 
@@ -144,6 +179,10 @@ class InvenioOAuth2Server(object):
             'OAUTH2SERVER_SETTINGS_TEMPLATE',
             app.config.get('SETTINGS_TEMPLATE',
                            'invenio_oauth2server/settings/base.html'))
+        app.config.setdefault(
+            'OAUTH2SERVER_JWT_SECRET_KEY',
+            app.config.get('OAUTH2SERVER_JWT_SECRET_KEY',
+                           app.config.get('SECRET_KEY')))
 
         for k in dir(config):
             if k.startswith('OAUTH2SERVER_') or k.startswith('OAUTH2_'):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2014, 2015, 2016 CERN.
+# Copyright (C) 2014, 2015, 2016, 2017 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -23,6 +23,8 @@
 # as an Intergovernmental Organization or submit itself to any jurisdiction.
 
 """OAuth2Server configuration variables."""
+
+from datetime import timedelta
 
 OAUTH2_CACHE_TYPE = 'redis'
 """Type of cache to use for storing the temporary grant token."""
@@ -73,3 +75,96 @@ OAUTH2SERVER_ALLOWED_URLENCODE_CHARACTERS = '=&;:%+~,*@!()/?'
     <invenio_oauth2server.ext.InvenioOAuth2ServerREST.monkeypatch_oauthlib_urlencode_chars>`
     for a full explanation.
 """
+
+OAUTH2SERVER_JWT_ENABLE = True
+"""Enable JWT support.
+
+.. note::
+
+    More details about `JWT <https://jwt.io>`_
+"""
+
+OAUTH2SERVER_JWT_DOM_TOKEN = True
+"""Register JTW context processor.
+
+.. code-block:: html
+
+    {% if current_user.is_authenticated %}
+        {{ jwt() | safe }}
+    {% endif %}
+
+This will generate a ``hidden`` field as follows:
+
+.. code-block:: html
+
+    <input type="hidden" name="authorized_token" value="xxx">
+
+On your API call you can use it with simple javascript, an example using
+``jQuery`` is the following:
+
+.. code-block:: javascript
+
+    $.ajax({
+        url: '/example',
+        method: 'POST',
+        beforeSend: function(request) {
+            request.setRequestHeader(
+                'Authorization',
+                'Bearer ' + $('[name=authorized_token]').val()
+            );
+        },
+    });
+"""
+
+OAUTH2SERVER_JWT_DOM_TOKEN_TEMPLATE = 'invenio_oauth2server/jwt.html'
+"""Template for the context processor."""
+
+OAUTH2SERVER_JWT_SECRET_KEY = None
+"""Secret key for JWT.
+
+.. note::
+
+    If is set to ``None`` it will use the ``SECRET_KEY``.
+"""
+
+OAUTH2SERVER_JWT_AUTH_HEADER = 'Authorization'
+"""Header for the JWT.
+
+.. note::
+
+    Authorization: Bearer xxx
+"""
+
+OAUTH2SERVER_JWT_AUTH_HEADER_TYPE = 'Bearer'
+"""Header Authorization type.
+
+.. note::
+
+    By default the authorization type is ``Bearer`` as recommented by
+    `JWT  <https://jwt.io>`_
+"""
+
+OAUTH2SERVER_JWT_EXPIRATION_DELTA = timedelta(days=1)
+"""Token expiration period for JWT."""
+
+OAUTH2SERVER_JWT_ALOGORITHM = 'HS256'
+"""Set JWT encryption alogirthm.
+
+.. note::
+
+   `Available aglorithms
+   <https://pyjwt.readthedocs.io/en/latest/algorithms.html>`_
+"""
+
+OAUTH2SERVER_JWT_VERYFICATION_FACTORY = 'invenio_oauth2server.utils:' \
+    'jwt_verify_token'
+"""Import path of factory used to verify JWT.
+
+.. note::
+
+    Accepts the request ``headers`` as parameter.
+"""
+
+OAUTH2SERVER_JWT_CREATION_FACTORY = 'invenio_oauth2server.utils:' \
+    'jwt_create_token'
+"""Import path of factory used to generate JWT."""

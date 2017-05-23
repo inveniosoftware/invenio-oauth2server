@@ -66,6 +66,7 @@ def app(request):
             LOGIN_DISABLED=False,
             MAIL_SUPPRESS_SEND=True,
             OAUTH2_CACHE_TYPE='simple',
+            OAUTH2SERVER_JWT_ENABLE=False,
             OAUTHLIB_INSECURE_TRANSPORT=True,
             SECRET_KEY='CHANGE_ME',
             SECURITY_DEPRECATED_PASSWORD_SCHEMES=[],

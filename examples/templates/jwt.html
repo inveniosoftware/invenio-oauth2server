@@ -1,0 +1,53 @@
+{%- extends 'invenio_theme/page.html' %}
+
+{%- block page_body %}
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('.hideme').hide();
+      $('#correct').on('click', function() {
+        $('.hideme').hide();
+        var $btn = $(this).button('loading');
+        $.ajax({
+          url: '/',
+          method: 'POST',
+          beforeSend: function(request) {
+           request.setRequestHeader("Authorization", 'Bearer ' + $('[name=authorized_token]').val());
+         },
+       }).success(function(response) {
+          $('.alert-success').text(response);
+          $('.alert-success').show();
+          $btn.button('reset');
+       })
+     });
+     $('#wrong').on('click', function() {
+      $('.hideme').hide();
+       var $btn = $(this).button('loading');
+       $.ajax({
+         dataType: 'json',
+         url: '/',
+      }).error(function(response) {
+        var data = jQuery.parseJSON(response.responseText)
+         $('.alert-danger').text(data.message);
+         $('.alert-danger').show();
+         $btn.button('reset');
+      })
+     })
+    })
+</script>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <a class="btn btn-success" href="javascript:void(0)" id="correct">Call API with JWT</a>
+      <a class="btn btn-danger" href="javascript:void(0)" id="wrong">Call API witouth JWT</a>
+    </div>
+    <div class="col-md-12">
+      <hr />
+      <div class="hideme alert alert-danger"></div>
+      <div class="hideme alert alert-success"></div>
+      {% if current_user.is_authenticated %}
+        {{ jwt() | safe }}
+      {% endif %}
+    </div>
+  </div>
+</div>
+{%- endblock %}

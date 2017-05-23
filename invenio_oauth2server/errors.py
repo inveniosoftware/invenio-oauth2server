@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015 CERN.
+# Copyright (C) 2015, 2017 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -24,6 +24,8 @@
 
 """Errors raised by Invenio-OAuth2Server."""
 
+from invenio_rest.errors import RESTException
+
 
 class OAuth2ServerError(Exception):
     """Base class for errors in oauth2server module."""
@@ -36,3 +38,44 @@ class ScopeDoesNotExists(OAuth2ServerError):
         """Initialize exception by storing invalid scope."""
         super(ScopeDoesNotExists, self).__init__(*args, **kwargs)
         self.scope = scope
+
+
+class JWTExtendedException(RESTException):
+    """Base exception for all JWT errors."""
+
+    code = 500
+
+
+class JWTDecodeError(JWTExtendedException):
+    """Exception raised when decoding is failed."""
+
+    code = 400
+    description = 'The JWT token has invalid format.'
+
+
+class JWTInvalidIssuer(JWTExtendedException):
+    """Exception raised when the user is not valid."""
+
+    code = 403
+    description = 'The JWT token is not valid.'
+
+
+class JWTExpiredToken(JWTExtendedException):
+    """Exception raised when JWT is expired."""
+
+    code = 403
+    description = 'The JWT token is expired.'
+
+
+class JWTInvalidHeaderError(JWTExtendedException):
+    """Exception raised when header argument is missing."""
+
+    code = 400
+    description = 'Missing required header argument.'
+
+
+class JWTNoAuthorizationError(JWTExtendedException):
+    """Exception raised when permission denied."""
+
+    code = 400
+    description = "The JWT token is not valid."
