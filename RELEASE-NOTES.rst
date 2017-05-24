@@ -1,8 +1,8 @@
 ================================
- Invenio-OAuth2Server v1.0.0a15
+ Invenio-OAuth2Server v1.0.0a16
 ================================
 
-Invenio-OAuth2Server v1.0.0a15 was released on March 3, 2017.
+Invenio-OAuth2Server v1.0.0a16 was released on May 24, 2017.
 
 About
 -----
@@ -19,7 +19,7 @@ What's new
 Installation
 ------------
 
-   $ pip install invenio-oauth2server==1.0.0a15
+   $ pip install invenio-oauth2server==1.0.0a16
 
 Documentation
 -------------
