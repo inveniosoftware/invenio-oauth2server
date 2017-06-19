@@ -54,10 +54,6 @@ class _OAuth2ServerState(object):
         # Initialize OAuth2 provider
         oauth2.init_app(app)
 
-        # Configures the OAuth2 provider to use the SQLALchemy models for
-        # getters and setters for user, client and tokens.
-        bind_sqlalchemy(oauth2, db.session, client=Client)
-
         # Flask-OAuthlib does not support CACHE_REDIS_URL
         if app.config['OAUTH2_CACHE_TYPE'] == 'redis' and app.config.get(
                 'CACHE_REDIS_URL'):

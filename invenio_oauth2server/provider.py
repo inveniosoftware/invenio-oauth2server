@@ -52,7 +52,7 @@ def get_user(email, password, *args, **kwargs):
     :returns: The user instance or ``None``.
     """
     user = datastore.find_user(email=email)
-    if user and verify_password(password, user.password):
+    if user and user.active and verify_password(password, user.password):
         return user
 
 
@@ -69,21 +69,38 @@ def get_token(access_token=None, refresh_token=None):
     """
     if access_token:
         t = Token.query.filter_by(access_token=access_token).first()
-        if t and t.is_personal:
+        if t and t.is_personal and t.user.active:
             t.expires = datetime.utcnow() + timedelta(
                 seconds=int(current_app.config.get(
                     'OAUTH2_PROVIDER_TOKEN_EXPIRES_IN'
                 ))
             )
-        return t
     elif refresh_token:
-        return Token.query.join(Token.client).filter(
+        t = Token.query.join(Token.client).filter(
             Token.refresh_token == refresh_token,
             Token.is_personal == False,  # noqa
             Client.is_confidential == True,
         ).first()
     else:
         return None
+    return t if t and t.user.active else None
+
+
+@oauth2.clientgetter
+def get_client(client_id):
+    """Load the client.
+
+    Needed for grant_type client_credentials.
+
+    Add support for OAuth client_credentials access type, with user
+    inactivation support.
+
+    :param client_id: The client ID.
+    :returns: The client instance or ``None``.
+    """
+    client = Client.query.get(client_id)
+    if client and client.user.active:
+        return client
 
 
 @oauth2.tokensetter
