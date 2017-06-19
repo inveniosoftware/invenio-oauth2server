@@ -280,6 +280,10 @@ def provider_fixture(app):
                 email='abuse@inveniosoftware.org', password='tester2',
                 active=True
             )
+            user3 = datastore.create_user(
+                email='inactive@inveniosoftware.org', password='tester3',
+                active=False
+            )
 
             c1 = Client(client_id='dev',
                         client_secret='dev',
@@ -303,16 +307,36 @@ def provider_fixture(app):
                         ),
                         _default_scopes='test:scope'
                         )
+            # Same as 'c2' but user belonging to a user that's inactive
+            c3 = Client(client_id='confidential-user-inactive',
+                        client_secret='confidential-user-inactive',
+                        name='confidential-user-inactive',
+                        description='',
+                        is_confidential=True,
+                        user=user3,
+                        _redirect_uris=url_for(
+                            'oauth2test.authorized', _external=True
+                        ),
+                        _default_scopes='test:scope'
+                        )
             db.session.add(c1)
             db.session.add(c2)
+            db.session.add(c3)
         personal_token = Token.create_personal('test-personal',
                                                user1.id,
                                                scopes=[],
                                                is_internal=True)
+
+        personal_token3 = Token.create_personal('test-personal',
+                                                user3.id,
+                                                scopes=[],
+                                                is_internal=True)
         db.session.commit()
 
         app.user1_id = user1.id
+        app.user3_id = user3.id
         app.personal_token = personal_token.access_token
+        app.personal_token3 = personal_token3.access_token
     return app
 
 

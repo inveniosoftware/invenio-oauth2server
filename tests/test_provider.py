@@ -31,6 +31,7 @@ from datetime import datetime, timedelta
 import pytest
 from flask import json, url_for
 from helpers import login, parse_redirect
+from invenio_accounts.models import User
 from invenio_db import db
 
 from invenio_oauth2server.ext import InvenioOAuth2ServerREST
@@ -430,6 +431,60 @@ def test_client_flow(provider_fixture):
             assert json.loads(r.get_data()).get('user') == app.user1_id
             assert json.loads(r.get_data()).get('scopes') == [u'test:scope']
 
+            data = dict(
+                client_id='confidential-user-inactive',
+                client_secret='confidential-user-inactive',
+                grant_type='client_credentials',
+                scope='test:scope',
+            )
+
+            # Retrieve access token using client_credentials
+            # belonging to an inactive user
+            r = client.post(url_for(
+                'invenio_oauth2server.access_token'
+            ), data=data)
+            assert r.status_code == 401
+
+            # Activate the client owner temporarily and request the token
+            user = User.query.filter_by(
+                email='inactive@inveniosoftware.org').first()
+            user.active = True
+            db.session.commit()
+
+            # Retrieve access token using client_credentials
+            r = client.post(url_for(
+                'invenio_oauth2server.access_token'
+            ), data=data)
+            assert r.status_code == 200
+
+            data = json.loads(r.get_data())
+            assert data['access_token']
+            assert data['token_type'] == 'Bearer'
+            assert data['scope'] == 'test:scope'
+            assert data.get('refresh_token') is None
+
+            # As before, authentication flow has now been completed, client can
+            # use the access token to make request to the provider.
+            r = client.get(url_for('invenio_oauth2server.info',
+                                   access_token=data['access_token']))
+            assert r.status_code == 200
+            assert json.loads(r.get_data()).get('client') == \
+                'confidential-user-inactive'
+            assert json.loads(r.get_data()).get('user') == app.user3_id
+            assert json.loads(r.get_data()).get('scopes') == [u'test:scope']
+
+            # Inactivate the client owner again
+            user = User.query.filter_by(
+                email='inactive@inveniosoftware.org').first()
+            user.active = False
+            db.session.commit()
+
+            # Token is invalid because the client owner account has been
+            # deactivated
+            r = client.get(url_for('invenio_oauth2server.info',
+                                   access_token=data['access_token']))
+            assert r.status_code == 401
+
 
 def test_auth_flow_denied(provider_fixture):
     app = provider_fixture
@@ -481,6 +536,14 @@ def test_personal_access_token(provider_fixture):
                 url_for('invenio_oauth2server.info'),
                 query_string="access_token={0}".format(
                     app.personal_token),
+            )
+            assert r.status_code == 401
+
+            # Access token of a user that is inactive
+            r = client.get(
+                url_for('invenio_oauth2server.ping'),
+                query_string="access_token={0}".format(
+                    app.personal_token3)
             )
             assert r.status_code == 401
 
@@ -570,7 +633,7 @@ def test_settings_index(provider_fixture):
     with app.test_request_context():
         with app.test_client() as client:
             # Create a remote account (linked account)
-            r = client.get(
+            client.get(
                 url_for('invenio_oauth2server_settings.index'),
                 follow_redirects=True,
             )
@@ -877,6 +940,13 @@ def test_password_grant_type(provider_fixture):
 
             data['password'] = 'invalid'
 
+            r = client.post(url_for(
+                'invenio_oauth2server.access_token'
+            ), data=data)
+            assert r.status_code == 401
+
+            data['username'] = 'inactive@inveniosoftware.org'
+            data['password'] = 'tester3'
             r = client.post(url_for(
                 'invenio_oauth2server.access_token'
             ), data=data)
