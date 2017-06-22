@@ -34,6 +34,7 @@ def _(x):
     """Identity."""
     return x
 
+
 class ClientView(ModelView):
     """View for managing access to actions by users."""
 
