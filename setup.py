@@ -119,6 +119,12 @@ setup(
     include_package_data=True,
     platforms='any',
     entry_points={
+        'invenio_admin.views': [
+            'invenio_oauth2server_clients_adminview = '
+            'invenio_oauth2server.admin:oauth2server_clients_adminview',
+            'invenio_oauth2server_tokens_adminview = '
+            'invenio_oauth2server.admin:oauth2server_tokens_adminview',
+        ],
         'invenio_base.apps': [
             'invenio_oauth2server = invenio_oauth2server:InvenioOAuth2Server',
         ],
