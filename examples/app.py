@@ -64,7 +64,6 @@ Make a request to test the token:
 
 Or, if you are logged in through the browser, try to open the homepage with it:
 
-
 .. code-block:: console
 
    $ open http://0.0.0.0:5000/
@@ -120,16 +119,21 @@ InvenioTheme(app)
 InvenioI18N(app)
 Breadcrumbs(app)
 InvenioDB(app)
-InvenioAdmin(app)
+InvenioAdmin(
+    app,
+    # Disable permission checks
+    permission_factory=lambda x: x, view_class_factory=lambda x: x
+)
 OAuth2Provider(app)
 InvenioOAuth2ServerREST(app)
 
 accounts = InvenioAccounts(app)
+
 app.register_blueprint(accounts_blueprint)
 
 InvenioOAuth2Server(app)
 
-# register blueprints
+# Register blueprints
 app.register_blueprint(settings_blueprint)
 app.register_blueprint(server_blueprint)
 

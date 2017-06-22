@@ -42,6 +42,7 @@ recursive-include docs Makefile
 recursive-include examples *.py
 recursive-include examples *.txt
 recursive-include examples *.html
+recursive-include examples *.sh
 recursive-include invenio_oauth2server *.html
 recursive-include invenio_oauth2server *.mo
 recursive-include invenio_oauth2server *.po
