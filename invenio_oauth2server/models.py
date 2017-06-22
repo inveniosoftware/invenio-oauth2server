@@ -163,8 +163,8 @@ class Client(db.Model):
     )
 
     user_id = db.Column(
-        db.ForeignKey(User.id, ondelete='CASCADE'),
-        nullable=True)
+        db.ForeignKey(User.id, ondelete='CASCADE',),
+        nullable=True, index=True)
     """Creator of the client application."""
 
     client_id = db.Column(db.String(255), primary_key=True)
@@ -311,7 +311,7 @@ class Token(db.Model):
     client_id = db.Column(
         db.String(255),
         db.ForeignKey(Client.client_id, ondelete='CASCADE'),
-        nullable=False,
+        nullable=False, index=True
     )
     """Foreign key to client application."""
 
@@ -324,7 +324,8 @@ class Token(db.Model):
     """SQLAlchemy relationship to client application."""
 
     user_id = db.Column(
-        db.Integer, db.ForeignKey(User.id, ondelete='CASCADE'), nullable=True
+        db.Integer, db.ForeignKey(User.id, ondelete='CASCADE'), nullable=True,
+        index=True
     )
     """Foreign key to user."""
 
