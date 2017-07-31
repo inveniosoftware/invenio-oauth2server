@@ -25,6 +25,8 @@
 
 r"""Minimal Flask application example for development.
 
+SPHINX-START
+
 Run example development server:
 
 .. code-block:: console
@@ -67,6 +69,7 @@ Or, if you are logged in through the browser, try to open the homepage with it:
 
    $ open http://0.0.0.0:5000/
 
+SPHINX-END
 """
 
 from __future__ import absolute_import, print_function
