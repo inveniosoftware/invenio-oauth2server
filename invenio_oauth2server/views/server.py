@@ -39,6 +39,7 @@ from oauthlib.oauth2.rfc6749.errors import InvalidClientError, OAuth2Error
 from ..models import Client
 from ..provider import oauth2
 from ..proxies import current_oauth2server
+from ..signals import login_via_oauth2
 
 blueprint = Blueprint(
     'invenio_oauth2server',
@@ -52,6 +53,7 @@ blueprint = Blueprint(
 @oauth2.after_request
 def login_oauth2_user(valid, oauth):
     """Log in a user after having been verified."""
+    login_via_oauth2.send(current_app)
     if valid:
         _request_ctx_stack.top.user = oauth.user
         identity_changed.send(current_app._get_current_object(),
