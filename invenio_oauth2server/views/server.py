@@ -53,12 +53,11 @@ blueprint = Blueprint(
 @oauth2.after_request
 def login_oauth2_user(valid, oauth):
     """Log in a user after having been verified."""
-    login_via_oauth2.send(current_app)
     if valid:
         _request_ctx_stack.top.user = oauth.user
         identity_changed.send(current_app._get_current_object(),
                               identity=Identity(oauth.user.id))
-
+    login_via_oauth2.send(current_app._get_current_object())
     return valid, oauth
 
 
