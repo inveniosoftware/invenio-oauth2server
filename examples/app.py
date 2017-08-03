@@ -33,11 +33,10 @@ Run example development server:
 
    $ pip install -e .[all]
    $ cd examples
-   $ export FLASK_APP=app.py
-   $ flask db init
-   $ flask db create
-   $ flask fixtures users
-   $ flask run
+   $ cd examples
+   $ ./app-setup.sh
+   $ ./app-fixtures.sh
+   $ FLASK_APP=app.py flask run
 
 Open the admin page to generate a token:
 
@@ -66,7 +65,7 @@ Or, if you are logged in through the browser, try to open the homepage with it:
 
 .. code-block:: console
 
-   $ open http://0.0.0.0:5000/
+   $ open http://0.0.0.0:5000/jwt
 
 SPHINX-END
 """
@@ -78,11 +77,13 @@ import os
 from flask import Flask, render_template
 from flask_breadcrumbs import Breadcrumbs
 from flask_oauthlib.provider import OAuth2Provider
-from invenio_accounts import InvenioAccounts
-from invenio_accounts.views import blueprint as accounts_blueprint
+from invenio_access import InvenioAccess
+from invenio_accounts import InvenioAccountsREST, InvenioAccountsUI
+from invenio_accounts.views import blueprint as blueprint_account
 from invenio_admin import InvenioAdmin
+from invenio_admin.views import blueprint as blueprint_admin_ui
 from invenio_assets import InvenioAssets
-from invenio_db import InvenioDB, db
+from invenio_db import InvenioDB
 from invenio_i18n import InvenioI18N
 from invenio_theme import InvenioTheme
 
@@ -119,23 +120,21 @@ InvenioTheme(app)
 InvenioI18N(app)
 Breadcrumbs(app)
 InvenioDB(app)
-InvenioAdmin(
-    app,
-    # Disable permission checks
-    permission_factory=lambda x: x, view_class_factory=lambda x: x
-)
+InvenioAdmin(app)
+InvenioAccess(app)
 OAuth2Provider(app)
 InvenioOAuth2ServerREST(app)
 
-accounts = InvenioAccounts(app)
-
-app.register_blueprint(accounts_blueprint)
+accounts = InvenioAccountsUI(app)
+InvenioAccountsREST(app)
+app.register_blueprint(blueprint_account)
 
 InvenioOAuth2Server(app)
 
 # Register blueprints
 app.register_blueprint(settings_blueprint)
 app.register_blueprint(server_blueprint)
+app.register_blueprint(blueprint_admin_ui)
 
 with app.app_context():
     # Register a test scope
@@ -154,24 +153,3 @@ def jwt():
 def index():
     """Protected endpoint."""
     return 'hello world'
-
-
-@app.cli.group()
-def fixtures():
-    """Command for working with test data."""
-
-
-@fixtures.command()
-def users():
-    """Load user fixtures."""
-    accounts.datastore.create_user(
-        email='admin@inveniosoftware.org',
-        password='123456',
-        active=True,
-    )
-    accounts.datastore.create_user(
-        email='reader@inveniosoftware.org',
-        password='123456',
-        active=True,
-    )
-    db.session.commit()

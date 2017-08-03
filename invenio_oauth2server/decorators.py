@@ -27,7 +27,7 @@
 import sys
 from functools import wraps
 
-from flask import abort, current_app, request
+from flask import abort, current_app, request, session
 from flask_login import current_user
 from six import reraise
 from werkzeug.exceptions import Unauthorized
@@ -49,7 +49,11 @@ def require_api_auth(allow_anonymous=False):
         @wraps(f)
         def decorated(*args, **kwargs):
             """Require OAuth 2.0 Authentication."""
-            if current_user.is_authenticated:
+            if not hasattr(current_user, 'login_via_oauth2'):
+                if not current_user.is_authenticated:
+                    if allow_anonymous:
+                        return f(*args, **kwargs)
+                    abort(401)
                 if current_app.config['ACCOUNTS_JWT_ENABLE']:
                     # Verify the token
                     current_oauth2server.jwt_veryfication_factory(
@@ -58,12 +62,7 @@ def require_api_auth(allow_anonymous=False):
                 return f(*args, **kwargs)
             else:
                 # otherwise, try oauth2
-                try:
-                    return f_oauth_required(*args, **kwargs)
-                except Unauthorized:
-                    if allow_anonymous:
-                        return f(*args, **kwargs)
-                    reraise(*sys.exc_info())
+                return f_oauth_required(*args, **kwargs)
         return decorated
     return wrapper
 
