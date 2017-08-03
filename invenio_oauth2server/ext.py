@@ -42,7 +42,6 @@ from werkzeug.utils import cached_property, import_string
 from . import config
 from .models import Client, OAuthUserProxy, Scope
 from .provider import oauth2
-from .signals import login_via_oauth2
 
 
 class _OAuth2ServerState(object):
@@ -148,17 +147,6 @@ class InvenioOAuth2Server(object):
         """
         self.init_config(app)
 
-        class CustomSessionInterface(KVSessionInterface):
-            """Prevent creating session from API requests."""
-
-            def save_session(self, *args, **kwargs):
-                """Save session disabling cookies for login via headers."""
-                if session.get('login_via_oauth2'):
-                    return
-                return super(CustomSessionInterface, self).save_session(
-                    *args, **kwargs)
-
-        app.session_interface = CustomSessionInterface()
         state = _OAuth2ServerState(app, entry_point_group=entry_point_group)
 
         app.extensions['invenio-oauth2server'] = state
