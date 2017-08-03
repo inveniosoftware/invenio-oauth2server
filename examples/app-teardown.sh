@@ -10,3 +10,4 @@ flask db drop --yes-i-know
 
 # clean environment
 [ -e "$DIR/instance" ] && rm -Rf $DIR/instance
+[ -e "$DIR/static" ] && rm -Rf $DIR/static

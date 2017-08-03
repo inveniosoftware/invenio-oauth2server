@@ -29,8 +29,6 @@ from datetime import datetime
 from flask import url_for
 from invenio_accounts.proxies import current_accounts
 
-from invenio_oauth2server.utils import rebuild_access_tokens
-
 
 def test_require_api_auth_oauthlib_urldecode_issue(resource_fixture):
     app = resource_fixture
@@ -128,6 +126,7 @@ def test_access_login_required(resource_fixture):
         # try to access a scope protected zone (and fail)
         res = client.post(app.url_for_test2resource_token_noscope)
         assert 403 == res.status_code
+        assert 'Set-Cookie' not in res.headers
         # try to access to login_required zone (and redirected to login)
         res = client.post(app.url_for_test3resource)
         assert 401 == res.status_code
@@ -142,17 +141,21 @@ def test_access_login_required(resource_fixture):
         res = client.get(url_for('security.logout'))
         assert 302 == res.status_code
 
+        res = client.post(app.url_for_test2resource)
+        assert 401 == res.status_code
+        assert 'Set-Cookie' not in res.headers
+
         # try to access to login_required zone (and pass)
         res = client.post(app.url_for_test2resource_token)
         assert 200 == res.status_code
         assert 'Set-Cookie' not in res.headers
-        # try to access to login_required zone (and pass)
+        # try to access to login_required zone (and not pass)
         res = client.post(app.url_for_test3resource)
         assert 401 == res.status_code
         assert 'Set-Cookie' not in res.headers
 
 
-def test_jwt_client(resource_fixture):
+def test_jwt_client(resource_fixture, api_app):
     """Test client."""
     app = resource_fixture
     # Enable JWT
@@ -226,8 +229,8 @@ def test_jwt_client(resource_fixture):
             as_text=True)
 
         # Check different header type
-        app.config['OAUTH2SERVER_JWT_AUTH_HEADER'] = 'X-Travis-Mark-XLII'
-        app.config['OAUTH2SERVER_JWT_AUTH_HEADER_TYPE'] = None
+        api_app.config['OAUTH2SERVER_JWT_AUTH_HEADER'] = 'X-Travis-Mark-XLII'
+        api_app.config['OAUTH2SERVER_JWT_AUTH_HEADER_TYPE'] = None
         # Create token
         token = current_accounts.jwt_creation_factory()
         # Make the request

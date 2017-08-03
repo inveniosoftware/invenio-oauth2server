@@ -24,19 +24,17 @@
 
 """Utility functions."""
 
-from flask import current_app, session
+from flask import current_app
 from flask_login import current_user
 from future.utils import raise_from
 from invenio_accounts.errors import JWTDecodeError as _JWTDecodeError
 from invenio_accounts.errors import JWTExpiredToken as _JWTExpiredToken
-from invenio_accounts.proxies import current_accounts
 from invenio_accounts.utils import jwt_decode_token
 from invenio_db.utils import rebuild_encrypted_properties
 
 from .errors import JWTDecodeError, JWTExpiredToken, JWTInvalidHeaderError, \
     JWTInvalidIssuer
 from .models import Token
-from .signals import login_via_oauth2
 
 
 def rebuild_access_tokens(old_key):
@@ -49,12 +47,6 @@ def rebuild_access_tokens(old_key):
     current_app.logger.info('rebuilding Token.access_token...')
     rebuild_encrypted_properties(old_key, Token,
                                  ['access_token', 'refresh_token'])
-
-
-@login_via_oauth2.connect
-def login_via_oauth2(self, user=None):
-    """Set login via header flag."""
-    session['login_via_oauth2'] = True
 
 
 def jwt_verify_token(headers):

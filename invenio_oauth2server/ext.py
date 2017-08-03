@@ -32,17 +32,15 @@ import warnings
 import oauthlib.common as oauthlib_commmon
 import pkg_resources
 import six
-from flask import current_app, request, session
+from flask import request, session
 from flask_kvsession import KVSessionInterface
-from flask_login import current_user, user_loaded_from_header
-from flask_oauthlib.contrib.oauth2 import bind_cache_grant, bind_sqlalchemy
-from invenio_db import db
+from flask_login import current_user
+from flask_oauthlib.contrib.oauth2 import bind_cache_grant
 from werkzeug.utils import cached_property, import_string
 
 from . import config
-from .models import Client, OAuthUserProxy, Scope
+from .models import OAuthUserProxy, Scope
 from .provider import oauth2
-from .signals import login_via_oauth2
 
 
 class _OAuth2ServerState(object):
@@ -148,17 +146,6 @@ class InvenioOAuth2Server(object):
         """
         self.init_config(app)
 
-        class CustomSessionInterface(KVSessionInterface):
-            """Prevent creating session from API requests."""
-
-            def save_session(self, *args, **kwargs):
-                """Save session disabling cookies for login via headers."""
-                if session.get('login_via_oauth2'):
-                    return
-                return super(CustomSessionInterface, self).save_session(
-                    *args, **kwargs)
-
-        app.session_interface = CustomSessionInterface()
         state = _OAuth2ServerState(app, entry_point_group=entry_point_group)
 
         app.extensions['invenio-oauth2server'] = state

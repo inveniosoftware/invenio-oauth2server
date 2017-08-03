@@ -33,13 +33,13 @@ from flask import Blueprint, _request_ctx_stack, abort, current_app, jsonify, \
 from flask_babelex import lazy_gettext as _
 from flask_breadcrumbs import register_breadcrumb
 from flask_login import login_required
+from flask import session
 from flask_principal import Identity, identity_changed
 from oauthlib.oauth2.rfc6749.errors import InvalidClientError, OAuth2Error
 
 from ..models import Client
 from ..provider import oauth2
 from ..proxies import current_oauth2server
-from ..signals import login_via_oauth2
 
 blueprint = Blueprint(
     'invenio_oauth2server',
@@ -54,10 +54,10 @@ blueprint = Blueprint(
 def login_oauth2_user(valid, oauth):
     """Log in a user after having been verified."""
     if valid:
+        oauth.user.login_via_oauth2 = True
         _request_ctx_stack.top.user = oauth.user
         identity_changed.send(current_app._get_current_object(),
                               identity=Identity(oauth.user.id))
-    login_via_oauth2.send(current_app._get_current_object())
     return valid, oauth
 
 
