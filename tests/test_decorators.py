@@ -138,13 +138,14 @@ def test_access_login_required(resource_fixture):
             password='tester'
         ))
         assert 'Set-Cookie' in res.headers
-        # try to access to login_required zone (and pass)
-        res = client.post(app.url_for_test3resource)
-        assert 200 == res.status_code
-        assert 'Set-Cookie' not in res.headers
         # logout
         res = client.get(url_for('security.logout'))
         assert 302 == res.status_code
+
+        # try to access to login_required zone (and pass)
+        res = client.post(app.url_for_test2resource_token)
+        assert 200 == res.status_code
+        assert 'Set-Cookie' not in res.headers
         # try to access to login_required zone (and pass)
         res = client.post(app.url_for_test3resource)
         assert 401 == res.status_code
