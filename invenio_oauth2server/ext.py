@@ -161,6 +161,10 @@ class InvenioOAuth2Server(object):
             app.config.get('BASE_TEMPLATE',
                            'invenio_oauth2server/base.html'))
         app.config.setdefault(
+            'OAUTH2SERVER_COVER_TEMPLATE',
+            app.config.get('COVER_TEMPLATE',
+                           'invenio_oauth2server/base.html'))
+        app.config.setdefault(
             'OAUTH2SERVER_SETTINGS_TEMPLATE',
             app.config.get('SETTINGS_TEMPLATE',
                            'invenio_oauth2server/settings/base.html'))
