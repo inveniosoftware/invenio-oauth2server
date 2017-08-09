@@ -32,7 +32,7 @@ import warnings
 import oauthlib.common as oauthlib_commmon
 import pkg_resources
 import six
-from flask import request, session
+from flask import abort, current_app, request, session
 from flask_kvsession import KVSessionInterface
 from flask_login import current_user
 from flask_oauthlib.contrib.oauth2 import bind_cache_grant
@@ -188,7 +188,10 @@ def verify_oauth_token_and_set_current_user():
 
     if not hasattr(request, 'oauth') or not request.oauth:
         scopes = []
-        valid, req = oauth2.verify_request(scopes)
+        try:
+            valid, req = oauth2.verify_request(scopes)
+        except ValueError:
+            abort(400, 'Error trying to decode a non urlencoded string.')
 
         for func in oauth2._after_request_funcs:
             valid, req = func(valid, req)

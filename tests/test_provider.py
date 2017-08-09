@@ -606,8 +606,8 @@ def test_oauthlib_urldecoding_issue(api_app_with_test_view, query_string,
                 assert (client.get(test_url, query_string=query_string)
                         .status_code == 200)
             else:
-                with pytest.raises(ValueError):
-                    client.get(test_url, query_string=query_string)
+                assert (client.get(test_url, query_string=query_string)
+                        .status_code == 400)
 
 
 def test_oauthlib_monkeypatch(api_app_with_test_view):
@@ -623,9 +623,9 @@ def test_oauthlib_monkeypatch(api_app_with_test_view):
             assert (client.get(test_url, query_string='$type:search')
                     .status_code == 200)
 
-            with pytest.raises(ValueError):
-                # '=' is not considered a valid character after this patch
-                client.get(test_url, query_string='q=RegularArg')
+            # '=' is not considered a valid character after this patch
+            assert (client.get(test_url, query_string='q=RegularArg')
+                    .status_code == 400)
 
 
 def test_settings_index(provider_fixture):
