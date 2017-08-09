@@ -39,7 +39,7 @@ from flask_breadcrumbs import Breadcrumbs
 from flask_mail import Mail
 from flask_menu import Menu
 from helpers import create_oauth_client, patch_request
-from invenio_accounts import InvenioAccounts
+from invenio_accounts import InvenioAccountsREST, InvenioAccountsUI
 from invenio_accounts.models import User
 from invenio_accounts.views import blueprint as accounts_blueprint
 from invenio_db import InvenioDB, db
@@ -66,7 +66,6 @@ def app(request):
             LOGIN_DISABLED=False,
             MAIL_SUPPRESS_SEND=True,
             OAUTH2_CACHE_TYPE='simple',
-            ACCOUNTS_JWT_ENABLE=False,
             OAUTHLIB_INSECURE_TRANSPORT=True,
             SECRET_KEY='CHANGE_ME',
             SECURITY_DEPRECATED_PASSWORD_SCHEMES=[],
@@ -86,19 +85,20 @@ def app(request):
         Menu(app)
         Breadcrumbs(app)
         InvenioDB(app)
-        InvenioAccounts(app)
         InvenioOAuth2Server(app)
 
     api_app = Flask('testapiapp', instance_path=instance_path)
     api_app.config.update(
         APPLICATION_ROOT='/api',
-        ACCOUNTS_REGISTER_BLUEPRINT=False
+        ACCOUNTS_REGISTER_BLUEPRINT=True
     )
     init_app(api_app)
+    InvenioAccountsREST(api_app)
     InvenioOAuth2ServerREST(api_app)
 
     app = Flask('testapp', instance_path=instance_path)
     init_app(app)
+    InvenioAccountsUI(app)
     app.register_blueprint(accounts_blueprint)
     app.register_blueprint(server_blueprint)
     app.register_blueprint(settings_blueprint)
@@ -423,7 +423,7 @@ def resource_fixture(app, api_app):
         view_func=Test2Resource.as_view('test2resource'),
     )
     # This one is a UI resource using login_required
-    app.add_url_rule(
+    api_app.add_url_rule(
         '/test3/loginrequiredstestcase/',
         view_func=Test3Resource.as_view('test3resource'),
     )
@@ -455,7 +455,7 @@ def resource_fixture(app, api_app):
             'test-', app.user.id, scopes=[], is_internal=True).access_token
         db.session.commit()
 
-    with app.test_request_context():
+    with api_app.test_request_context():
         app.url_for_test3resource = url_for('test3resource')
 
     with api_app.test_request_context():
