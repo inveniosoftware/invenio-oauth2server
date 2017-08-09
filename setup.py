@@ -146,7 +146,7 @@ setup(
             'invenio_oauth2server = invenio_oauth2server.models',
         ],
         'invenio_oauth2server.scopes': [
-            # Specify default OAuth2Server scopes here.
+            'oauth_email = invenio_oauth2server.scopes:email_scope',
         ],
         'invenio_i18n.translations': [
             'messages = invenio_oauth2server',

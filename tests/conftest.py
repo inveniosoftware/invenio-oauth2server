@@ -319,9 +319,20 @@ def provider_fixture(app):
                         ),
                         _default_scopes='test:scope'
                         )
+            c4 = Client(client_id='confidential-email',
+                        client_secret='confidential-email',
+                        name='confidential-email',
+                        description='',
+                        is_confidential=True,
+                        user=user1,
+                        _redirect_uris=url_for(
+                            'oauth2test.authorized', _external=True
+                        ),
+                        _default_scopes='email')
             db.session.add(c1)
             db.session.add(c2)
             db.session.add(c3)
+            db.session.add(c4)
         personal_token = Token.create_personal('test-personal',
                                                user1.id,
                                                scopes=[],
