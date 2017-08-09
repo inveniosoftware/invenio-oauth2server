@@ -30,11 +30,11 @@ from flask import current_app
 from flask_login import current_user
 from flask_oauthlib.provider import OAuth2Provider
 from flask_security.utils import verify_password
-from invenio_accounts.models import User
 from invenio_db import db
 from werkzeug.local import LocalProxy
 
 from .models import Client, Token
+from .scopes import email_scope
 
 oauth2 = OAuth2Provider()
 datastore = LocalProxy(lambda: current_app.extensions['security'].datastore)
@@ -112,11 +112,23 @@ def save_token(token, request, *args, **kwargs):
     :returns: A :class:`invenio_oauth2server.models.Token` instance.
     """
     # Exclude the personal access tokens which doesn't expire.
-    uid = request.user.id if request.user else current_user.get_id()
+    user = request.user if request.user else current_user
+
+    # Add user information in token endpoint response.
+    # Currently, this is the only way to have the access to the user of the
+    # token as well as the token response.
+    token.update(user={'id': user.get_id()})
+
+    # Add email if scope granted.
+    if email_scope.id in token.scopes:
+        token['user'].update(
+            email=user.email,
+            email_verified=user.confirmed_at is not None,
+        )
 
     tokens = Token.query.filter_by(
         client_id=request.client.client_id,
-        user_id=uid,
+        user_id=user.id,
         is_personal=False,
     )
 
@@ -136,7 +148,7 @@ def save_token(token, request, *args, **kwargs):
         _scopes=token['scope'],
         expires=expires,
         client_id=request.client.client_id,
-        user_id=uid,
+        user_id=user.id,
         is_personal=False,
     )
     db.session.add(tok)

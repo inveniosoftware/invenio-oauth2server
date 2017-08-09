@@ -217,6 +217,7 @@ def test_refresh_flow(provider_fixture):
             assert json_resp['refresh_token']
             assert json_resp['scope'] == 'test:scope'
             assert json_resp['token_type'] == 'Bearer'
+            assert json_resp['user']['id']
             refresh_token = json_resp['refresh_token']
             old_access_token = json_resp['access_token']
 
@@ -242,6 +243,7 @@ def test_refresh_flow(provider_fixture):
             assert json_resp['refresh_token'] != refresh_token
             assert json_resp['scope'] == 'test:scope'
             assert json_resp['token_type'] == 'Bearer'
+            assert json_resp['user']['id']
 
             # New access token valid
             r = client.get(url_for('invenio_oauth2server.info',
@@ -278,7 +280,6 @@ def web_auth_flow(provider_fixture):
                 data['confirm'] = 'yes'
                 data['scope'] = 'test:scope'
                 data['state'] = ''
-
                 r = client.post(next_url, data=data)
                 assert r.status_code == 302
                 next_url, data = parse_redirect(r.location)
@@ -420,6 +421,7 @@ def test_client_flow(provider_fixture):
             assert data['access_token']
             assert data['token_type'] == 'Bearer'
             assert data['scope'] == 'test:scope'
+            assert data['user']['id']
             assert data.get('refresh_token') is None
 
             # Authentication flow has now been completed, and the client can
@@ -461,6 +463,7 @@ def test_client_flow(provider_fixture):
             assert data['access_token']
             assert data['token_type'] == 'Bearer'
             assert data['scope'] == 'test:scope'
+            assert data['user']['id']
             assert data.get('refresh_token') is None
 
             # As before, authentication flow has now been completed, client can
@@ -733,6 +736,7 @@ def test_info_not_accessible_in_production(provider_fixture):
             assert data['token_type'] == 'Bearer'
             assert data['scope'] == 'test:scope'
             assert data.get('refresh_token') is None
+            assert data['user']['id']
 
             # Authentication flow has now been completed, and the client can
             # use the access token to make request to the provider.
@@ -788,6 +792,7 @@ def test_expired_refresh_flow(expiration_fixture):
             assert json.loads(r.get_data())['expires_in'] > 0
             assert json.loads(r.get_data())['scope'] == 'test:scope'
             assert json.loads(r.get_data())['token_type'] == 'Bearer'
+            assert json.loads(r.get_data())['user']['id']
             refresh_token = json.loads(r.get_data())['refresh_token']
             old_access_token = json.loads(r.get_data())['access_token']
 
@@ -824,6 +829,7 @@ def test_expired_refresh_flow(expiration_fixture):
             assert resp_json['refresh_token'] != refresh_token
             assert resp_json['scope'] == 'test:scope'
             assert resp_json['token_type'] == 'Bearer'
+            assert resp_json['user']['id']
 
             # New access token valid
             r = client.get(url_for('invenio_oauth2server.info',
@@ -884,6 +890,7 @@ def test_not_allowed_public_refresh_flow(expiration_fixture):
             assert json_resp['expires_in'] > 0
             assert json_resp['scope'] == 'test:scope'
             assert json_resp['token_type'] == 'Bearer'
+            assert json_resp['user']['id']
             refresh_token = json_resp['refresh_token']
             old_access_token = json_resp['access_token']
 
@@ -913,7 +920,6 @@ def test_not_allowed_public_refresh_flow(expiration_fixture):
                 ),
                 follow_redirects=True
             )
-
             # Only confidential clients can refresh expired token.
             assert r.status_code == 401
 
@@ -936,7 +942,9 @@ def test_password_grant_type(provider_fixture):
                 'invenio_oauth2server.access_token'
             ), data=data)
             assert r.status_code == 200
-            assert 'Bearer' == json.loads(r.get_data())['token_type']
+            res_data = json.loads(r.get_data())
+            assert 'Bearer' == res_data['token_type']
+            assert res_data['user']['id']
 
             data['password'] = 'invalid'
 
@@ -951,3 +959,29 @@ def test_password_grant_type(provider_fixture):
                 'invenio_oauth2server.access_token'
             ), data=data)
             assert r.status_code == 401
+
+
+def test_email_scope(provider_fixture):
+    """Test email scope."""
+    app = provider_fixture
+    with app.test_request_context():
+        with app.test_client() as client:
+            data = dict(
+                client_id='confidential-email',
+                client_secret='confidential-email',
+                grant_type='client_credentials',
+                scope='user:email',
+            )
+
+            # Retrieve access token using client_credentials
+            r = client.post(url_for(
+                'invenio_oauth2server.access_token'
+            ), data=data)
+            assert r.status_code == 200
+
+            data = json.loads(r.get_data())
+            assert data['access_token']
+            assert data['user']['id']
+            assert data['scope'] == 'user:email'
+            assert data['user']['email'] == 'info@inveniosoftware.org'
+            assert data['user']['email_verified'] is False
