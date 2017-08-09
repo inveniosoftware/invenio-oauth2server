@@ -1,39 +1,42 @@
 {%- extends 'invenio_theme/page.html' %}
 
-{%- block page_body %}
+{%- block javascript %}
+  {{ super() }}
   <script type="text/javascript">
-    $(document).ready(function() {
-      $('.hideme').hide();
-      $('#correct').on('click', function() {
-        $('.hideme').hide();
-        var $btn = $(this).button('loading');
-        $.ajax({
+    jQuery(document).ready(function() {
+      jQuery('.hideme').hide();
+      jQuery('#correct').on('click', function() {
+        jQuery('.hideme').hide();
+        var $btn = jQuery(this).button('loading');
+        jQuery.ajax({
           url: '/',
           method: 'POST',
           beforeSend: function(request) {
-           request.setRequestHeader("Authorization", 'Bearer ' + $('[name=authorized_token]').val());
+           request.setRequestHeader("Authorization", 'Bearer ' + jQuery('[name=authorized_token]').val());
          },
        }).success(function(response) {
-          $('.alert-success').text(response);
-          $('.alert-success').show();
+          jQuery('.alert-success').text(response);
+          jQuery('.alert-success').show();
           $btn.button('reset');
        })
      });
-     $('#wrong').on('click', function() {
-      $('.hideme').hide();
-       var $btn = $(this).button('loading');
-       $.ajax({
+     jQuery('#wrong').on('click', function() {
+      jQuery('.hideme').hide();
+       var $btn = jQuery(this).button('loading');
+       jQuery.ajax({
          dataType: 'json',
          url: '/',
       }).error(function(response) {
         var data = jQuery.parseJSON(response.responseText)
-         $('.alert-danger').text(data.message);
-         $('.alert-danger').show();
+         jQuery('.alert-danger').text(data.message);
+         jQuery('.alert-danger').show();
          $btn.button('reset');
       })
      })
     })
 </script>
+{%- endblock %}
+{%- block page_body %}
 <div class="container">
   <div class="row">
     <div class="col-md-12">
