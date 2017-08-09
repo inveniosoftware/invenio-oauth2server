@@ -26,11 +26,14 @@
 
 from __future__ import absolute_import, print_function
 
+from collections import namedtuple
+
 import pytest
 from oauthlib.oauth2.rfc6749.errors import InsecureTransportError, \
     InvalidRedirectURIError
+from wtforms.validators import ValidationError
 
-from invenio_oauth2server.validators import validate_redirect_uri
+from invenio_oauth2server.validators import URLValidator, validate_redirect_uri
 
 
 @pytest.mark.parametrize('input,expected', [
@@ -47,3 +50,26 @@ def test_validate_redirect_uri(input, expected):
         validate_redirect_uri(input)
     except Exception as e:
         assert type(e) is type(expected)
+
+
+def test_url_validator(app):
+    """Test url validator."""
+    class Field(object):
+
+        def __init__(self, data):
+            self.data = data
+
+        def gettext(self, *args, **kwargs):
+            return 'text'
+
+    with app.app_context():
+        # usually if localhost, validation is failing
+        with pytest.raises(ValidationError):
+            URLValidator()(
+                form=None, field=Field(data='http://localhost:5000'))
+        URLValidator()(form=None, field=Field(data='http://mywebsite.it:5000'))
+
+        # enable debug mode to accept also localhost
+        app.config['DEBUG'] = True
+        URLValidator()(form=None, field=Field(data='http://localhost:5000'))
+        URLValidator()(form=None, field=Field(data='http://mywebsite.it:5000'))

@@ -96,6 +96,7 @@ from invenio_oauth2server.views import server_blueprint, settings_blueprint
 # Create Flask application
 app = Flask(__name__)
 app.config.update(
+    APP_ENABLE_SECURE_HEADERS=False,
     CELERY_ALWAYS_EAGER=True,
     CELERY_CACHE_BACKEND='memory',
     CELERY_EAGER_PROPAGATES_EXCEPTIONS=True,
@@ -103,7 +104,7 @@ app.config.update(
     OAUTH2_CACHE_TYPE='simple',
     OAUTHLIB_INSECURE_TRANSPORT=True,
     TESTING=True,
-    # DEBUG=True,  # needed to register localhost addresses as callback_urls
+    DEBUG=True,  # needed to register localhost addresses as callback_urls
     SECRET_KEY='test_key',
     SECURITY_PASSWORD_HASH='plaintext',
     SECURITY_PASSWORD_SCHEMES=['plaintext'],
@@ -111,10 +112,14 @@ app.config.update(
     LOGIN_DISABLED=False,
     TEMPLATE_AUTO_RELOAD=True,
     SQLALCHEMY_TRACK_MODIFICATIONS=True,
-    SQLALCHEMY_DATABASE_URI=os.getenv('SQLALCHEMY_DATABASE_URI',
-                                      'sqlite:///example.db'),
-    I18N_LANGUAGES=[('fr', 'French'), ('de', 'German'), ('it', 'Italian'),
-                    ('es', 'Spanish')],
+    SQLALCHEMY_DATABASE_URI=os.getenv(
+        'SQLALCHEMY_DATABASE_URI', 'sqlite:///example.db'),
+    I18N_LANGUAGES=[
+        ('de', 'German'),
+        ('es', 'Spanish'),
+        ('fr', 'French'),
+        ('it', 'Italian'),
+    ],
 )
 InvenioAssets(app)
 InvenioTheme(app)

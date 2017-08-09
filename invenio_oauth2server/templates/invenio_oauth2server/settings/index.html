@@ -85,7 +85,7 @@
     <div class="pull-right">
         <a href="{{url_for('.token_revoke', token_id=a.id)}}" class="btn btn-default btn-xs"><i class="fa fa-times-circle"></i> {{ _('Revoke') }}</a>
     </div>
-    <a href="{{a.client.website}}">{{a.client.name}}</a> <i class="fa fa-external-link"></i><br/><small class="text-muted">{{a.client.description}}</small>
+    <a href="{{url_for('.token_permission_view', token_id=a.id)}}">{{a.client.name}}</a><br/><small class="text-muted">{{a.client.description}}</small>
     </li>
     {%- endfor %}
 </ul>

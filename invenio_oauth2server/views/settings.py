@@ -273,3 +273,16 @@ def token_revoke(token):
     db.session.delete(token)
     db.session.commit()
     return redirect(url_for('.index'))
+
+
+@blueprint.route("/tokens/<string:token_id>/view/", methods=['GET', ])
+@login_required
+@token_getter(is_personal=False, is_internal=False)
+def token_permission_view(token):
+    """Show permission garanted to authorized application token."""
+    scopes = [current_oauth2server.scopes[x] for x in token.scopes]
+    return render_template(
+        "invenio_oauth2server/settings/token_permission_view.html",
+        token=token,
+        scopes=scopes,
+    )

@@ -13,6 +13,7 @@ export FLASK_APP=app.py
 
 ## Load fixtures
 flask users create reader@inveniosoftware.org -a --password 123456
+flask users create clientapp@inveniosoftware.org -a --password 123456
 flask users create admin@inveniosoftware.org -a --password 123456
 
 # create admin role and add the role to a user

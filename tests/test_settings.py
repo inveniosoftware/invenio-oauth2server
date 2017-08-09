@@ -71,9 +71,9 @@ def test_personal_token_management(settings_fixture):
 
             # Rename the token
             resp = client.post(
-               url_for('invenio_oauth2server_settings.token_view',
-                       token_id=token.id),
-               data=dict(name='Test_Token_Renamed')
+                url_for('invenio_oauth2server_settings.token_view',
+                        token_id=token.id),
+                data=dict(name='Test_Token_Renamed')
             )
             assert resp.status_code == 200
             assert 'Test_Token_Renamed' in str(resp.get_data())
@@ -109,7 +109,6 @@ def test_authorized_app_revocation(developer_app_fixture):
             assert resp.status_code == 200
             assert 'Test description' in str(resp.get_data())
             assert 'Test name' in str(resp.get_data())
-            assert 'http://inveniosoftware.org' in str(resp.get_data())
 
             # Revoke the authorized application token
             resp = client.get(
@@ -120,7 +119,6 @@ def test_authorized_app_revocation(developer_app_fixture):
             # Authorized application should no longer exist on index
             assert 'Test description' not in str(resp.get_data())
             assert 'Test name' not in str(resp.get_data())
-            assert 'http://inveniosoftware.org' not in str(resp.get_data())
             # Check that the authorized application token was actually deleted
             assert Token.query.count() == 0
 
