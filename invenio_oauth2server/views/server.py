@@ -32,8 +32,7 @@ from flask import Blueprint, _request_ctx_stack, abort, current_app, jsonify, \
     redirect, render_template, request
 from flask_babelex import lazy_gettext as _
 from flask_breadcrumbs import register_breadcrumb
-from flask_login import login_required
-from flask import session
+from flask_login import current_user, login_required
 from flask_principal import Identity, identity_changed
 from oauthlib.oauth2.rfc6749.errors import InvalidClientError, OAuth2Error
 
