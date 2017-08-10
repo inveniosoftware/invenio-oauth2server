@@ -33,7 +33,6 @@ Run example development server:
 
    $ pip install -e .[all]
    $ cd examples
-   $ cd examples
    $ ./app-setup.sh
    $ ./app-fixtures.sh
    $ FLASK_APP=app.py flask run
