@@ -33,7 +33,7 @@ from wtforms.widgets import HTMLString
 from wtforms_alchemy import model_form_factory
 
 from .models import Client
-from .validators import validate_redirect_uri
+from .validators import URLValidator, validate_redirect_uri
 
 
 #
@@ -130,7 +130,7 @@ class ClientFormBase(model_form_factory(Form)):
         strip_string_fields = True
         field_args = dict(
             website=dict(
-                validators=[validators.DataRequired(), validators.URL()],
+                validators=[validators.DataRequired(), URLValidator()],
                 widget=widgets.TextInput(),
             ),
         )

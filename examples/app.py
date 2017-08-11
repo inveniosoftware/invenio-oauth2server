@@ -35,18 +35,18 @@ Run example development server:
    $ cd examples
    $ ./app-setup.sh
    $ ./app-fixtures.sh
-   $ FLASK_APP=app.py flask run
+   $ FLASK_APP=app.py flask run -p 5000
 
-Open the admin page to generate a token:
+Open settings page to generate a token:
 
 .. code-block:: console
 
-   $ open http://0.0.0.0:5000/account/settings/applications
+   $ open http://127.0.0.1:5000/account/settings/applications
 
-Make a login with:
+Login with:
 
-    username: admin@inveniosoftware.org
-    password: 123456
+    | username: admin\@inveniosoftware.org
+    | password: 123456
 
 Click on "New token" and compile the form:
 insert the name "foobar", check scope "test:scope" and click "create".
@@ -57,14 +57,15 @@ Make a request to test the token:
 .. code-block:: console
 
     export TOKEN=<generated Access Token>
-    curl -i -X GET -H "Content-Type:application/json" http://0.0.0.0:5000/ \
+    curl -i -X GET -H "Content-Type:application/json" http://127.0.0.1:5000/ \
         -H "Authorization:Bearer $TOKEN"
 
-Or, if you are logged in through the browser, try to open the homepage with it:
-
+To end and remove any traces of example application, stop the example
+application and run:
 .. code-block:: console
 
-   $ open http://0.0.0.0:5000/jwt
+   $ ./app-teardown.sh
+
 
 SPHINX-END
 """
@@ -99,9 +100,10 @@ app.config.update(
     CELERY_CACHE_BACKEND='memory',
     CELERY_EAGER_PROPAGATES_EXCEPTIONS=True,
     CELERY_RESULT_BACKEND='cache',
-    OAUTH2SERVER_CACHE_TYPE='simple',
+    OAUTH2_CACHE_TYPE='simple',
     OAUTHLIB_INSECURE_TRANSPORT=True,
     TESTING=True,
+    # DEBUG=True,  # needed to register localhost addresses as callback_urls
     SECRET_KEY='test_key',
     SECURITY_PASSWORD_HASH='plaintext',
     SECURITY_PASSWORD_SCHEMES=['plaintext'],
@@ -137,13 +139,15 @@ app.register_blueprint(blueprint_admin_ui)
 
 with app.app_context():
     # Register a test scope
-    current_oauth2server.register_scope(Scope('test:scope'))
+    current_oauth2server.register_scope(
+        Scope('test:scope', help_text='Access to the homepage',
+              group='test'))
 
 
-@app.route('/jwt', methods=['GET'])
-def jwt():
-    """JWT."""
-    return render_template('jwt.html')
+# @app.route('/jwt', methods=['GET'])
+# def jwt():
+#     """JWT."""
+#     return render_template('jwt.html')
 
 
 @app.route('/', methods=['GET', 'POST'])

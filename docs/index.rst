@@ -31,7 +31,7 @@ This part of the documentation will show you how to get started in using
 Invenio-OAuth2Server.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    installation
    configuration

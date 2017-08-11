@@ -25,7 +25,6 @@
 
 from alembic import op
 
-
 # revision identifiers, used by Alembic.
 revision = '4e57407b8e4a'
 down_revision = '12a88921ada2'

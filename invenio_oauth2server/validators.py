@@ -26,9 +26,11 @@
 
 from __future__ import absolute_import, print_function
 
+from flask import current_app
 from oauthlib.oauth2.rfc6749.errors import InsecureTransportError, \
     InvalidRedirectURIError
 from six.moves.urllib_parse import urlparse
+from wtforms.validators import URL
 
 from .errors import ScopeDoesNotExists
 from .proxies import current_oauth2server
@@ -64,3 +66,14 @@ def validate_scopes(value_list):
         if value not in current_oauth2server.scopes:
             raise ScopeDoesNotExists(value)
     return True
+
+
+class URLValidator(URL):
+    """URL validator."""
+
+    def __call__(self, form, field):
+        """Check URL."""
+        parsed = urlparse(field.data)
+        if current_app.debug and parsed.hostname == 'localhost':
+            return
+        super(URLValidator, self).__call__(form=form, field=field)
