@@ -44,7 +44,7 @@ def test_rebuilding_access_tokens(models_fixture):
             token = Token.query.filter(Token.id == tokens_before[0].id).one()
             assert token.access_token != tokens_before[0].access_token
         else:  # python 3
-            with pytest.raises(UnicodeDecodeError):
+            with pytest.raises(ValueError):
                 Token.query.filter(Token.id == tokens_before[0].id).one()
 
         db.session.expunge_all()

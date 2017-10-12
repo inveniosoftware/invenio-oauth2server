@@ -89,7 +89,7 @@ install_requires = [
     'Flask>=0.11.1',
     'future>=0.16.0',
     'invenio-accounts>=1.0.0b7',
-    'oauthlib>=1.1.2,!=2.0.0',
+    'oauthlib>=1.1.2,<2.0.0',
     'pyjwt>=1.5.0',
     'six>=1.10.0',
     'SQLAlchemy-Utils[encrypted]>=0.31.0',
