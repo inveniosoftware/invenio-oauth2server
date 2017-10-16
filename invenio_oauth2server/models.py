@@ -289,6 +289,16 @@ class Client(db.Model):
             current_app.config.get('OAUTH2SERVER_CLIENT_SECRET_SALT_LEN')
         )
 
+    @property
+    def get_users(self):
+        """Get number of users."""
+        no_users = Token.query.filter_by(
+            client_id=self.client_id,
+            is_personal=False,
+            is_internal=False
+        ).count()
+        return no_users
+
 
 class Token(db.Model):
     """A bearer token is the final token that can be used by the client."""
