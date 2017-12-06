@@ -24,13 +24,7 @@
 Changes
 =======
 
-Version 1.0.0b2 (released 2017-10-20)
---------------------------------------
-
-- Template improvements.
-
-
-Version 1.0.0b1 (released 2017-08-10)
+Version 1.0.0b3 (released 2017-12-05)
 --------------------------------------
 
 - Refactors package.
