@@ -33,8 +33,9 @@ from flask_login import current_user
 from invenio_accounts.models import User
 from invenio_db import db
 from sqlalchemy.schema import Index
+from sqlalchemy_utils import EncryptedType
 from sqlalchemy_utils.types import URLType
-from sqlalchemy_utils.types.encrypted import AesEngine, EncryptedType
+from sqlalchemy_utils.types.encrypted.encrypted_type import AesEngine
 from werkzeug.security import gen_salt
 from wtforms import validators
 
