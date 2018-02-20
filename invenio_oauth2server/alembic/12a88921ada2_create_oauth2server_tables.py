@@ -74,11 +74,11 @@ def upgrade():
         sa.Column('token_type', sa.String(length=255), nullable=True),
         sa.Column(
             'access_token',
-            sqlalchemy_utils.types.encrypted.EncryptedType(),
+            sqlalchemy_utils.EncryptedType(),
             nullable=True),
         sa.Column(
             'refresh_token',
-            sqlalchemy_utils.types.encrypted.EncryptedType(),
+            sqlalchemy_utils.EncryptedType(),
             nullable=True),
         sa.Column('expires', sa.DateTime(), nullable=True),
         sa.Column('_scopes', sa.Text(), nullable=True),
