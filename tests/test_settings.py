@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2015, 2016 CERN.
+# Copyright (C) 2015, 2016, 2018 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -53,6 +53,17 @@ def test_personal_token_management(settings_fixture):
             )
             resp.status_code == 200
             assert _('New personal access token') in str(resp.get_data())
+
+            # Create a new token with invalid form data
+            resp = client.post(
+                url_for('invenio_oauth2server_settings.token_new'),
+                data={
+                    'name': 'x' * (40 + 1),  # max length is 40
+                },
+                follow_redirects=True
+            )
+            assert resp.status_code == 200
+            assert 'name must be less than 40 char' in str(resp.get_data())
 
             # Create a new token
             resp = client.post(
