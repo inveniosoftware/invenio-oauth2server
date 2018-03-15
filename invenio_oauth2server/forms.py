@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2014, 2015, 2016 CERN.
+# Copyright (C) 2014, 2015, 2016, 2018 CERN.
 #
 # Invenio is free software; you can redistribute it
 # and/or modify it under the terms of the GNU General Public License as
@@ -169,8 +169,14 @@ class TokenForm(Form):
 
     name = fields.StringField(
         description=_('Name of personal access token.'),
-        validators=[validators.DataRequired()],
+        validators=[
+            validators.DataRequired(),
+            validators.Length(
+                max=40,
+                message=_('The name must be less than 40 characters long.'))
+        ]
     )
+
     scopes = fields.SelectMultipleField(
         widget=scopes_multi_checkbox,
         choices=[],  # Must be dynamically provided in view.
