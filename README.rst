@@ -25,7 +25,8 @@ Invenio module that implements OAuth 2 server.
 
 Features
 ========
-
-* Settings view for configuring applications and personal access tokens.
-* Uses encryption field for seamless encryption/decryption of the access
-  and refresh tokens.
+* Implements the OAuth 2.0 authentication protocol.
+    - Provides REST API to provide access tokens.
+    - Provides decorators that can be used to restrict access to resources.
+* Handles authentication using JSON Web Tokens.
+* Adds support for CSRF protection in REST API.

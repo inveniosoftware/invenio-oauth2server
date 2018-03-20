@@ -9,6 +9,7 @@ Invenio-OAuth2Server.
 .. toctree::
    :maxdepth: 1
 
+   overview
    installation
    configuration
    usage
