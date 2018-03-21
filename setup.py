@@ -19,9 +19,9 @@ tests_require = [
     'SQLAlchemy-Continuum>=1.2.1',
     'check-manifest>=0.25',
     'coverage>=4.0',
-    'invenio-assets>=1.0.0b6',
-    'invenio-i18n>=1.0.0b4',
-    'invenio-theme>=1.0.0b4',
+    'invenio-assets>=1.0.0',
+    'invenio-i18n>=1.0.0',
+    'invenio-theme>=1.0.0',
     'isort>=4.2.2',
     'mock>=1.3.0',
     'pydocstyle>=1.0.0',
@@ -32,7 +32,7 @@ tests_require = [
 
 extras_require = {
     'admin': [
-        'invenio-admin>=1.0.0b3'
+        'invenio-admin>=1.0.0'
     ],
     'docs': [
         'Sphinx>=1.5.1',
@@ -41,13 +41,13 @@ extras_require = {
         'redis>=2.10.5',
     ],
     'mysql': [
-        'invenio-db[mysql]>=1.0.0b8',
+        'invenio-db[mysql]>=1.0.0',
     ],
     'postgresql': [
-        'invenio-db[postgresql]>=1.0.0b8',
+        'invenio-db[postgresql]>=1.0.0',
     ],
     'sqlite': [
-        'invenio-db>=1.0.0b8',
+        'invenio-db>=1.0.0',
     ],
     'tests': tests_require,
 }
@@ -71,7 +71,7 @@ install_requires = [
     'Flask-WTF>=0.13.1',
     'Flask>=0.11.1',
     'future>=0.16.0',
-    'invenio-accounts>=1.0.0b7',
+    'invenio-accounts>=1.0.0',
     'oauthlib>=1.1.2,!=2.0.0,!=2.0.3,!=2.0.4,!=2.0.5',
     'pyjwt>=1.5.0',
     'six>=1.10.0',
@@ -156,6 +156,6 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: Implementation :: CPython',
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
     ],
 )
