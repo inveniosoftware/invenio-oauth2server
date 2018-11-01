@@ -102,6 +102,9 @@ setup(
     include_package_data=True,
     platforms='any',
     entry_points={
+        'flask.commands': [
+            'tokens = invenio_oauth2server.cli:tokens',
+        ],
         'invenio_admin.views': [
             'invenio_oauth2server_clients_adminview = '
             'invenio_oauth2server.admin:oauth2server_clients_adminview',

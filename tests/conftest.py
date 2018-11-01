@@ -17,6 +17,7 @@ import tempfile
 
 import pytest
 from flask import Flask, url_for
+from flask.cli import ScriptInfo
 from flask.views import MethodView
 from flask_babelex import Babel
 from flask_breadcrumbs import Breadcrumbs
@@ -117,6 +118,12 @@ def api_app(app):
 def api_app_with_test_view(api_app):
     api_app.add_url_rule('/test', 'test', view_func=lambda: 'OK')
     return api_app
+
+
+@pytest.fixture
+def script_info(app):
+    """Get ScriptInfo object for testing CLI."""
+    return ScriptInfo(create_app=lambda info: app)
 
 
 @pytest.fixture
