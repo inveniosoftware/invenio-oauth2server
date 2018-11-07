@@ -8,6 +8,13 @@
 Changes
 =======
 
+Version 1.0.2 (released 2018-11-02)
+
+- Fix incosistent OAuth2 state initialization between UI and REST applications.
+- Basic token management CLI commands for creating/deleting personal access
+  tokens.
+- Better token creation warning messages.
+
 Version 1.0.1 (released 2018-05-25)
 
 - Flask v1.0 support.
