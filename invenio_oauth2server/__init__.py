@@ -111,10 +111,10 @@ For more information about access control in Invenio you can visit
 
 from __future__ import absolute_import, print_function
 
+from .decorators import require_api_auth, require_oauth_scopes
 from .ext import InvenioOAuth2Server, InvenioOAuth2ServerREST
 from .proxies import current_oauth2server
 from .version import __version__
-from .decorators import require_api_auth, require_oauth_scopes
 
 __all__ = (
     '__version__',

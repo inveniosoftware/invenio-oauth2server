@@ -72,11 +72,12 @@ install_requires = [
     'Flask>=0.11.1',
     'future>=0.16.0',
     'invenio-accounts>=1.0.0',
-    'requests-oauthlib>=0.5.0,<1.2.0',
     'oauthlib>=1.1.2,<3.0.0',
     'pyjwt>=1.5.0',
+    'requests-oauthlib>=0.5.0,<1.2.0',
     'six>=1.10.0',
     'SQLAlchemy-Utils[encrypted]>=0.33.0',
+    'werkzeug>=0.14.1',
     'WTForms-Alchemy>=0.15.0',
 ]
 
