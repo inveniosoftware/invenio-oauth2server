@@ -102,10 +102,10 @@ class _OAuth2ServerState(object):
             return imp
 
     @cached_property
-    def jwt_veryfication_factory(self):
-        """Load default JWT veryfication factory."""
+    def jwt_verification_factory(self):
+        """Load default JWT verification factory."""
         return self.load_obj_or_import_string(
-            'OAUTH2SERVER_JWT_VERYFICATION_FACTORY'
+            'OAUTH2SERVER_JWT_VERIFICATION_FACTORY'
         )
 
 
