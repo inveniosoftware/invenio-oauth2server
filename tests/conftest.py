@@ -343,15 +343,6 @@ def provider_fixture(app):
 
 
 @pytest.fixture
-def expiration_fixture(provider_fixture):
-    """Fixture for testing expiration."""
-    provider_fixture.config.update(
-        OAUTH2_PROVIDER_TOKEN_EXPIRES_IN=1,
-    )
-    return provider_fixture
-
-
-@pytest.fixture
 def resource_fixture(app, api_app):
     """Fixture that contains the test data for models tests."""
     from flask import g, request

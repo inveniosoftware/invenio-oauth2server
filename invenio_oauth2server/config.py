@@ -16,9 +16,6 @@ OAUTH2_CACHE_TYPE = 'redis'
 OAUTH2_PROVIDER_ERROR_ENDPOINT = 'invenio_oauth2server.errors'
 """Error view endpoint."""
 
-OAUTH2_PROVIDER_TOKEN_EXPIRES_IN = 3600
-"""Life time of an access token."""
-
 OAUTH2SERVER_CLIENT_ID_SALT_LEN = 40
 """Length of client id."""
 
