@@ -729,9 +729,9 @@ def test_info_not_accessible_in_production(provider_fixture):
             assert r.status_code == 404
 
 
-def test_expired_refresh_flow(expiration_fixture):
+def test_expired_refresh_flow(provider_fixture):
     """Test refresh flow with an expired token."""
-    app = expiration_fixture
+    app = provider_fixture
     # First login on provider site
     with app.test_request_context():
         with app.test_client() as client:
@@ -826,9 +826,9 @@ def test_expired_refresh_flow(expiration_fixture):
             assert r.status_code == 401
 
 
-def test_not_allowed_public_refresh_flow(expiration_fixture):
+def test_not_allowed_public_refresh_flow(provider_fixture):
     """Public token should not allow refreshing."""
-    app = expiration_fixture
+    app = provider_fixture
     # First login on provider site
     with app.test_request_context():
         with app.test_client() as client:

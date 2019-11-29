@@ -54,12 +54,6 @@ def get_token(access_token=None, refresh_token=None):
     """
     if access_token:
         t = Token.query.filter_by(access_token=access_token).first()
-        if t and t.is_personal and t.user.active:
-            t.expires = datetime.utcnow() + timedelta(
-                seconds=int(current_app.config.get(
-                    'OAUTH2_PROVIDER_TOKEN_EXPIRES_IN'
-                ))
-            )
     elif refresh_token:
         t = Token.query.join(Token.client).filter(
             Token.refresh_token == refresh_token,
