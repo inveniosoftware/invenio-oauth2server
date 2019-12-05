@@ -8,6 +8,11 @@
 Changes
 =======
 
+Version 1.0.4 (released 2019-12-05)
+
+- Removes updating the ``expires`` for personal tokens.
+- Removes ``OAUTH2_PROVIDER_TOKEN_EXPIRES_IN`` from configuration.
+
 Version 1.0.3 (released 2019-01-15)
 
 - Restrict oauthlib to latest v2.
