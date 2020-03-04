@@ -18,6 +18,7 @@ import pkg_resources
 import six
 from flask import abort, request
 from flask_login import current_user
+from invenio_rest.csrf import csrf
 from werkzeug.utils import cached_property, import_string
 
 from . import config
@@ -172,6 +173,11 @@ def verify_oauth_token_and_set_current_user():
 
         app.before_request(verify_oauth_token_and_set_current_user)
     """
+    # Since this function can be evoked multiple times
+    # we add a check to not run it if it has already run.
+    if hasattr(request, 'oauth_verify_has_run'):
+        return
+
     for func in oauth2._before_request_funcs:
         func()
 
@@ -187,6 +193,11 @@ def verify_oauth_token_and_set_current_user():
 
         if valid:
             request.oauth = req
+
+    if hasattr(request, 'oauth'):
+        request.skip_csrf_check = True
+
+    request.oauth_verify_has_run = True
 
 
 class InvenioOAuth2ServerREST(object):
@@ -212,6 +223,8 @@ class InvenioOAuth2ServerREST(object):
         if allowed_urlencode_chars:
             InvenioOAuth2ServerREST.monkeypatch_oauthlib_urlencode_chars(
                 allowed_urlencode_chars)
+        # add check to skip csrf validation if oauth request
+        csrf.before_csrf_protect(verify_oauth_token_and_set_current_user)
         app.before_request(verify_oauth_token_and_set_current_user)
 
     def init_config(self, app):
