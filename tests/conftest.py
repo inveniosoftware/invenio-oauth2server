@@ -32,13 +32,19 @@ from mock import MagicMock
 from six import get_method_self
 from sqlalchemy_utils.functions import create_database, database_exists, \
     drop_database
-from werkzeug.wsgi import DispatcherMiddleware
 
 from invenio_oauth2server import InvenioOAuth2Server, InvenioOAuth2ServerREST
 from invenio_oauth2server.decorators import require_api_auth, \
     require_oauth_scopes
 from invenio_oauth2server.models import Client, Scope, Token
 from invenio_oauth2server.views import server_blueprint, settings_blueprint
+
+import invenio_oauth2server._compat  # noqa isort:skip
+
+try:
+    from werkzeug.middleware.dispatcher import DispatcherMiddleware
+except ImportError:
+    from werkzeug.wsgi import DispatcherMiddleware
 
 
 @pytest.fixture()

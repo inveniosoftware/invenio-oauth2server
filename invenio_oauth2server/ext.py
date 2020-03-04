@@ -16,15 +16,17 @@ import warnings
 import oauthlib.common as oauthlib_commmon
 import pkg_resources
 import six
-from flask import abort, current_app, request, session
-from flask_kvsession import KVSessionInterface
+from flask import abort, request
 from flask_login import current_user
-from flask_oauthlib.contrib.oauth2 import bind_cache_grant
 from werkzeug.utils import cached_property, import_string
 
 from . import config
 from .models import OAuthUserProxy, Scope
 from .provider import oauth2
+
+from invenio_oauth2server._compat import monkey_patch_werkzeug  # noqa isort:skip
+monkey_patch_werkzeug()  # noqa isort:skip
+from flask_oauthlib.contrib.oauth2 import bind_cache_grant  # noqa isort:skip
 
 
 class _OAuth2ServerState(object):
@@ -129,7 +131,6 @@ class InvenioOAuth2Server(object):
             (Default: ``'invenio_oauth2server.scopes'``)
         """
         self.init_config(app)
-
         state = _OAuth2ServerState(app, entry_point_group=entry_point_group)
 
         app.extensions['invenio-oauth2server'] = state

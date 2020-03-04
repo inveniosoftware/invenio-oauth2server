@@ -64,20 +64,19 @@ setup_requires = [
 ]
 
 install_requires = [
-    'Flask-BabelEx>=0.9.2',
+    # package needed to patch flask-oauthlib
+    'cachelib>=0.1',
     'Flask-Breadcrumbs>=0.4.0',
-    'Flask-Login>=0.3.0',
     'Flask-OAuthlib>=0.9.5',
-    'Flask-WTF>=0.13.1',
-    'Flask>=0.11.1',
+    'Flask-WTF>=0.14.3',
     'future>=0.16.0',
-    'invenio-accounts>=1.0.0',
+    'invenio-accounts>=1.2.0',
+    'invenio-base>=1.2.2',
+    'invenio-i18n>=1.2.0',
     'oauthlib>=1.1.2,<3.0.0',
     'pyjwt>=1.5.0',
     'requests-oauthlib>=1.1.0,<1.2.0',
-    'six>=1.10.0',
     'SQLAlchemy-Utils[encrypted]>=0.33.0',
-    'werkzeug>=0.14.1',
     'WTForms-Alchemy>=0.15.0',
 ]
 
