@@ -8,6 +8,10 @@
 Changes
 =======
 
+Version 1.1.0 (released 2020-03-10)
+
+- Provides compatibility with werkzeug 1.0.0 for flask_oauthlib
+
 Version 1.0.4 (released 2019-12-05)
 
 - Removes updating the ``expires`` for personal tokens.
