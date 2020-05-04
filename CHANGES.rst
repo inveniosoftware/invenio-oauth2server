@@ -12,6 +12,8 @@ Version 1.1.1 (released TBD)
 
 - Minimum version of Invenio-Accounts bumped to v1.2.1 due WTForms moving the
   email validation to an optional dependency.
+- Maximum version of Sphinx set to 3 (lower than) due to an error with
+  working outside the application context.
 
 Version 1.1.0 (released 2020-03-10)
 
@@ -21,6 +23,8 @@ Version 1.0.5 (released TBD)
 
 - Minimum version of Invenio-Accounts bumped to v1.2.1 due WTForms moving the
   email validation to an optional dependency.
+- Maximum version of Sphinx set to 3.0.2 (lower than) due to an error with
+  working outside the application context.
 
 Version 1.0.4 (released 2019-12-05)
 

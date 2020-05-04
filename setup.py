@@ -35,7 +35,7 @@ extras_require = {
         'invenio-admin>=1.0.0'
     ],
     'docs': [
-        'Sphinx>=1.5.1',
+        'Sphinx>=1.5.1,<3',
     ],
     'redis': [
         'redis>=2.10.5',
