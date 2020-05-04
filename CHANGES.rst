@@ -8,6 +8,11 @@
 Changes
 =======
 
+Version 1.0.5 (released TBD)
+
+- Minimum version of Invenio-Accounts bumped to v1.2.1 due WTForms moving the
+  email validation to an optional dependency.
+
 Version 1.0.4 (released 2019-12-05)
 
 - Removes updating the ``expires`` for personal tokens.
