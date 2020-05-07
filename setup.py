@@ -18,7 +18,7 @@ history = open('CHANGES.rst').read()
 tests_require = [
     'SQLAlchemy-Continuum>=1.2.1',
     'check-manifest>=0.25',
-    'coverage>=4.0',
+    'coverage>=4.1',
     'invenio-assets>=1.0.0',
     'invenio-i18n>=1.0.0',
     'invenio-theme>=1.0.0',
@@ -35,7 +35,7 @@ extras_require = {
         'invenio-admin>=1.0.0'
     ],
     'docs': [
-        'Sphinx>=1.5.1,<3.0.2',
+        'Sphinx>=1.5.1,<3.0.0',
     ],
     'redis': [
         'redis>=2.10.5',
@@ -64,19 +64,18 @@ setup_requires = [
 ]
 
 install_requires = [
-    'Flask-BabelEx>=0.9.2',
+    'Flask-BabelEx>=0.9.3',
     'Flask-Breadcrumbs>=0.4.0',
     'Flask-OAuthlib>=0.9.5',
     'Flask-WTF>=0.13.1',
     'Flask>=0.11.1',
     'future>=0.16.0',
     'invenio-accounts>=1.1.4',
-    'oauthlib>=1.1.2,<3.0.0',
+    'oauthlib>=2.1.0,<3.0.0',
     'pyjwt>=1.5.0',
     'requests-oauthlib>=1.1.0,<1.2.0',
-    'six>=1.10.0',
     'SQLAlchemy-Utils[encrypted]>=0.33.0',
-    'werkzeug>=0.14.1',
+    'werkzeug>=0.15 ,<1.0.0',
     'WTForms-Alchemy>=0.15.0',
 ]
 
@@ -155,10 +154,9 @@ setup(
         'Programming Language :: Python',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Topic :: Software Development :: Libraries :: Python Modules',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: Implementation :: CPython',
         'Development Status :: 5 - Production/Stable',
     ],
