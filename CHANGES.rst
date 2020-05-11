@@ -8,7 +8,7 @@
 Changes
 =======
 
-Version 1.1.1 (released TBD)
+Version 1.1.1 (released 2020-05-11)
 
 - Deprecated Python versions lower than 3.6.0. Now supporting 3.6.0 and 3.7.0.
 - Minimum version of Invenio-Accounts bumped to v1.2.1 due WTForms moving the
