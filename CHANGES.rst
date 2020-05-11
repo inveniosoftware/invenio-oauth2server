@@ -10,6 +10,7 @@ Changes
 
 Version 1.1.1 (released TBD)
 
+- Deprecated Python versions lower than 3.6.0. Now supporting 3.6.0 and 3.7.0.
 - Minimum version of Invenio-Accounts bumped to v1.2.1 due WTForms moving the
   email validation to an optional dependency.
 - Maximum version of Sphinx set to 3 (lower than) due to an error with
