@@ -15,6 +15,8 @@ Version 1.1.1 (released TBD)
   email validation to an optional dependency.
 - Maximum version of Sphinx set to 3 (lower than) due to an error with
   working outside the application context.
+- Maximum version of SQLAlchemy-Utils set to 0.36 due to breaking changes
+  with MySQL (VARCHAR length).
 
 Version 1.1.0 (released 2020-03-10)
 

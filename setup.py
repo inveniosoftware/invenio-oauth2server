@@ -76,7 +76,7 @@ install_requires = [
     'oauthlib>=1.1.2,<3.0.0',
     'pyjwt>=1.5.0',
     'requests-oauthlib>=1.1.0,<1.2.0',
-    'SQLAlchemy-Utils[encrypted]>=0.33.0',
+    'SQLAlchemy-Utils[encrypted]>=0.33.0,<0.36.0',
     'WTForms-Alchemy>=0.15.0',
 ]
 
