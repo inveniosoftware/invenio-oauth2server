@@ -8,6 +8,10 @@
 Changes
 =======
 
+Version 1.2.0(released 2020-05-14)
+
+- Allow bypassing CSRF checks when using bearer tokens.
+
 Version 1.1.1 (released 2020-05-11)
 
 - Deprecated Python versions lower than 3.6.0. Now supporting 3.6.0 and 3.7.0.

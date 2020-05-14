@@ -12,6 +12,4 @@ This file is imported by ``invenio_oauth2server.__init__``,
 and parsed by ``setup.py``.
 """
 
-from __future__ import absolute_import, print_function
-
-__version__ = '1.1.1'
+__version__ = '1.2.0'
