@@ -21,7 +21,7 @@
   {{ render_field(form.name, autofocus=True) }}
   {{ render_scopes_field(form.scopes) }}
   {{ form.csrf_token }}
-  <a href="{{ url_for('.index') }}" class="ui button secondary basic">
+  <a href="{{ url_for('.index') }}" class="ui button">
     <i class="icon x"></i> {{ _('Cancel') }}
   </a>
   <button type="submit" class="ui button primary">
