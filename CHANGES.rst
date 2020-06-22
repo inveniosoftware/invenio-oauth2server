@@ -8,7 +8,11 @@
 Changes
 =======
 
-Version 1.2.0(released 2020-05-14)
+Version 1.3.0a1 (released 2020-06-22)
+
+- Integrates Semantic-UI templates.
+
+Version 1.2.0 (released 2020-05-14)
 
 - Allow bypassing CSRF checks when using bearer tokens.
 
