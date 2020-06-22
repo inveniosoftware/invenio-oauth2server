@@ -20,7 +20,7 @@
   {%- for field in form %}
     {{ render_field(field) }}
   {%- endfor %}
-  <a href="{{ url_for('.index') }}" class="ui button secondary basic">
+  <a href="{{ url_for('.index') }}" class="ui button">
     <i class="icon x"></i> {{ _('Cancel') }}
   </a>
   <button type="submit" class="ui button primary">
