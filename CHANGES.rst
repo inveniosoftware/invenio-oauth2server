@@ -8,8 +8,9 @@
 Changes
 =======
 
-Version 1.3.0a1 (released 2020-06-22)
+Version 1.3.0a2 (released 2020-06-23)
 
+- Sets `cancel` button's color to Semantic-UI default.
 - Integrates Semantic-UI templates.
 
 Version 1.2.0 (released 2020-05-14)
