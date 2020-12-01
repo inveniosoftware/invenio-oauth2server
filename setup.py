@@ -16,18 +16,7 @@ readme = open('README.rst').read()
 history = open('CHANGES.rst').read()
 
 tests_require = [
-    'SQLAlchemy-Continuum>=1.2.1',
-    'check-manifest>=0.25',
-    'coverage>=4.0',
-    'invenio-assets>=1.0.0',
-    'invenio-i18n>=1.0.0',
-    'invenio-theme>=1.0.0',
-    'isort>=4.2.2',
-    'mock>=1.3.0',
-    'pydocstyle>=1.0.0',
-    'pytest-cov>=1.8.0',
-    'pytest-pep8>=1.0.6',
-    'pytest>=3.8.0,<5.0.0',
+    'pytest-invenio>=1.4.0',
 ]
 
 extras_require = {
