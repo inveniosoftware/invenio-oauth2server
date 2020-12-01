@@ -235,6 +235,7 @@ def token_view(token):
 
     form = TokenForm(request.form, name=token.client.name, scopes=token.scopes)
     form.scopes.choices = current_oauth2server.scope_choices()
+    form.scopes.data = token.scopes
 
     if form.validate_on_submit():
         token.client.name = form.data['name']
