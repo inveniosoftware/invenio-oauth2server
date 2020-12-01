@@ -19,7 +19,7 @@
     <div class="ui segment {{panel_extra_class}}">
       <div class="ui equal width grid">
         <div class="column">
-          <strong>{%if icon %}<i class="{{ icon }}"></i>{% endif %} {{ title }}</strong>
+          <strong class="header item">{%if icon %}<i class="{{ icon }}"></i>{% endif %} {{ title }}</strong>
         </div>
         <div class="right floated right aligned column">
           {%- if btn and (btn_href or btn_text) -%}
