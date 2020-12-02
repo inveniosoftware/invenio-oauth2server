@@ -16,7 +16,7 @@ set -o nounset
 
 pydocstyle invenio_oauth2server
 isort -rc -c -df **/*.py
-check-manifest --ignore ".travis-*"
+check-manifest --ignore ".*-requirements.txt"
 sphinx-build -qnNW docs docs/_build/html
 docker-services-cli up ${DB}
 python setup.py test
