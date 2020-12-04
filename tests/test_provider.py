@@ -242,75 +242,75 @@ def test_refresh_flow(provider_fixture):
 
 
 def web_auth_flow(provider_fixture):
-        app = provider_fixture
-        # Go to login - should redirect to OAuth 2 server for login an
-        # authorization
-        with app.app_context():
-            with app.test_client() as client:
-                r = client.get('/oauth2test/test-ping')
+    app = provider_fixture
+    # Go to login - should redirect to OAuth 2 server for login an
+    # authorization
+    with app.app_context():
+        with app.test_client() as client:
+            r = client.get('/oauth2test/test-ping')
 
-                # First login on provider site
-                login(client)
+            # First login on provider site
+            login(client)
 
-                r = client.get('/oauth2test/login')
-                assert r.status_code == 302
-                next_url, data = parse_redirect(r.location)
+            r = client.get('/oauth2test/login')
+            assert r.status_code == 302
+            next_url, data = parse_redirect(r.location)
 
-                # Authorize page
-                r = client.get(next_url, query_string=data)
-                assert r.status_code == 200
+            # Authorize page
+            r = client.get(next_url, query_string=data)
+            assert r.status_code == 200
 
-                # User confirms request
-                data['confirm'] = 'yes'
-                data['scope'] = 'test:scope'
-                data['state'] = ''
-                r = client.post(next_url, data=data)
-                assert r.status_code == 302
-                next_url, data = parse_redirect(r.location)
-                assert next_url == 'http://{0}/oauth2test/authorized'.format(
-                    app.config['SERVER_NAME'])
-                assert 'code' in data
+            # User confirms request
+            data['confirm'] = 'yes'
+            data['scope'] = 'test:scope'
+            data['state'] = ''
+            r = client.post(next_url, data=data)
+            assert r.status_code == 302
+            next_url, data = parse_redirect(r.location)
+            assert next_url == 'http://{0}/oauth2test/authorized'.format(
+                app.config['SERVER_NAME'])
+            assert 'code' in data
 
-                # User is redirected back to client site.
-                # - The client view /oauth2test/authorized will in the
-                #   background fetch the access token.
-                r = client.get(next_url, query_string=data)
-                assert r.status_code == 200
+            # User is redirected back to client site.
+            # - The client view /oauth2test/authorized will in the
+            #   background fetch the access token.
+            r = client.get(next_url, query_string=data)
+            assert r.status_code == 200
 
-                # Authentication flow has now been completed, and the access
-                # token can be used to access protected resources.
-                r = client.get('/oauth2test/test-ping')
-                assert r.status_code == 200
-                assert json.loads(r.get_data()) == dict(ping='pong')
+            # Authentication flow has now been completed, and the access
+            # token can be used to access protected resources.
+            r = client.get('/oauth2test/test-ping')
+            assert r.status_code == 200
+            assert json.loads(r.get_data()) == dict(ping='pong')
 
-                # Authentication flow has now been completed, and the access
-                # token can be used to access protected resources.
-                r = client.get('/oauth2test/test-ping')
-                assert r.status_code == 200
-                assert json.loads(r.get_data()) == dict(ping='pong')
+            # Authentication flow has now been completed, and the access
+            # token can be used to access protected resources.
+            r = client.get('/oauth2test/test-ping')
+            assert r.status_code == 200
+            assert json.loads(r.get_data()) == dict(ping='pong')
 
-                r = client.get('/oauth2test/test-info')
-                assert r.status_code == 200
-                json_resp = json.loads(r.get_data())
-                assert json_resp['client'] == 'confidential'
-                assert json_resp['user'] == app.user1_id
-                assert json_resp['scopes'] == [u'test:scope']
+            r = client.get('/oauth2test/test-info')
+            assert r.status_code == 200
+            json_resp = json.loads(r.get_data())
+            assert json_resp['client'] == 'confidential'
+            assert json_resp['user'] == app.user1_id
+            assert json_resp['scopes'] == [u'test:scope']
 
-                # Access token doesn't provide access to this URL.
-                r = client.get(
-                    '/oauth2test/test-invalid',
-                    base_url='http://{0}'.format(app.config['SERVER_NAME'])
-                )
-                assert r.status_code == 401
+            # Access token doesn't provide access to this URL.
+            r = client.get(
+                '/oauth2test/test-invalid',
+                base_url='http://{0}'.format(app.config['SERVER_NAME'])
+            )
+            assert r.status_code == 401
 
-                # # Now logout
-                r = client.get('/oauth2test/logout')
-                assert r.status_code == 200
-                assert r.data == "logout"
+            # # Now logout
+            r = client.get('/oauth2test/logout')
+            assert r.status_code == 200
+            assert r.data == "logout"
 
-                # And try to access the information again
-                r = client.get('/oauth2test/test-ping')
-                assert r.status_code == 403
+            # And try to access the information again
+            r = client.get('/oauth2test/test-ping')
+            assert r.status_code == 403
 
 
 def test_implicit_flow(provider_fixture):

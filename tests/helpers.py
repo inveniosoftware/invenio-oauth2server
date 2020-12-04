@@ -19,6 +19,7 @@ from werkzeug.urls import url_decode, url_parse, url_unparse  # noqa isort:skip
 
 
 def patch_request(app):
+    """Patch the request."""
     test_client = app.test_client()
 
     def make_request(uri, headers=None, data=None, method=None):
@@ -43,6 +44,7 @@ def patch_request(app):
 
 
 def parse_redirect(location, parse_fragment=False):
+    """Parse a redirect."""
     scheme, netloc, script_root, qs, anchor = url_parse(location)
     return (
         url_unparse((scheme, netloc, script_root, '', '')),
@@ -51,6 +53,7 @@ def parse_redirect(location, parse_fragment=False):
 
 
 def login(test_client, email='info@inveniosoftware.org', password='tester'):
+    """Login the test client."""
     return test_client.post(
         url_for('security.login'),
         data={

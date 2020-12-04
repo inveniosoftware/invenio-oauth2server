@@ -100,8 +100,8 @@ def app(request):
 
     with app.app_context():
         if str(db.engine.url) != 'sqlite://' and \
-           not database_exists(str(db.engine.url)):
-                create_database(str(db.engine.url))
+                not database_exists(str(db.engine.url)):
+            create_database(str(db.engine.url))
         db.create_all()
 
     def teardown():
@@ -122,6 +122,7 @@ def api_app(app):
 
 @pytest.fixture()
 def api_app_with_test_view(api_app):
+    """Add a test view URL."""
     api_app.add_url_rule('/test', 'test', view_func=lambda: 'OK')
     return api_app
 
@@ -259,6 +260,7 @@ def models_fixture(app):
 def provider_fixture(app):
     """Fixture that contains test data for provider tests."""
     from invenio_oauth2server.proxies import current_oauth2server
+
     # Mock the oauth client calls to prevent them from going online.
     oauth_client = create_oauth_client(app, 'oauth2test')
     oauth_client.http_request = MagicMock(
@@ -352,6 +354,7 @@ def provider_fixture(app):
 def resource_fixture(app, api_app):
     """Fixture that contains the test data for models tests."""
     from flask import g, request
+
     from invenio_oauth2server.proxies import current_oauth2server
 
     # Setup API resources
