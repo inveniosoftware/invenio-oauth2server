@@ -8,15 +8,18 @@
 
 """Define forms for generating access tokens and clients."""
 
+from flask import current_app
 from flask_babelex import lazy_gettext as _
 from flask_wtf import FlaskForm as Form
 from oauthlib.oauth2.rfc6749.errors import InsecureTransportError, \
     InvalidRedirectURIError
+from werkzeug.local import LocalProxy
 from wtforms import fields, validators, widgets
 from wtforms.widgets import HTMLString
 from wtforms_alchemy import model_form_factory
 
 from .models import Client
+from .theme.semantic.form_styling import SelectSUI
 from .validators import URLValidator, validate_redirect_uri
 
 
@@ -134,6 +137,15 @@ class ClientForm(ClientFormBase):
         default='',
     )
 
+    widget = LocalProxy(
+        lambda: (
+            SelectSUI()
+            if current_app.config.get("APP_THEME")
+            and current_app.config.get("APP_THEME")[0] == "semantic-ui"
+            else widgets.Select()
+        )
+    )
+
     is_confidential = fields.SelectField(
         label=_('Client type'),
         description=_(
@@ -145,6 +157,7 @@ class ClientForm(ClientFormBase):
         coerce=bool,
         choices=[(True, _('Confidential')), (False, _('Public'))],
         default=True,
+        widget=widget,
     )
 
 
