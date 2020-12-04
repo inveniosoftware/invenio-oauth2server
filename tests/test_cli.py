@@ -12,7 +12,6 @@ from invenio_db import db
 from invenio_oauth2server.cli import tokens_create, tokens_delete
 from invenio_oauth2server.models import Client, Token
 
-
 """
 $ invenio tokens create "my-token" \
     --email foobar@example.com --internal \
