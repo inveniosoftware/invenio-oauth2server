@@ -13,7 +13,6 @@ from __future__ import absolute_import, print_function
 
 import pytest
 from flask import Flask
-from invenio_db import db
 
 from invenio_oauth2server import InvenioOAuth2Server, InvenioOAuth2ServerREST
 from invenio_oauth2server.ext import verify_oauth_token_and_set_current_user
@@ -74,23 +73,3 @@ def test_init_rest_with_oauthlib_monkeypatch():
     from oauthlib.common import urlencoded
     assert old_urlencoded != urlencoded
     assert '^' in urlencoded
-
-
-def test_alembic(app):
-    """Test alembic recipes."""
-    ext = app.extensions['invenio-db']
-
-    with app.app_context():
-        if db.engine.name == 'sqlite':
-            raise pytest.skip('Upgrades are not supported on SQLite.')
-
-        assert not ext.alembic.compare_metadata()
-        db.drop_all()
-        ext.alembic.upgrade()
-
-        assert not ext.alembic.compare_metadata()
-        ext.alembic.downgrade(target='96e796392533')
-        ext.alembic.upgrade()
-
-        assert not ext.alembic.compare_metadata()
-        ext.alembic.downgrade(target='96e796392533')
