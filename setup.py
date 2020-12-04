@@ -62,7 +62,6 @@ install_requires = [
     'invenio-accounts>=1.3.0',
     'invenio-base>=1.2.2',
     'invenio-i18n>=1.2.0',
-    'oauthlib>=1.1.2,<3.0.0',
     'pyjwt>=1.5.0',
     'requests-oauthlib>=1.1.0,<1.2.0',
     'SQLAlchemy-Utils[encrypted]>=0.33.0,<0.36.0',
