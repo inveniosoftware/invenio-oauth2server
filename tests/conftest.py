@@ -14,6 +14,7 @@ from __future__ import absolute_import, print_function
 import os
 import shutil
 import tempfile
+from unittest.mock import MagicMock
 
 import pytest
 from flask import Flask, url_for
@@ -28,7 +29,6 @@ from invenio_accounts import InvenioAccountsREST, InvenioAccountsUI
 from invenio_accounts.models import User
 from invenio_accounts.views import blueprint as accounts_blueprint
 from invenio_db import InvenioDB, db
-from mock import MagicMock
 from six import get_method_self
 from sqlalchemy_utils.functions import create_database, database_exists, \
     drop_database
@@ -54,6 +54,7 @@ def app(request):
 
     def init_app(app):
         app.config.update(
+            DB_VERSIONING=True,
             LOGIN_DISABLED=False,
             MAIL_SUPPRESS_SEND=True,
             OAUTH2_CACHE_TYPE='simple',

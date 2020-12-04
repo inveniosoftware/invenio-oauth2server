@@ -21,22 +21,22 @@ tests_require = [
 
 extras_require = {
     'admin': [
-        'invenio-admin>=1.0.0'
+        'invenio-admin>=1.2.1'
     ],
     'docs': [
-        'Sphinx>=1.5.1,<3',
+        'Sphinx>=2,<3',
     ],
     'redis': [
         'redis>=2.10.5',
     ],
     'mysql': [
-        'invenio-db[mysql]>=1.0.0',
+        'invenio-db[mysql,versioning]>=1.0.8',
     ],
     'postgresql': [
-        'invenio-db[postgresql]>=1.0.0',
+        'invenio-db[postgresql,versioning]>=1.0.8',
     ],
     'sqlite': [
-        'invenio-db>=1.0.0',
+        'invenio-db[versioning]>=1.0.8',
     ],
     'tests': tests_require,
 }
@@ -48,8 +48,7 @@ for name, reqs in extras_require.items():
     extras_require['all'].extend(reqs)
 
 setup_requires = [
-    'Babel>=1.3',
-    'pytest-runner>=2.6.2',
+    'Babel>=2.8',
 ]
 
 install_requires = [
@@ -59,12 +58,11 @@ install_requires = [
     'Flask-OAuthlib>=0.9.5',
     'Flask-WTF>=0.14.3',
     'future>=0.16.0',
-    'invenio-accounts>=1.3.0',
-    'invenio-base>=1.2.2',
+    'invenio-accounts>=1.3.1',
+    'invenio-base>=1.2.3',
     'invenio-i18n>=1.2.0',
     'pyjwt>=1.5.0',
     'requests-oauthlib>=1.1.0,<1.2.0',
-    'SQLAlchemy-Utils[encrypted]>=0.33.0,<0.36.0',
     'WTForms-Alchemy>=0.15.0',
 ]
 
