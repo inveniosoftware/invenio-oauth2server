@@ -18,13 +18,13 @@ set -o nounset
 
 # Always bring down docker services
 function cleanup {
-    docker-services-cli down
+    eval "$(docker-services-cli down --env)"
 }
 trap cleanup EXIT
 
 python -m check_manifest --ignore ".*-requirements.txt"
 python -m sphinx.cmd.build -qnNW docs docs/_build/html
-docker-services-cli up ${DB:-}
+eval "$(docker-services-cli up --db ${DB:-postgresql} --env)"
 python -m pytest
 python -m sphinx.cmd.build -qnNW -b doctest docs docs/_build/doctest
 tests_exit_code=$?
