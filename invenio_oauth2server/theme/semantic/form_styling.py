@@ -18,9 +18,9 @@ class SelectSUI(object):
 
     def __call__(self, field, **kwargs):
         """Render select field."""
-        html = [u'<div class="ui fluid dropdown button icon">']
-        html.append(u'<i class="dropdown icon"></i>')
+        html = [u'<div class="ui fluid selection dropdown">']
         html.append(u'<input type="hidden" name="client_type">')
+        html.append(u'<i class="dropdown icon"></i>')
         items_html = []
         default_text_html = []
         for val, label, selected in field.iter_choices():
