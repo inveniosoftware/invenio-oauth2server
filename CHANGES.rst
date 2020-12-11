@@ -8,6 +8,11 @@
 Changes
 =======
 
+Version 1.3.1 (released 2020-12-11)
+
+- Fixes issue with form for application creation.
+- Fixes problem with rendering errors in the form.
+
 Version 1.3.0 (released 2020-12-09)
 
 - Integrates Semantic-UI templates.
