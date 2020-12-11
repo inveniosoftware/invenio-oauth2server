@@ -19,14 +19,14 @@ class SelectSUI(object):
     def __call__(self, field, **kwargs):
         """Render select field."""
         html = [u'<div class="ui fluid selection dropdown">']
-        html.append(u'<input type="hidden" name="client_type">')
+        html.append(u'<input type="hidden" name="{0}">'.format(field.name))
         html.append(u'<i class="dropdown icon"></i>')
         items_html = []
         default_text_html = []
         for val, label, selected in field.iter_choices():
             if selected:
                 default_text_html = [
-                    u'<div class="default text">{0}</div><div class="menu">'
+                    u'<div class="text">{0}</div><div class="menu">'
                     .format(label)
                 ]
             items_html.append(self.render_option(val, label, selected))

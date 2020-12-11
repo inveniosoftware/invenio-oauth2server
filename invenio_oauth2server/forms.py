@@ -154,9 +154,9 @@ class ClientForm(ClientFormBase):
             'select public if your application cannot (e.g. a browser-based '
             'JavaScript application). If you select public, your application '
             'MUST validate the redirect URI.'),
-        coerce=bool,
-        choices=[(True, _('Confidential')), (False, _('Public'))],
-        default=True,
+        coerce=lambda x: False if x == "False" else bool(x),
+        choices=[("True", _('Confidential')), ("False", _('Public'))],
+        default="True",
         widget=widget,
     )
 
