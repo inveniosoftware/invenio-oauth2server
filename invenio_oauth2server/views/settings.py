@@ -20,6 +20,8 @@ from flask_breadcrumbs import register_breadcrumb
 from flask_login import current_user, login_required
 from flask_menu import register_menu
 from invenio_db import db
+from invenio_theme.proxies import current_theme_icons
+from speaklater import make_lazy_string
 
 from ..forms import ClientForm, TokenForm
 from ..models import Client, Token
@@ -92,7 +94,8 @@ def token_getter(is_personal=True, is_internal=False):
 @login_required
 @register_menu(
     blueprint, 'settings.applications',
-    _('%(icon)s Applications', icon='<i class="fa fa-shield fa-fw"></i>'),
+    _('%(icon)s Applications', icon=make_lazy_string(
+        lambda: f'<i class="{current_theme_icons.codepen}"></i>')),
     order=5,
     active_when=lambda: request.endpoint.startswith(
         "invenio_oauth2server_settings.")

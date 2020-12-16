@@ -17,26 +17,27 @@
       _('Application / %(client_name)s', client_name=client.name),
       with_body=False,
   ) }}
+
   <div class="ui segment">
-      <h4 class="ui header">
-        Client ID
-        <div class="sub header">
-          <code>{{ client.client_id }}</code>
-        </div>
-      </h4>
-      <h4 class="ui header">
-        Client Secret
-        <div class="sub header">
-          <code>{{ client.client_secret }}</code>
-          <br><small>{{ _('Do not share the client secret with anyone!') }}</small></p>
-        </div>
-      </h4>
     <form class="ui form" method="POST" action="{{ url_for('.client_reset', client_id=client.client_id) }}">
       <input type="hidden" name="reset" value="yes">
-      <button type="submit" class="ui button negative">
+      <button type="submit" class="ui right floated negative button">
         <i class="icon ban"></i> {{ _('Reset client secret') }}
       </button>
     </form>
+    <h4 class="ui header">
+      Client ID
+      <div class="sub header">
+        <code>{{ client.client_id }}</code>
+      </div>
+    </h4>
+    <h4 class="ui header">
+      Client Secret
+      <div class="sub header">
+        <code>{{ client.client_secret }}</code>
+        <br><small>{{ _('Do not share the client secret with anyone!') }}</small></p>
+      </div>
+    </h4>
   </div>
   {%- block client_footer_text %}{%- endblock client_footer_text %}
   <div class="ui segment">
@@ -45,11 +46,11 @@
       {{ render_field(field) }}
       {%- endfor %}
 
-      <button type="submit" name="save" class="ui button primary">
-        <i class="icon check"></i> {{ _('Save') }}
-      </button>
       <button type="submit" name="delete" class="ui button negative">
         <i class="icon trash"></i> {{ _('Delete') }}
+      </button>
+      <button type="submit" name="save" class="ui button primary">
+        <i class="icon check"></i> {{ _('Save') }}
       </button>
     </form>
   </div>

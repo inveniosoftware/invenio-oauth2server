@@ -43,7 +43,7 @@
       <div class="four wide column">
         <div class="inline field">
           <div class="ui checkbox">
-            <input id="{{ choice_id }}" {% if checked %} checked {% endif %} value="{{ value }}" name="{{ field.name }}" type="checkbox" class="hidden">
+            <input id="{{ choice_id }}" {% if checked %} checked {% endif %} value="{{ value }}" name="{{ field.name }}" type="checkbox">
             <label for="{{ choice_id }}">
               {{ value }}<br/>
               <small>{{ label.help_text }}</small>
