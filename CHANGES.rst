@@ -8,6 +8,12 @@
 Changes
 =======
 
+Version 1.3.2 (released 2020-12-17)
+
+- Adds theme dependent icons.
+- Fixes layout and styling issues.
+- Fixes UX issues related to button ordering.
+
 Version 1.3.1 (released 2020-12-11)
 
 - Fixes issue with form for application creation.

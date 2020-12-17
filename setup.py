@@ -61,6 +61,7 @@ install_requires = [
     'invenio-accounts>=1.3.1',
     'invenio-base>=1.2.3',
     'invenio-i18n>=1.2.0',
+    'invenio-theme>=1.3.4',
     'pyjwt>=1.5.0',
     'requests-oauthlib>=1.1.0,<1.2.0',
     'WTForms-Alchemy>=0.15.0',
