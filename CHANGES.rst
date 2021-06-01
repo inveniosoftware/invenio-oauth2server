@@ -8,6 +8,10 @@
 Changes
 =======
 
+Version 1.3.3 (released 2021-06-01)
+
+- Maximum version of WTForms set to <3.0.0 due to incompatibility issues.
+
 Version 1.3.2 (released 2020-12-17)
 
 - Adds theme dependent icons.
