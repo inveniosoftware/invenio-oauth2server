@@ -71,6 +71,19 @@ def app(request):
             SQLALCHEMY_TRACK_MODIFICATIONS=True,
             TESTING=True,
             WTF_CSRF_ENABLED=False,
+            APP_THEME="semantic-ui",
+            THEME_ICONS={
+                'semantic-ui': {
+                    'key': 'key icon',
+                    'link': 'linkify icon',
+                    'shield': 'shield alternate icon',
+                    'user': 'user icon',
+                    'codepen': 'codepen icon',
+                    'cogs': 'cogs icon',
+                    # Special catch all:
+                    '*': '{} icon'
+                }
+            },
         )
         Babel(app)
         Mail(app)
