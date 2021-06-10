@@ -2,6 +2,7 @@
 
   This file is part of Invenio.
   Copyright (C) 2015-2020 CERN.
+  Copyright (C)      2021 Graz University of Technology.
 
   Invenio is free software; you can redistribute it and/or modify it
   under the terms of the MIT License; see LICENSE file for more details.
@@ -26,13 +27,13 @@
       </button>
     </form>
     <h4 class="ui header">
-      Client ID
+      {{ _('Client ID') }}
       <div class="sub header">
         <code>{{ client.client_id }}</code>
       </div>
     </h4>
     <h4 class="ui header">
-      Client Secret
+      {{ _('Client Secret') }}
       <div class="sub header">
         <code>{{ client.client_secret }}</code>
         <br><small>{{ _('Do not share the client secret with anyone!') }}</small></p>
@@ -77,11 +78,11 @@
             {{_('example request')}}
           </a>):
           <ul>
-            <li>response_type (required, use <code>code</code> or <code>token</code>)</li>
-            <li>client_id (required)</li>
-            <li>scope (required, space separate list of scopes)</li>
-            <li>redirect_uri (required, URL encoded)</li>
-            <li>state (recommended, for CSRF protection)</li>
+            <li>response_type ({{ _("required, use") }} <code>code</code> {{ _("or") }} <code>token</code>)</li>
+            <li>client_id ({{ _("required") }})</li>
+            <li>scope ({{ _("required, space separate list of scopes") }})</li>
+            <li>redirect_uri ({{ _("required, URL encoded") }})</li>
+            <li>state ({{ _("recommended, for CSRF protection") }})</li>
           </ul>
         </small>
       </p>
@@ -94,14 +95,14 @@
           {{ url_for('invenio_oauth2server.access_token', _external=True, _scheme='https')}}
         </div>
       </h3>
-      <small>Request body parameters:
+      <small>{{ _('Request body parameters:') }}
         <ul>
-          <li>client_id (required).</li>
-          <li>client_secret (required).</li>
-          <li>grant_type (required, use {% for c in config.OAUTH2SERVER_ALLOWED_GRANT_TYPES %}<code>{{c}}</code>{% if not loop.last %}, {% endif %}{% endfor %}).</li>
-          <li>code (required for grant_type <code>authorization code</code>).</li>
-          <li>scope (required for grant_type <code>client_credentials</code>).</li>
-          <li>refresh_token (required for grant_type <code>refresh_token</code>).</li>
+          <li>client_id ({{ _("required") }}).</li>
+          <li>client_secret ({{ _("required") }}).</li>
+          <li>grant_type ({{ _("required, use") }} {% for c in config.OAUTH2SERVER_ALLOWED_GRANT_TYPES %}<code>{{c}}</code>{% if not loop.last %}, {% endif %}{% endfor %}).</li>
+          <li>code ({{ _("required for grant_type") }} <code>authorization code</code>).</li>
+          <li>scope ({{ _("required for grant_type") }} <code>client_credentials</code>).</li>
+          <li>refresh_token ({{ _("required for grant_type") }} <code>refresh_token</code>).</li>
         </ul>
       </small>
       </p>
