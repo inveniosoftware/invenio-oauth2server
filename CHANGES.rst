@@ -8,6 +8,10 @@
 Changes
 =======
 
+Version 1.3.4 (released 2021-07-15)
+
+- Adds german translations
+
 Version 1.3.3 (released 2021-06-01)
 
 - Maximum version of WTForms set to <3.0.0 due to incompatibility issues.
