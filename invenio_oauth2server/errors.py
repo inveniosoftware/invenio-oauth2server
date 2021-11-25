@@ -47,7 +47,7 @@ class JWTExtendedException(HTTPException):
         """
         return [e.to_dict() for e in self.errors] if self.errors else None
 
-    def get_body(self, environ=None):
+    def get_body(self, environ=None, scope=None):
         """Get the request body."""
         body = dict(
             status=self.code,
