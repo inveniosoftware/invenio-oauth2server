@@ -2,6 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
+# Copyright (C) 2022 RERO.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -13,8 +14,8 @@ from __future__ import absolute_import, print_function
 import os
 import warnings
 
+import importlib_metadata
 import oauthlib.common as oauthlib_commmon
-import pkg_resources
 import six
 from flask import abort, request
 from flask_login import current_user
@@ -88,7 +89,9 @@ class _OAuth2ServerState(object):
 
         :param entry_point_group: The entrypoint group name to load plugins.
         """
-        for ep in pkg_resources.iter_entry_points(group=entry_point_group):
+        for ep in set(importlib_metadata.entry_points(
+            group=entry_point_group
+        )):
             self.register_scope(ep.load())
 
     def load_obj_or_import_string(self, value):

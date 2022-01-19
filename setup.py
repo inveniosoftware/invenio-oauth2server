@@ -2,6 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
+# Copyright (C) 2022 RERO.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -24,7 +25,7 @@ extras_require = {
         'invenio-admin>=1.2.1'
     ],
     'docs': [
-        'Sphinx>=2,<3',
+        'Sphinx>=4.2.0',
     ],
     'redis': [
         'redis>=2.10.5',
@@ -66,6 +67,7 @@ install_requires = [
     'requests-oauthlib>=1.1.0,<1.2.0',
     'WTForms-Alchemy>=0.15.0',
     'WTForms>=2.3.3,<3.0.0',
+    'importlib_metadata>=4.4'
 ]
 
 packages = find_packages()
