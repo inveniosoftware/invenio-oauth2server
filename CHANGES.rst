@@ -8,6 +8,12 @@
 Changes
 =======
 
+Version 1.3.5 (released 2022-02-28)
+
+- Replaces pkg_resources with importlib.
+- Fix translation issue with fuzzy translations.
+- Fix Flask 2 compatibility issue.
+
 Version 1.3.4 (released 2021-07-15)
 
 - Adds german translations
