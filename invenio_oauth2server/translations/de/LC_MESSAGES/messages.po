@@ -1,28 +1,29 @@
 # Translations template for invenio-oauth2server.
-# Copyright (C) 2021 CERN
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2022 CERN
 # This file is distributed under the same license as the
 # invenio-oauth2server project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
 # 
 # Translators:
 # Tibor Simko <tibor.simko@cern.ch>, 2016
 # Alizee Pace <alizee.pace@gmail.com>, 2021
 # Mojib Wali <mojib.wali@tugraz.at>, 2021
 # Alexander Gruber <alexander.gruber@tugraz.at>, 2021
+# chriz_uniba <christina.zeller@uni-bamberg.de>, 2022
 # 
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: invenio-oauth2server 1.3.3\n"
+"Project-Id-Version: invenio-oauth2server 1.3.5\n"
 "Report-Msgid-Bugs-To: info@inveniosoftware.org\n"
-"POT-Creation-Date: 2021-06-10 11:38+0200\n"
+"POT-Creation-Date: 2022-05-27 10:00+0200\n"
 "PO-Revision-Date: 2016-08-18 08:03+0000\n"
-"Last-Translator: Alexander Gruber <alexander.gruber@tugraz.at>, 2021\n"
+"Last-Translator: chriz_uniba <christina.zeller@uni-bamberg.de>, 2022\n"
 "Language-Team: German (https://www.transifex.com/inveniosoftware/teams/23537/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Generated-By: Babel 2.10.1\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -32,7 +33,7 @@ msgstr "OAuth-Anwendungen"
 
 #: invenio_oauth2server/admin.py:61 invenio_oauth2server/admin.py:70
 msgid "User Management"
-msgstr "Benutzerverwaltung"
+msgstr "BenutzerInverwaltung"
 
 #: invenio_oauth2server/admin.py:69
 msgid "OAuth Application Tokens"
@@ -53,7 +54,7 @@ msgid ""
 " URLs. HTTPS must be used for all hosts except localhost (for testing "
 "purposes)."
 msgstr ""
-"Eine Redirect-URI pro Zeile. Dies sind die Autorisierungs-Callback-URLs "
+"Eine Umleitungs-URI pro Zeile. Dies sind die Autorisierungs-Callback-URLs "
 "Ihrer Anwendung. HTTPS muss für alle Hosts außer localhost (zu Testzwecken) "
 "verwendet werden."
 
@@ -68,11 +69,11 @@ msgid ""
 "application cannot (e.g. a browser-based JavaScript application). If you "
 "select public, your application MUST validate the redirect URI."
 msgstr ""
-"Wählen Sie confidential, wenn Ihre Anwendung in der Lage ist, das "
+"Wählen Sie \"vertraulich\", wenn Ihre Anwendung in der Lage ist, das "
 "ausgegebene Client-Geheimnis vertraulich zu halten (z. B. eine "
-"Webanwendung), wählen Sie Öffentlich, wenn Ihre Anwendung dies nicht kann "
-"(z. B. eine browserbasierte JavaScript-Anwendung). Wenn Sie public wählen, "
-"MUSS Ihre Anwendung den Redirect-URI validieren."
+"Webanwendung), wählen Sie \"öffentlich\", wenn Ihre Anwendung dies nicht "
+"kann (z. B. eine browserbasierte JavaScript-Anwendung). Wenn Sie "
+"\"öffentlich\" wählen, MUSS Ihre Anwendung die Umleitungs-URI validieren."
 
 #: invenio_oauth2server/forms.py:158
 msgid "Confidential"
@@ -84,7 +85,7 @@ msgstr "Öffentlich"
 
 #: invenio_oauth2server/forms.py:168
 msgid "Name of personal access token."
-msgstr "Name des persönlichen Zugang Tokens."
+msgstr "Name des persönlichen Zugriffstokens."
 
 #: invenio_oauth2server/forms.py:173
 msgid "The name must be less than 40 characters long."
@@ -96,8 +97,8 @@ msgid ""
 "token works just like a normal OAuth  access token for authentication "
 "against the API."
 msgstr ""
-"Scopes weisen Ihrem persönlichen Zugriffstoken Berechtigungen zu. Ein "
-"persönliches Zugriffstoken funktioniert genau wie ein normales OAuth-"
+"Geltungsbereiche weisen Ihrem persönlichen Zugriffstoken Berechtigungen zu. "
+"Ein persönliches Zugriffstoken funktioniert genau wie ein normales OAuth-"
 "Zugriffstoken für die Authentifizierung gegenüber der API."
 
 #: invenio_oauth2server/models.py:123
@@ -106,7 +107,7 @@ msgstr "Name"
 
 #: invenio_oauth2server/models.py:124
 msgid "Name of application (displayed to users)."
-msgstr "Name der Anwendung (wird den Benutzern angezeigt)."
+msgstr "Name der Anwendung (wird den BenutzerInnen angezeigt)."
 
 #: invenio_oauth2server/models.py:134
 msgid "Description"
@@ -114,15 +115,16 @@ msgstr "Beschreibung"
 
 #: invenio_oauth2server/models.py:135
 msgid "Optional. Description of the application (displayed to users)."
-msgstr "Optional. Beschreibung der Anwendung (wird den Benutzern angezeigt)."
+msgstr ""
+"Optional. Beschreibung der Anwendung (wird den BenutzerInnen angezeigt)."
 
 #: invenio_oauth2server/models.py:144
 msgid "Website URL"
-msgstr "Website-URL"
+msgstr "URL der Internetseite"
 
 #: invenio_oauth2server/models.py:145
 msgid "URL of your application (displayed to users)."
-msgstr "URL Ihrer Anwendung (wird den Benutzern angezeigt)."
+msgstr "URL Ihrer Anwendung (wird den BenutzerInnen angezeigt)."
 
 #: invenio_oauth2server/scopes.py:20
 msgid "Allow access to email address (read-only)."
@@ -174,7 +176,7 @@ msgstr "Anwendung"
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/authorize.html:56
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_permission_view.html:47
 msgid "Visit application website"
-msgstr "Anwendung Website besuchen"
+msgstr "Anwendungsinternetseite besuchen"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/authorize.html:60
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/authorize.html:67
@@ -229,22 +231,22 @@ msgstr "Anwendung / %(client_name)s"
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:22
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:30
 msgid "Client ID"
-msgstr "Kunden-ID"
+msgstr "Client-ID"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:23
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:36
 msgid "Client Secret"
-msgstr "Kundengeheimnis"
+msgstr "Client-Geheimnis"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:24
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:39
 msgid "Do not share the client secret with anyone!"
-msgstr "Teilen Sie das Kundengeheimnis mit niemanden!"
+msgstr "Teilen Sie das Client-Geheimnis mit niemandem!"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:30
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:26
 msgid "Reset client secret"
-msgstr "Kundengeheimnis zurücksetzen"
+msgstr "Client-Geheimnis zurücksetzen"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:47
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_view.html:48
@@ -273,19 +275,19 @@ msgstr "URL autorisieren (GET)"
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:62
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:71
 msgid "Query parameters"
-msgstr "Abfrage-Parameter"
+msgstr "Abfrageparameter"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:69
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:78
 msgid "example request"
-msgstr "Beispiel-Anfrage"
+msgstr "Beispielanfrage"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:72
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:89
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:81
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:102
 msgid "required, use"
-msgstr "erforderlich, verwenden Sie"
+msgstr "erforderlich, verwenden"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:73
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:87
@@ -299,7 +301,7 @@ msgstr "erforderlich"
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:74
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:83
 msgid "required, space separate list of scopes"
-msgstr "erforderlich, Raum separate Liste der scopes"
+msgstr "erforderlich, Leerzeichen-getrennte Liste der Geltungsbereiche"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:75
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:84
@@ -314,12 +316,12 @@ msgstr "empfohlen, für CSRF-Schutz"
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:83
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:93
 msgid "Access token URL (POST)"
-msgstr "Zugriffs-Token-URL (POST)"
+msgstr "Zugriffstoken-URL (POST)"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:85
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:98
 msgid "Request body parameters:"
-msgstr "Parameter des Anfragekörpers:"
+msgstr "Parameter des \"Request body\"s:"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:90
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:91
@@ -328,12 +330,12 @@ msgstr "Parameter des Anfragekörpers:"
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:104
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:105
 msgid "required for grant_type"
-msgstr "erforderlich für grant_type"
+msgstr "erforderlich für \"grant_type\""
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:17
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:17
 msgid "Developer Applications"
-msgstr "Entwickler-Anwendungen"
+msgstr "EntwicklerInnenanwendungen"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:18
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:18
@@ -362,7 +364,7 @@ msgstr ""
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:41
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:43
 msgid "Personal access tokens"
-msgstr "Persönliche Zugangstoken"
+msgstr "Persönliche Zugriffstoken"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:42
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:44
@@ -383,8 +385,8 @@ msgid ""
 "You have not yet created any personal access tokens. Click the 'New token' "
 "button to create a personal access token."
 msgstr ""
-"Sie haben noch keine persönlichen Zugangstoken angelegt. Klicken Sie auf die"
-" Schaltfläche \"Neues Token\", um ein persönliches Zutritts-Token zu "
+"Sie haben noch keine persönlichen Zugriffstoken. Klicken Sie auf die "
+"Schaltfläche \"Neues Token\", um ein persönliches Zugriffstoken zu "
 "erstellen."
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:65
@@ -412,7 +414,7 @@ msgstr ""
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_new.html:18
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_new.html:18
 msgid "New personal access token"
-msgstr "Neuer persönlicher Zugangstoken"
+msgstr "Neues persönliches Zugriffstoken"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_new.html:27
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_new.html:28
@@ -429,7 +431,7 @@ msgstr "Autorisierte Anwendung: %(client_name)s"
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_view.html:17
 #, python-format
 msgid "Personal access token / %(name)s"
-msgstr "Persönlicher Zugangs-Token / %(name)s"
+msgstr "Persönliches Zugriffstoken / %(name)s"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_view.html:24
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_view.html:24
@@ -440,8 +442,8 @@ msgstr "Zugriffstoken"
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_view.html:30
 msgid "Please copy the personal access token now. You won't see it again!"
 msgstr ""
-"Bitte kopieren Sie jetzt das persönliche Zugangs-Token. Sie werden es nicht "
-"mehr sehen!"
+"Bitte kopieren Sie jetzt das persönliche Zugriffstoken. Sie können später "
+"nicht mehr darauf zugreifen!"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_view.html:29
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_view.html:33
@@ -449,7 +451,7 @@ msgid ""
 "Do not share this personal access token. It gives full access to your "
 "account."
 msgstr ""
-"Geben Sie dieses persönliche Zugangstoken nicht weiter. Es gibt vollen "
+"Geben Sie dieses persönliche Zugriffstoken nicht weiter. Es gibt vollen "
 "Zugriff auf Ihr Konto."
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_view.html:40
