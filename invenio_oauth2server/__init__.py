@@ -117,7 +117,8 @@ monkey_patch_werkzeug()  # noqa isort:skip
 from .decorators import require_api_auth, require_oauth_scopes  # noqa isort:skip
 from .ext import InvenioOAuth2Server, InvenioOAuth2ServerREST  # noqa isort:skip
 from .proxies import current_oauth2server   # noqa isort:skip
-from .version import __version__   # noqa isort:skip
+
+__version__ = '1.3.5'
 
 __all__ = (
     '__version__',
