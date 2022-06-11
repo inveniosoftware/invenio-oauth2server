@@ -29,5 +29,4 @@ python -m sphinx.cmd.build -qnNW docs docs/_build/html
 eval "$(docker-services-cli up --db ${DB:-postgresql} --env)"
 python -m pytest
 tests_exit_code=$?
-python -m sphinx.cmd.build -qnNW -b doctest docs docs/_build/doctest
 exit "$tests_exit_code"
