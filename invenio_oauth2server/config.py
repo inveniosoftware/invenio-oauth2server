@@ -10,10 +10,10 @@
 
 from datetime import timedelta
 
-OAUTH2_CACHE_TYPE = 'redis'
+OAUTH2_CACHE_TYPE = "redis"
 """Type of cache to use for storing the temporary grant token."""
 
-OAUTH2_PROVIDER_ERROR_ENDPOINT = 'invenio_oauth2server.errors'
+OAUTH2_PROVIDER_ERROR_ENDPOINT = "invenio_oauth2server.errors"
 """Error view endpoint."""
 
 OAUTH2SERVER_CLIENT_ID_SALT_LEN = 40
@@ -26,7 +26,9 @@ OAUTH2SERVER_TOKEN_PERSONAL_SALT_LEN = 60
 """Length of the personal access token."""
 
 OAUTH2SERVER_ALLOWED_GRANT_TYPES = {
-    'authorization_code', 'client_credentials', 'refresh_token',
+    "authorization_code",
+    "client_credentials",
+    "refresh_token",
 }
 """A set of allowed grant types.
 
@@ -37,7 +39,8 @@ password of the resource owner.
 """
 
 OAUTH2SERVER_ALLOWED_RESPONSE_TYPES = {
-    'code', 'token',
+    "code",
+    "token",
 }
 """A set of allowed response types.
 
@@ -47,7 +50,7 @@ The allowed values are ``code`` and ``token``.
 - ``token`` is used for implicit grant types
 """
 
-OAUTH2SERVER_ALLOWED_URLENCODE_CHARACTERS = '=&;:%+~,*@!()/?'
+OAUTH2SERVER_ALLOWED_URLENCODE_CHARACTERS = "=&;:%+~,*@!()/?"
 """A string of special characters that should be valid inside a query string.
 
 .. seealso::
@@ -57,7 +60,7 @@ OAUTH2SERVER_ALLOWED_URLENCODE_CHARACTERS = '=&;:%+~,*@!()/?'
     for a full explanation.
 """
 
-OAUTH2SERVER_JWT_AUTH_HEADER = 'Authorization'
+OAUTH2SERVER_JWT_AUTH_HEADER = "Authorization"
 """Header for the JWT.
 
 .. note::
@@ -65,7 +68,7 @@ OAUTH2SERVER_JWT_AUTH_HEADER = 'Authorization'
     Authorization: Bearer xxx
 """
 
-OAUTH2SERVER_JWT_AUTH_HEADER_TYPE = 'Bearer'
+OAUTH2SERVER_JWT_AUTH_HEADER_TYPE = "Bearer"
 """Header Authorization type.
 
 .. note::
@@ -74,8 +77,7 @@ OAUTH2SERVER_JWT_AUTH_HEADER_TYPE = 'Bearer'
     `JWT  <https://jwt.io>`_
 """
 
-OAUTH2SERVER_JWT_VERIFICATION_FACTORY = 'invenio_oauth2server.utils:' \
-    'jwt_verify_token'
+OAUTH2SERVER_JWT_VERIFICATION_FACTORY = "invenio_oauth2server.utils:" "jwt_verify_token"
 """Import path of factory used to verify JWT.
 
 The ``request.headers`` should be passed as parameter.

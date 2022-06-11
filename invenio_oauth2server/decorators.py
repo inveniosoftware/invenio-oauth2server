@@ -26,6 +26,7 @@ def require_api_auth(allow_anonymous=False):
     :param allow_anonymous: Allow access without OAuth token
         (default: ``False``).
     """
+
     def wrapper(f):
         """Wrap function with oauth require decorator."""
         f_oauth_required = oauth2.require_oauth()(f)
@@ -33,21 +34,22 @@ def require_api_auth(allow_anonymous=False):
         @wraps(f)
         def decorated(*args, **kwargs):
             """Require OAuth 2.0 Authentication."""
-            if not hasattr(current_user, 'login_via_oauth2'):
+            if not hasattr(current_user, "login_via_oauth2"):
                 if not current_user.is_authenticated:
                     if allow_anonymous:
                         return f(*args, **kwargs)
                     abort(401)
-                if current_app.config['ACCOUNTS_JWT_ENABLE']:
+                if current_app.config["ACCOUNTS_JWT_ENABLE"]:
                     # Verify the token
-                    current_oauth2server.jwt_verification_factory(
-                        request.headers)
+                    current_oauth2server.jwt_verification_factory(request.headers)
                 # fully logged in with normal session
                 return f(*args, **kwargs)
             else:
                 # otherwise, try oauth2
                 return f_oauth_required(*args, **kwargs)
+
         return decorated
+
     return wrapper
 
 
@@ -66,10 +68,12 @@ def require_oauth_scopes(*scopes):
         def decorated(*args, **kwargs):
             # Variable requests.oauth is only defined for oauth requests (see
             # require_api_auth() above).
-            if hasattr(request, 'oauth') and request.oauth is not None:
+            if hasattr(request, "oauth") and request.oauth is not None:
                 token_scopes = set(request.oauth.access_token.scopes)
                 if not required_scopes.issubset(token_scopes):
                     abort(403)
             return f(*args, **kwargs)
+
         return decorated
+
     return wrapper

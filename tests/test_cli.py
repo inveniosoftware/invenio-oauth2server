@@ -35,15 +35,15 @@ def test_cli_tokens(app, script_info, settings_fixture):
 
     result = runner.invoke(
         tokens_create,
-        ['--name', 'test-token',
-         '--user', 'info@inveniosoftware.org'],
-        obj=script_info)
+        ["--name", "test-token", "--user", "info@inveniosoftware.org"],
+        obj=script_info,
+    )
     assert result.exit_code == 0
     access_token = result.output.strip()
 
     with app.app_context():
         client = Client.query.one()
-        assert client.user.email == 'info@inveniosoftware.org'
+        assert client.user.email == "info@inveniosoftware.org"
 
         token = Token.query.one()
         assert token.access_token == access_token
@@ -51,10 +51,9 @@ def test_cli_tokens(app, script_info, settings_fixture):
 
     result = runner.invoke(
         tokens_delete,
-        ['--name', 'test-token',
-         '--user', 'info@inveniosoftware.org',
-         '--force'],
-        obj=script_info)
+        ["--name", "test-token", "--user", "info@inveniosoftware.org", "--force"],
+        obj=script_info,
+    )
     assert result.exit_code == 0
 
     with app.app_context():

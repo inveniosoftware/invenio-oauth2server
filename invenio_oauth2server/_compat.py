@@ -19,7 +19,8 @@ def monkey_patch_werkzeug_contrib():
         from werkzeug import contrib
     except ImportError:
         import cachelib
-        sys.modules['werkzeug.contrib.cache'] = cachelib
+
+        sys.modules["werkzeug.contrib.cache"] = cachelib
 
 
 def monkey_patch_werkzeug_base():

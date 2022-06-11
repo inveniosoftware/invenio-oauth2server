@@ -57,41 +57,41 @@ class JWTExtendedException(HTTPException):
 
         errors = self.get_errors()
         if self.errors:
-            body['errors'] = errors
+            body["errors"] = errors
 
         return json.dumps(body)
 
     def get_headers(self, environ=None, scope=None):
         """Get a list of headers."""
-        return [('Content-Type', 'application/json')]
+        return [("Content-Type", "application/json")]
 
 
 class JWTDecodeError(JWTExtendedException):
     """Exception raised when decoding is failed."""
 
     code = 400
-    description = 'The JWT token has invalid format.'
+    description = "The JWT token has invalid format."
 
 
 class JWTInvalidIssuer(JWTExtendedException):
     """Exception raised when the user is not valid."""
 
     code = 403
-    description = 'The JWT token is not valid.'
+    description = "The JWT token is not valid."
 
 
 class JWTExpiredToken(JWTExtendedException):
     """Exception raised when JWT is expired."""
 
     code = 403
-    description = 'The JWT token is expired.'
+    description = "The JWT token is expired."
 
 
 class JWTInvalidHeaderError(JWTExtendedException):
     """Exception raised when header argument is missing."""
 
     code = 400
-    description = 'Missing required header argument.'
+    description = "Missing required header argument."
 
 
 class JWTNoAuthorizationError(JWTExtendedException):

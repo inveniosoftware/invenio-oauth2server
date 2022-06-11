@@ -71,9 +71,13 @@ from invenio_db import InvenioDB
 from invenio_i18n import InvenioI18N
 from invenio_theme import InvenioTheme
 
-from invenio_oauth2server import InvenioOAuth2Server, \
-    InvenioOAuth2ServerREST, current_oauth2server, require_api_auth, \
-    require_oauth_scopes
+from invenio_oauth2server import (
+    InvenioOAuth2Server,
+    InvenioOAuth2ServerREST,
+    current_oauth2server,
+    require_api_auth,
+    require_oauth_scopes,
+)
 from invenio_oauth2server.models import Scope
 from invenio_oauth2server.views import server_blueprint, settings_blueprint
 
@@ -82,27 +86,28 @@ app = Flask(__name__)
 app.config.update(
     APP_ENABLE_SECURE_HEADERS=False,
     CELERY_ALWAYS_EAGER=True,
-    CELERY_CACHE_BACKEND='memory',
+    CELERY_CACHE_BACKEND="memory",
     CELERY_EAGER_PROPAGATES_EXCEPTIONS=True,
-    CELERY_RESULT_BACKEND='cache',
-    OAUTH2_CACHE_TYPE='simple',
+    CELERY_RESULT_BACKEND="cache",
+    OAUTH2_CACHE_TYPE="simple",
     OAUTHLIB_INSECURE_TRANSPORT=True,
     TESTING=True,
     DEBUG=True,  # needed to register localhost addresses as callback_urls
-    SECRET_KEY='test_key',
-    SECURITY_PASSWORD_HASH='plaintext',
-    SECURITY_PASSWORD_SCHEMES=['plaintext'],
+    SECRET_KEY="test_key",
+    SECURITY_PASSWORD_HASH="plaintext",
+    SECURITY_PASSWORD_SCHEMES=["plaintext"],
     SECURITY_DEPRECATED_PASSWORD_SCHEMES=[],
     LOGIN_DISABLED=False,
     TEMPLATE_AUTO_RELOAD=True,
     SQLALCHEMY_TRACK_MODIFICATIONS=True,
     SQLALCHEMY_DATABASE_URI=os.getenv(
-        'SQLALCHEMY_DATABASE_URI', 'sqlite:///example.db'),
+        "SQLALCHEMY_DATABASE_URI", "sqlite:///example.db"
+    ),
     I18N_LANGUAGES=[
-        ('de', 'German'),
-        ('es', 'Spanish'),
-        ('fr', 'French'),
-        ('it', 'Italian'),
+        ("de", "German"),
+        ("es", "Spanish"),
+        ("fr", "French"),
+        ("it", "Italian"),
     ],
 )
 InvenioAssets(app)
@@ -129,8 +134,8 @@ app.register_blueprint(blueprint_admin_ui)
 with app.app_context():
     # Register a test scope
     current_oauth2server.register_scope(
-        Scope('test:scope', help_text='Access to the homepage',
-              group='test'))
+        Scope("test:scope", help_text="Access to the homepage", group="test")
+    )
 
 
 # @app.route('/jwt', methods=['GET'])
@@ -139,9 +144,9 @@ with app.app_context():
 #     return render_template('jwt.html')
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route("/", methods=["GET", "POST"])
 @require_api_auth()
-@require_oauth_scopes('test:scope')
+@require_oauth_scopes("test:scope")
 def index():
     """Protected endpoint."""
-    return 'hello world'
+    return "hello world"

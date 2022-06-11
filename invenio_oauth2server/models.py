@@ -30,7 +30,7 @@ from .validators import validate_redirect_uri, validate_scopes
 
 def secret_key():
     """Return secret key as bytearray."""
-    return current_app.config['SECRET_KEY'].encode('utf-8')
+    return current_app.config["SECRET_KEY"].encode("utf-8")
 
 
 class NoneAesEngine(AesEngine):
@@ -64,8 +64,7 @@ class OAuthUserProxy(object):
 
     def __setstate__(self, state):
         """Set user info."""
-        self._user = current_app.extensions['security'].datastore.get_user(
-            state)
+        self._user = current_app.extensions["security"].datastore.get_user(state)
 
     @property
     def id(self):
@@ -85,7 +84,7 @@ class OAuthUserProxy(object):
 class Scope(object):
     """OAuth scope definition."""
 
-    def __init__(self, id_, help_text='', group='', internal=False):
+    def __init__(self, id_, help_text="", group="", internal=False):
         """Initialize scope values."""
         self.id = id_
         self.group = group
@@ -115,58 +114,59 @@ class Client(db.Model):
         validate_scopes: A function to validate scopes
     """
 
-    __tablename__ = 'oauth2server_client'
+    __tablename__ = "oauth2server_client"
 
     name = db.Column(
         db.String(40),
         info=dict(
-            label=_('Name'),
-            description=_('Name of application (displayed to users).'),
-            validators=[validators.DataRequired()]
-        )
+            label=_("Name"),
+            description=_("Name of application (displayed to users)."),
+            validators=[validators.DataRequired()],
+        ),
     )
     """Human readable name of the application."""
 
     description = db.Column(
         db.Text(),
-        default=u'',
+        default="",
         info=dict(
-            label=_('Description'),
-            description=_('Optional. Description of the application'
-                          ' (displayed to users).'),
-        )
+            label=_("Description"),
+            description=_(
+                "Optional. Description of the application" " (displayed to users)."
+            ),
+        ),
     )
     """Human readable description."""
 
     website = db.Column(
         URLType(),
         info=dict(
-            label=_('Website URL'),
-            description=_('URL of your application (displayed to users).'),
+            label=_("Website URL"),
+            description=_("URL of your application (displayed to users)."),
         ),
-        default=u'',
+        default="",
     )
 
     user_id = db.Column(
-        db.ForeignKey(User.id, ondelete='CASCADE',),
-        nullable=True, index=True)
+        db.ForeignKey(
+            User.id,
+            ondelete="CASCADE",
+        ),
+        nullable=True,
+        index=True,
+    )
     """Creator of the client application."""
 
     client_id = db.Column(db.String(255), primary_key=True)
     """Client application ID."""
 
-    client_secret = db.Column(
-        db.String(255), unique=True, index=True, nullable=False
-    )
+    client_secret = db.Column(db.String(255), unique=True, index=True, nullable=False)
     """Client application secret."""
 
-    is_confidential = db.Column(
-        db.Boolean(name='is_confidential'),
-        default=True
-    )
+    is_confidential = db.Column(db.Boolean(name="is_confidential"), default=True)
     """Determine if client application is public or not."""
 
-    is_internal = db.Column(db.Boolean(name='is_internal'), default=False)
+    is_internal = db.Column(db.Boolean(name="is_internal"), default=False)
     """Determins if client application is an internal application."""
 
     _redirect_uris = db.Column(db.Text)
@@ -184,19 +184,19 @@ class Client(db.Model):
         backref=db.backref(
             "oauth2clients",
             cascade="all, delete-orphan",
-        )
+        ),
     )
     """Relationship to user."""
 
     @property
     def allowed_grant_types(self):
         """Return allowed grant types."""
-        return current_app.config['OAUTH2SERVER_ALLOWED_GRANT_TYPES']
+        return current_app.config["OAUTH2SERVER_ALLOWED_GRANT_TYPES"]
 
     @property
     def allowed_response_types(self):
         """Return allowed response types."""
-        return current_app.config['OAUTH2SERVER_ALLOWED_RESPONSE_TYPES']
+        return current_app.config["OAUTH2SERVER_ALLOWED_RESPONSE_TYPES"]
 
     # def validate_scopes(self, scopes):
     #     return self._validate_scopes
@@ -205,8 +205,8 @@ class Client(db.Model):
     def client_type(self):
         """Return client type."""
         if self.is_confidential:
-            return 'confidential'
-        return 'public'
+            return "confidential"
+        return "public"
 
     @property
     def redirect_uris(self):
@@ -265,22 +265,20 @@ class Client(db.Model):
     def reset_client_id(self):
         """Reset client id."""
         self.client_id = gen_salt(
-            current_app.config.get('OAUTH2SERVER_CLIENT_ID_SALT_LEN')
+            current_app.config.get("OAUTH2SERVER_CLIENT_ID_SALT_LEN")
         )
 
     def reset_client_secret(self):
         """Reset client secret."""
         self.client_secret = gen_salt(
-            current_app.config.get('OAUTH2SERVER_CLIENT_SECRET_SALT_LEN')
+            current_app.config.get("OAUTH2SERVER_CLIENT_SECRET_SALT_LEN")
         )
 
     @property
     def get_users(self):
         """Get number of users."""
         no_users = Token.query.filter_by(
-            client_id=self.client_id,
-            is_personal=False,
-            is_internal=False
+            client_id=self.client_id, is_personal=False, is_internal=False
         ).count()
         return no_users
 
@@ -288,16 +286,20 @@ class Client(db.Model):
 class Token(db.Model):
     """A bearer token is the final token that can be used by the client."""
 
-    __tablename__ = 'oauth2server_token'
+    __tablename__ = "oauth2server_token"
     __table_args__ = (
-        Index('ix_oauth2server_token_access_token',
-              'access_token',
-              unique=True,
-              mysql_length=255),
-        Index('ix_oauth2server_token_refresh_token',
-              'refresh_token',
-              unique=True,
-              mysql_length=255),
+        Index(
+            "ix_oauth2server_token_access_token",
+            "access_token",
+            unique=True,
+            mysql_length=255,
+        ),
+        Index(
+            "ix_oauth2server_token_refresh_token",
+            "refresh_token",
+            unique=True,
+            mysql_length=255,
+        ),
     )
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -305,22 +307,22 @@ class Token(db.Model):
 
     client_id = db.Column(
         db.String(255),
-        db.ForeignKey(Client.client_id, ondelete='CASCADE'),
-        nullable=False, index=True
+        db.ForeignKey(Client.client_id, ondelete="CASCADE"),
+        nullable=False,
+        index=True,
     )
     """Foreign key to client application."""
 
     client = db.relationship(
-        'Client',
-        backref=db.backref(
-            'oauth2tokens',
-            cascade="all, delete-orphan"
-        ))
+        "Client", backref=db.backref("oauth2tokens", cascade="all, delete-orphan")
+    )
     """SQLAlchemy relationship to client application."""
 
     user_id = db.Column(
-        db.Integer, db.ForeignKey(User.id, ondelete='CASCADE'), nullable=True,
-        index=True
+        db.Integer,
+        db.ForeignKey(User.id, ondelete="CASCADE"),
+        nullable=True,
+        index=True,
     )
     """Foreign key to user."""
 
@@ -329,11 +331,11 @@ class Token(db.Model):
         backref=db.backref(
             "oauth2tokens",
             cascade="all, delete-orphan",
-        )
+        ),
     )
     """SQLAlchemy relationship to user."""
 
-    token_type = db.Column(db.String(255), default='bearer')
+    token_type = db.Column(db.String(255), default="bearer")
     """Token type - only bearer is supported at the moment."""
 
     access_token = db.Column(
@@ -356,10 +358,10 @@ class Token(db.Model):
 
     _scopes = db.Column(db.Text)
 
-    is_personal = db.Column(db.Boolean(name='is_personal'), default=False)
+    is_personal = db.Column(db.Boolean(name="is_personal"), default=False)
     """Personal accesss token."""
 
-    is_internal = db.Column(db.Boolean(name='is_internal'), default=False)
+    is_internal = db.Column(db.Boolean(name="is_internal"), default=False)
     """Determines if token is an internally generated token."""
 
     @property
@@ -386,8 +388,7 @@ class Token(db.Model):
 
         :returns: A list of scopes.
         """
-        return [k for k, s in current_oauth2server.scope_choices()
-                if k in self.scopes]
+        return [k for k, s in current_oauth2server.scope_choices() if k in self.scopes]
 
     @classmethod
     def create_personal(cls, name, user_id, scopes=None, is_internal=False):
@@ -411,7 +412,7 @@ class Token(db.Model):
                 user_id=user_id,
                 is_internal=True,
                 is_confidential=False,
-                _default_scopes=scopes
+                _default_scopes=scopes,
             )
             c.gen_salt()
 
@@ -419,8 +420,7 @@ class Token(db.Model):
                 client_id=c.client_id,
                 user_id=user_id,
                 access_token=gen_salt(
-                    current_app.config.get(
-                        'OAUTH2SERVER_TOKEN_PERSONAL_SALT_LEN')
+                    current_app.config.get("OAUTH2SERVER_TOKEN_PERSONAL_SALT_LEN")
                 ),
                 expires=None,
                 _scopes=scopes,

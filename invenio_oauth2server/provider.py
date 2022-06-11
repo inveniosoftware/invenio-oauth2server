@@ -22,7 +22,7 @@ from .models import Client, Token
 from .scopes import email_scope
 
 oauth2 = OAuth2Provider()
-datastore = LocalProxy(lambda: current_app.extensions['security'].datastore)
+datastore = LocalProxy(lambda: current_app.extensions["security"].datastore)
 
 
 @oauth2.usergetter
@@ -55,11 +55,15 @@ def get_token(access_token=None, refresh_token=None):
     if access_token:
         t = Token.query.filter_by(access_token=access_token).first()
     elif refresh_token:
-        t = Token.query.join(Token.client).filter(
-            Token.refresh_token == refresh_token,
-            Token.is_personal == False,  # noqa
-            Client.is_confidential == True,
-        ).first()
+        t = (
+            Token.query.join(Token.client)
+            .filter(
+                Token.refresh_token == refresh_token,
+                Token.is_personal == False,  # noqa
+                Client.is_confidential == True,
+            )
+            .first()
+        )
     else:
         return None
     return t if t and t.user.active else None
@@ -96,11 +100,11 @@ def save_token(token, request, *args, **kwargs):
     # Add user information in token endpoint response.
     # Currently, this is the only way to have the access to the user of the
     # token as well as the token response.
-    token.update(user={'id': user.get_id()})
+    token.update(user={"id": user.get_id()})
 
     # Add email if scope granted.
     if email_scope.id in token.scopes:
-        token['user'].update(
+        token["user"].update(
             email=user.email,
             email_verified=user.confirmed_at is not None,
         )
@@ -117,14 +121,14 @@ def save_token(token, request, *args, **kwargs):
             db.session.delete(tk)
         db.session.commit()
 
-    expires_in = token.get('expires_in')
+    expires_in = token.get("expires_in")
     expires = datetime.utcnow() + timedelta(seconds=int(expires_in))
 
     tok = Token(
-        access_token=token['access_token'],
-        refresh_token=token.get('refresh_token'),
-        token_type=token['token_type'],
-        _scopes=token['scope'],
+        access_token=token["access_token"],
+        refresh_token=token.get("refresh_token"),
+        token_type=token["token_type"],
+        _scopes=token["scope"],
         expires=expires,
         client_id=request.client.client_id,
         user_id=user.id,
@@ -141,6 +145,7 @@ def login_oauth2_user(valid, oauth):
     if valid:
         oauth.user.login_via_oauth2 = True
         _request_ctx_stack.top.user = oauth.user
-        identity_changed.send(current_app._get_current_object(),
-                              identity=Identity(oauth.user.id))
+        identity_changed.send(
+            current_app._get_current_object(), identity=Identity(oauth.user.id)
+        )
     return valid, oauth

@@ -112,19 +112,20 @@ For more information about access control in Invenio you can visit
 from __future__ import absolute_import, print_function
 
 from invenio_oauth2server._compat import monkey_patch_werkzeug  # noqa isort:skip
+
 monkey_patch_werkzeug()  # noqa isort:skip
 
 from .decorators import require_api_auth, require_oauth_scopes  # noqa isort:skip
 from .ext import InvenioOAuth2Server, InvenioOAuth2ServerREST  # noqa isort:skip
-from .proxies import current_oauth2server   # noqa isort:skip
+from .proxies import current_oauth2server  # noqa isort:skip
 
-__version__ = '1.3.5'
+__version__ = "1.3.5"
 
 __all__ = (
-    '__version__',
-    'InvenioOAuth2Server',
-    'InvenioOAuth2ServerREST',
-    'require_api_auth',
-    'require_oauth_scopes',
-    'current_oauth2server',
+    "__version__",
+    "InvenioOAuth2Server",
+    "InvenioOAuth2ServerREST",
+    "require_api_auth",
+    "require_oauth_scopes",
+    "current_oauth2server",
 )

@@ -15,8 +15,8 @@ from flask_babelex import lazy_gettext as _
 from invenio_oauth2server.models import Scope
 
 email_scope = Scope(
-    id_='user:email',
-    group='user',
-    help_text=_('Allow access to email address (read-only).'),
+    id_="user:email",
+    group="user",
+    help_text=_("Allow access to email address (read-only)."),
 )
 """Scope to protect the user's email address."""
