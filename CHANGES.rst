@@ -8,6 +8,11 @@
 Changes
 =======
 
+Version 1.3.6 (released 2022-06-27)
+
+- extract translation messages
+- add German translations
+
 Version 1.3.5 (released 2022-02-28)
 
 - Replaces pkg_resources with importlib.
