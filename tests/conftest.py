@@ -138,7 +138,7 @@ def api_app_with_test_view(api_app):
 @pytest.fixture
 def script_info(app):
     """Get ScriptInfo object for testing CLI."""
-    return ScriptInfo(create_app=lambda info: app)
+    return ScriptInfo(create_app=lambda: app)
 
 
 @pytest.fixture
