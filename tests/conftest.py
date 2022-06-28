@@ -82,6 +82,8 @@ def app(request):
                     "*": "{} icon",
                 }
             },
+            ACCOUNTS_COVER_TEMPLATE="invenio_accounts/base_cover.html",
+            ACCOUNTS_BASE_TEMPLATE="invenio_accounts/base.html",
         )
         Babel(app)
         Mail(app)
