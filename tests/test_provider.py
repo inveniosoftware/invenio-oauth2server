@@ -61,6 +61,8 @@ def test_invalid_authorize_requests(provider_fixture):
                 response_type = "code"
 
                 error_url = url_for("invenio_oauth2server.errors", _external=True)
+                # all redirects are now relative, since Flask/Werkzeug 2.1.0
+                error_url = error_url.replace("http://localhost", "")
 
                 # Valid request authorize request
                 r = client.get(
