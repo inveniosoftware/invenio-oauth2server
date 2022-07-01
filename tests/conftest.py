@@ -60,6 +60,7 @@ def app(request):
             SECRET_KEY="CHANGE_ME",
             SECURITY_DEPRECATED_PASSWORD_SCHEMES=[],
             SECURITY_PASSWORD_HASH="plaintext",
+            SECURITY_PASSWORD_SINGLE_HASH=["plaintext"],
             SECURITY_PASSWORD_SALT="CHANGE_ME_ALSO",
             SECURITY_PASSWORD_SCHEMES=["plaintext"],
             SQLALCHEMY_DATABASE_URI=os.getenv(
