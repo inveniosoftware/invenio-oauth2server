@@ -29,6 +29,7 @@ Invenio module that implements OAuth 2 server.
 
 Features
 ========
+
 * Implements the OAuth 2.0 authentication protocol.
     - Provides REST API to provide access tokens.
     - Provides decorators that can be used to restrict access to resources.
