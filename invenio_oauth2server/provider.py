@@ -9,8 +9,9 @@
 """Configuration of Flask-OAuthlib provider."""
 
 from datetime import datetime, timedelta
+from importlib_metadata import version
 
-from flask import _request_ctx_stack, current_app
+from flask import current_app, g
 from flask_login import current_user
 from flask_oauthlib.provider import OAuth2Provider
 from flask_principal import Identity, identity_changed
@@ -144,7 +145,15 @@ def login_oauth2_user(valid, oauth):
     """Log in a user after having been verified."""
     if valid:
         oauth.user.login_via_oauth2 = True
-        _request_ctx_stack.top.user = oauth.user
+        # Flask-login==0.6.2 changed the way the user is saved i.e uses `flask.g`
+        # To keep backwards compatibility we fallback to the previous implementation
+        # for earlier versions.
+        if version() <= "0.6.1":
+            from flask import _request_ctx_stack
+
+            _request_ctx_stack.top.user = oauth.user
+        else:
+            g._login_user = oauth.user
         identity_changed.send(
             current_app._get_current_object(), identity=Identity(oauth.user.id)
         )
