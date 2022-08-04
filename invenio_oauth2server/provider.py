@@ -9,13 +9,13 @@
 """Configuration of Flask-OAuthlib provider."""
 
 from datetime import datetime, timedelta
-from importlib_metadata import version
 
 from flask import current_app, g
 from flask_login import current_user
 from flask_oauthlib.provider import OAuth2Provider
 from flask_principal import Identity, identity_changed
 from flask_security.utils import verify_password
+from importlib_metadata import version
 from invenio_db import db
 from werkzeug.local import LocalProxy
 
@@ -148,7 +148,7 @@ def login_oauth2_user(valid, oauth):
         # Flask-login==0.6.2 changed the way the user is saved i.e uses `flask.g`
         # To keep backwards compatibility we fallback to the previous implementation
         # for earlier versions.
-        if version() <= "0.6.1":
+        if version("flask-login") <= "0.6.1":
             from flask import _request_ctx_stack
 
             _request_ctx_stack.top.user = oauth.user
