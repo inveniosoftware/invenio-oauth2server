@@ -8,6 +8,14 @@
 Changes
 =======
 
+Version 1.3.8 (released 2022-11-18)
+
+- add translations
+
+Version 1.3.7 (released 2022-08-04)
+
+- save user in the flask global
+
 Version 1.3.6 (released 2022-06-27)
 
 - extract translation messages
