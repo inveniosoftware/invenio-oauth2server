@@ -20,7 +20,6 @@ import pytest
 from flask import Flask, url_for
 from flask.cli import ScriptInfo
 from flask.views import MethodView
-from flask_babelex import Babel
 from flask_breadcrumbs import Breadcrumbs
 from flask_mail import Mail
 from flask_menu import Menu
@@ -29,6 +28,7 @@ from invenio_accounts import InvenioAccountsREST, InvenioAccountsUI
 from invenio_accounts.models import User
 from invenio_accounts.views import blueprint as accounts_blueprint
 from invenio_db import InvenioDB, db
+from invenio_i18n import Babel
 from six import get_method_self
 from sqlalchemy_utils.functions import create_database, database_exists, drop_database
 

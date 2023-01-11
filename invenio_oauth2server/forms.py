@@ -9,8 +9,8 @@
 """Define forms for generating access tokens and clients."""
 
 from flask import current_app
-from flask_babelex import lazy_gettext as _
 from flask_wtf import FlaskForm as Form
+from invenio_i18n import lazy_gettext as _
 from oauthlib.oauth2.rfc6749.errors import (
     InsecureTransportError,
     InvalidRedirectURIError,

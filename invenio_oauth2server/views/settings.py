@@ -14,11 +14,11 @@ from __future__ import absolute_import
 from functools import wraps
 
 from flask import Blueprint, abort, redirect, render_template, request, session, url_for
-from flask_babelex import lazy_gettext as _
 from flask_breadcrumbs import register_breadcrumb
 from flask_login import current_user, login_required
 from flask_menu import register_menu
 from invenio_db import db
+from invenio_i18n import lazy_gettext as _
 from invenio_theme.proxies import current_theme_icons
 from speaklater import make_lazy_string
 

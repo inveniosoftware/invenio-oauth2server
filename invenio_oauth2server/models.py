@@ -12,10 +12,10 @@ from __future__ import absolute_import, print_function
 
 import six
 from flask import current_app
-from flask_babelex import lazy_gettext as _
 from flask_login import current_user
 from invenio_accounts.models import User
 from invenio_db import db
+from invenio_i18n import lazy_gettext as _
 from sqlalchemy.schema import Index
 from sqlalchemy_utils import EncryptedType
 from sqlalchemy_utils.types import URLType
