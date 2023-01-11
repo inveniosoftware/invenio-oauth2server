@@ -22,10 +22,10 @@ from flask import (
     request,
     session,
 )
-from flask_babelex import lazy_gettext as _
 from flask_breadcrumbs import register_breadcrumb
 from flask_login import login_required
 from flask_principal import Identity, identity_changed
+from invenio_i18n import lazy_gettext as _
 from oauthlib.oauth2.rfc6749.errors import InvalidClientError, OAuth2Error
 
 from ..models import Client
