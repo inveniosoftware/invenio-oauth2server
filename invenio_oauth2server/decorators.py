@@ -2,19 +2,17 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
+# Copyright (C) 2023 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Useful decorators for checking authentication and scopes."""
 
-import sys
 from functools import wraps
 
-from flask import abort, current_app, request, session
+from flask import abort, current_app, request
 from flask_login import current_user
-from six import reraise
-from werkzeug.exceptions import Unauthorized
 
 from .provider import oauth2
 from .proxies import current_oauth2server

@@ -2,13 +2,12 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2017-2018 CERN.
+# Copyright (C) 2023 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """OAuth2 scopes."""
-
-from __future__ import absolute_import, print_function
 
 from invenio_i18n import lazy_gettext as _
 
