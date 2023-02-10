@@ -2,13 +2,12 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
+# Copyright (C) 2023 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """OAuth2Server configuration variables."""
-
-from datetime import timedelta
 
 OAUTH2_CACHE_TYPE = "redis"
 """Type of cache to use for storing the temporary grant token."""
