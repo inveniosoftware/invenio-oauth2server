@@ -8,6 +8,13 @@
 Changes
 =======
 
+Version 2.0.0 (released 2023-03-02)
+
+- drop python2.7 support
+- remove deprecated flask-babelex dependency and imports
+- upgrade invenio-i18n
+- upgrade invenio-admin
+
 Version 1.3.8 (released 2022-11-18)
 
 - add translations
