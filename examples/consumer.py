@@ -195,13 +195,6 @@ def create_app():
 
         return decorated_function
 
-    @app.before_first_request
-    def _run_on_start():
-        print("Client_ID is {}".format(remote.client_id))
-        print("Client_Secret is {}".format(remote.client_secret))
-        print("Redirect url is {}".format(url_for("authorized", _external=True)))
-        print("Requested scopes: {}".format(remote.scope))
-
     @app.route("/", methods=["GET"])
     def index():
         """Mainpage. Display info about token and an action menu."""
