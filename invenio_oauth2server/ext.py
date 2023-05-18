@@ -18,10 +18,10 @@ import oauthlib.common as oauthlib_commmon
 import six
 from flask import abort, request
 from flask_login import current_user
+from invenio_i18n import LazyString
 from invenio_i18n import lazy_gettext as _
 from invenio_rest.csrf import csrf
-from invenio_theme.proxies import current_theme_icons
-from speaklater import make_lazy_string
+from invenio_theme import menu
 from werkzeug.utils import cached_property, import_string
 
 from . import config
@@ -291,43 +291,16 @@ class InvenioOAuth2ServerREST(object):
 
 def finalize_app(app):
     """Finalize app."""
-    menu = app.extensions["menu"]
+    icons = app.extensions["invenio-theme"].icons
 
     menu.submenu("settings.applications").register(
-        "invenio_oauth2server_settings.index",
-        _(
+        endpoint="invenio_oauth2server_settings.index",
+        text=_(
             "%(icon)s Applications",
-            icon=make_lazy_string(
-                lambda: f'<i class="{current_theme_icons.codepen}"></i>'
-            ),
+            icon=LazyString(lambda: f'<i class="{icons.codepen}"></i>'),
         ),
         order=5,
         active_when=lambda: request.endpoint.startswith(
             "invenio_oauth2server_settings."
         ),
     )
-
-    breadcrumbs = {
-        "breadcrumbs.settings.applications": {
-            "endpoint": "invenio_oauth2server_settings.index",
-            "text": _("Applications"),
-        },
-        "breadcrumbs.settings.applications.client_new": {
-            "endpoint": "invenio_oauth2server_settings.client_new",
-            "text": _("New"),
-        },
-        "breadcrumbs.settings.applications.client_edit": {
-            "endpoint": "invenio_oauth2server_settings.client_edit",
-            "text": _("Edit"),
-        },
-        "breadcrumbs.settings.applications.token_new": {
-            "endpoint": "invenio_oauth2server_settings.token_new",
-            "text": _("New"),
-        },
-        "breadcrumbs.settings.applications.token_edit": {
-            "endpoint": "invenio_oauth2server_settings.token_edit",
-            "text": _("Edit"),
-        },
-    }
-    for breadcrumb, submenu in breadcrumbs.items():
-        menu.submenu(breadcrumb).register(**submenu)

@@ -92,6 +92,7 @@ def app(request):
         Breadcrumbs(app)
         InvenioDB(app)
         InvenioOAuth2Server(app)
+        InvenioI18N(app)
 
     api_app = Flask("testapiapp", instance_path=instance_path)
     api_app.config.update(APPLICATION_ROOT="/api", ACCOUNTS_REGISTER_BLUEPRINT=True)
