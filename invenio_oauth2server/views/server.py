@@ -20,9 +20,7 @@ from flask import (
     render_template,
     request,
 )
-from flask_breadcrumbs import register_breadcrumb
 from flask_login import login_required
-from invenio_i18n import lazy_gettext as _
 from oauthlib.oauth2.rfc6749.errors import InvalidClientError, OAuth2Error
 
 from ..models import Client
@@ -61,7 +59,6 @@ def error_handler(f):
 # Views
 #
 @blueprint.route("/authorize", methods=["GET", "POST"])
-@register_breadcrumb(blueprint, ".", _("Authorize application"))
 @login_required
 @error_handler
 @oauth2.authorize_handler

@@ -9,11 +9,7 @@
 
 """Sphinx configuration."""
 
-from __future__ import print_function
-
 import sys
-
-import sphinx.environment
 
 from invenio_oauth2server import __version__
 
@@ -39,6 +35,12 @@ extensions = [
     "sphinx.ext.viewcode",
 ]
 
+nitpick_ignore = [
+    ("py:class", "t.ClassVar"),
+    ("py:class", "Query"),
+    ("py:attr", "query_class"),
+]
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
@@ -55,7 +57,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "Invenio-OAuth2Server"
-copyright = "2017, CERN"
+copyright = "2023, CERN"
 author = "CERN"
 
 # The version info for the project you're documenting, acts as replacement for
