@@ -28,7 +28,7 @@ from invenio_accounts import InvenioAccountsREST, InvenioAccountsUI
 from invenio_accounts.models import User
 from invenio_accounts.views import blueprint as accounts_blueprint
 from invenio_db import InvenioDB, db
-from invenio_i18n import Babel
+from invenio_i18n import InvenioI18N
 from six import get_method_self
 from sqlalchemy_utils.functions import create_database, database_exists, drop_database
 
@@ -86,7 +86,7 @@ def app(request):
             ACCOUNTS_COVER_TEMPLATE="invenio_accounts/base_cover.html",
             ACCOUNTS_BASE_TEMPLATE="invenio_accounts/base.html",
         )
-        Babel(app)
+        InvenioI18N(app)
         Mail(app)
         Menu(app)
         Breadcrumbs(app)
