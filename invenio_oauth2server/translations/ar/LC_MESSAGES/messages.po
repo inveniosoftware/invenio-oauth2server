@@ -6,8 +6,8 @@
 # 
 # Translators:
 # Tibor Simko <tibor.simko@cern.ch>, 2021
-# Salaheddine Ben Ali <salaheddine.benali@cnudst.tn>, 2022
 # Bessem Aamira <bessemamira@gmail.com>, 2022
+# Salaheddine Ben Ali <salaheddine.benali@cnudst.tn>, 2023
 # 
 #, fuzzy
 msgid ""
@@ -16,8 +16,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: info@inveniosoftware.org\n"
 "POT-Creation-Date: 2022-10-12 09:26+0000\n"
 "PO-Revision-Date: 2016-08-18 08:03+0000\n"
-"Last-Translator: Bessem Aamira <bessemamira@gmail.com>, 2022\n"
-"Language-Team: Arabic (https://www.transifex.com/inveniosoftware/teams/23537/ar/)\n"
+"Last-Translator: Salaheddine Ben Ali <salaheddine.benali@cnudst.tn>, 2023\n"
+"Language-Team: Arabic (https://app.transifex.com/inveniosoftware/teams/23537/ar/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -68,9 +68,9 @@ msgid ""
 "select public, your application MUST validate the redirect URI."
 msgstr ""
 " اختر \"سري\" إذا كان التطبيق الخاص بك قادرًا على الحفاظ على سرية الحريف "
-"(على سبيل المثال ، تطبيق ويب) ، حدد \"عام\" إذا كان التطبيق الخاص بك لا "
+"(على سبيل المثال ، تطبيق ويب) ، حدد \"مشاع\" إذا كان التطبيق الخاص بك لا "
 "يمكنه ذلك (على سبيل المثال ، تطبيق تعتمد على متصفح  JavaScript ). إذا قمت "
-"بتحديد \"عام\" ، يجب أن يتحقق التطبيق الخاص بك من صحة عنوان URI لإعادة "
+"بتحديد \"مشاع\" ، يجب أن يتحقق التطبيق الخاص بك من صحة عنوان URI لإعادة "
 "التوجيه."
 
 #: invenio_oauth2server/forms.py:164
@@ -79,7 +79,7 @@ msgstr "سري"
 
 #: invenio_oauth2server/forms.py:164
 msgid "Public"
-msgstr "عام"
+msgstr "مشاع"
 
 #: invenio_oauth2server/forms.py:174
 msgid "Name of personal access token."
@@ -125,7 +125,7 @@ msgstr "URL تطبيقك  (المعروض للمستخدمين)."
 
 #: invenio_oauth2server/scopes.py:20
 msgid "Allow access to email address (read-only)."
-msgstr "تمكين الولوج لعنوان البريد (للقراءة فقط)."
+msgstr "السّماح بالولوج لعنوان البريد (للقراءة فقط)."
 
 #: invenio_oauth2server/templates/invenio_oauth2server/authorize.html:19
 #: invenio_oauth2server/templates/invenio_oauth2server/authorize.html:20
@@ -135,7 +135,7 @@ msgstr "تمكين الولوج لعنوان البريد (للقراءة فقط
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/authorize.html:66
 #: invenio_oauth2server/views/server.py:67
 msgid "Authorize application"
-msgstr "التطبيق المخول"
+msgstr "الإذن بالتّطبيق"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/authorize.html:21
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/authorize.html:23
@@ -144,8 +144,8 @@ msgid ""
 "Application '%(client_name)s' by '%(client_user)s' wants permission to "
 "access your '%(current_user)s' account."
 msgstr ""
-"تطبيق '%(client_name)s' لـ '%(client_user)s' يريد إذنًا للولوج إلى حساب "
-"'%(current_user)s' ."
+"تطبيق '%(client_name)s' من طرف  '%(client_user)s' يريد إذنًا للولوج إلى "
+"حسابك '%(current_user)s' ."
 
 #: invenio_oauth2server/templates/invenio_oauth2server/authorize.html:28
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_permission_view.html:30

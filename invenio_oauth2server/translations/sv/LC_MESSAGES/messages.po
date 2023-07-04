@@ -7,6 +7,8 @@
 # Translators:
 # Tibor Simko <tibor.simko@cern.ch>, 2021
 # Sam Arbid, 2022
+# yyones, 2023
+# Rim Sharif, 2023
 # 
 #, fuzzy
 msgid ""
@@ -15,8 +17,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: info@inveniosoftware.org\n"
 "POT-Creation-Date: 2022-10-12 09:26+0000\n"
 "PO-Revision-Date: 2016-08-18 08:03+0000\n"
-"Last-Translator: Sam Arbid, 2022\n"
-"Language-Team: Swedish (https://www.transifex.com/inveniosoftware/teams/23537/sv/)\n"
+"Last-Translator: Rim Sharif, 2023\n"
+"Language-Team: Swedish (https://app.transifex.com/inveniosoftware/teams/23537/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -30,7 +32,7 @@ msgstr "OAuth-applikationer"
 
 #: invenio_oauth2server/admin.py:69 invenio_oauth2server/admin.py:78
 msgid "User Management"
-msgstr "Användarhantering"
+msgstr "Hantera Användare"
 
 #: invenio_oauth2server/admin.py:77
 msgid "OAuth Application Tokens"
@@ -39,11 +41,11 @@ msgstr "OAuth Application Tokens"
 #: invenio_oauth2server/forms.py:103
 #, python-format
 msgid "Invalid redirect URIs: %(urls)s"
-msgstr "Ogiltiga omdirigerings-URI:er:%(urls)s"
+msgstr "Ogiltiga omdirigerings-URI:%(urls)s"
 
 #: invenio_oauth2server/forms.py:135
 msgid "Redirect URIs (one per line)"
-msgstr "Omdirigera URIS (en per rad)"
+msgstr "Omdirigera URI (en per rad)"
 
 #: invenio_oauth2server/forms.py:136
 msgid ""
@@ -51,9 +53,9 @@ msgid ""
 " URLs. HTTPS must be used for all hosts except localhost (for testing "
 "purposes)."
 msgstr ""
-"En omdirigering URI per rad. Det här är din applikations auktoriserings "
-"-återuppringnings -URL: er. HTTPS måste användas för alla värdar utom "
-"localhost (för teständamål)."
+"En URI omdirigering per rad. Det här är din applikations auktoriserings "
+"callback-URL: er. HTTPS måste användas för alla värdar utom lokal värd (för "
+"teständamål)."
 
 #: invenio_oauth2server/forms.py:155
 msgid "Client type"
@@ -66,10 +68,10 @@ msgid ""
 "application cannot (e.g. a browser-based JavaScript application). If you "
 "select public, your application MUST validate the redirect URI."
 msgstr ""
-"Välj konfidentiell Om din ansökan kan hålla den utfärdade klienten hemlig "
-"konfidentiell (t.ex. en webbapplikation), välj Public om din applikation "
+"Välj konfidentiell om din ansökan kan hålla den utfärdade klientnyckeln "
+"konfidentiell (t.ex. en webbapplikation), välj offentlig om din applikation "
 "inte kan (t.ex. en webbläsarbaserad JavaScript-applikation). Om du väljer "
-"allmänheten MÅSTE din ansökan validera omdirigering av URI."
+"offentlig MÅSTE din ansökan validera omdirigering av URI."
 
 #: invenio_oauth2server/forms.py:164
 msgid "Confidential"
@@ -94,7 +96,7 @@ msgid ""
 "against the API."
 msgstr ""
 "SCOPES Tilldelar behörigheter till ditt personliga åtkomsttoken. En "
-"personlig åtkomsttoken fungerar precis som ett normalt OAUT -åtkomsttoken "
+"personlig åtkomsttoken fungerar precis som ett normalt OAuth -åtkomsttoken "
 "för autentisering mot API."
 
 #: invenio_oauth2server/models.py:122
@@ -111,11 +113,11 @@ msgstr "Beskrivning"
 
 #: invenio_oauth2server/models.py:134
 msgid "Optional. Description of the application (displayed to users)."
-msgstr "Frivillig. Beskrivning av applikationen (visas för användare)."
+msgstr "Valfri. Beskrivning av applikationen (visas för användare)."
 
 #: invenio_oauth2server/models.py:144
 msgid "Website URL"
-msgstr "Webbadress"
+msgstr "Webbsida URL"
 
 #: invenio_oauth2server/models.py:145
 msgid "URL of your application (displayed to users)."
@@ -183,7 +185,7 @@ msgstr "Avvisa"
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/errors.html:17
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/errors.html:20
 msgid "Invalid authorization request"
-msgstr "Felaktig Behörighetsbegäran"
+msgstr "Felaktig auktoriseringsförfrågan"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/errors.html:24
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/errors.html:22
@@ -192,7 +194,7 @@ msgid ""
 "The service that redirected your here made an invalid authorization request "
 "(error code: %(x_error)s)."
 msgstr ""
-"Tjänsten som omdirigerade din här gjorde en felaktig behörighetsbegäran "
+"Tjänsten som omdirigerade dig här gjorde en felaktig behörighetsförfrågan "
 "(felkod: %(x_error)s)."
 
 #: invenio_oauth2server/templates/invenio_oauth2server/errors.html:31
@@ -221,7 +223,7 @@ msgstr "Registrera"
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:18
 #, python-format
 msgid "Application / %(client_name)s"
-msgstr "Ansökan / %(client_name)s"
+msgstr "Applikation/ %(client_name)s"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:22
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:30
@@ -231,7 +233,7 @@ msgstr "Klient ID"
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:23
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:36
 msgid "Client Secret"
-msgstr "Klienthemlighet"
+msgstr "Klientnyckel"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:24
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:39
@@ -241,14 +243,14 @@ msgstr "Dela inte klientens hemlighet med någon!"
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:30
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:26
 msgid "Reset client secret"
-msgstr "Återställ klienthemlighet"
+msgstr "Återställ klientnyckel"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:47
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_view.html:48
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:51
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_view.html:49
 msgid "Delete"
-msgstr "Ta bort"
+msgstr "Radera"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:48
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_view.html:49
@@ -260,7 +262,7 @@ msgstr "Spara"
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:55
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:60
 msgid "OAuth 2.0 Endpoints"
-msgstr "OAUTH 2.0 Endpoints"
+msgstr "OAUTH 2.0 Ändpunkter"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:59
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:65
@@ -275,7 +277,7 @@ msgstr "Query parametrar"
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:69
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:78
 msgid "example request"
-msgstr "exempel begäran"
+msgstr "exempel förfrågan"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:72
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:89
@@ -296,17 +298,17 @@ msgstr "nödvändig"
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:74
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:83
 msgid "required, space separate list of scopes"
-msgstr "krävs, utrymme separat lista över omfattningar"
+msgstr "obligatorisk, separera lista över omfattningar med mellanslag"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:75
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:84
 msgid "required, URL encoded"
-msgstr "krävs, URL-kodad"
+msgstr "obligatorisk, URL-kodad"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:76
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:85
 msgid "recommended, for CSRF protection"
-msgstr "recommended, for CSRF protection"
+msgstr "rekommenderas, for CSRF skydd"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:83
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:93
@@ -316,7 +318,7 @@ msgstr "URL för åtkomsttoken (POST)"
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:85
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:98
 msgid "Request body parameters:"
-msgstr "Begär kroppsparametrar:"
+msgstr "Begär body-parametrar:"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:90
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:91
@@ -325,7 +327,7 @@ msgstr "Begär kroppsparametrar:"
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:104
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:105
 msgid "required for grant_type"
-msgstr "krävs för grant_type"
+msgstr "obligatorisk för grant_type"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:17
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:17
@@ -335,7 +337,7 @@ msgstr "Utvecklarapplikationer"
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:18
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:18
 msgid "New application"
-msgstr "Ny ansökan"
+msgstr "Ny applikation"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:25
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:25
@@ -351,7 +353,7 @@ msgid ""
 "You have not yet registered any applications. Click the 'New application' "
 "button to create an application to access the %(site_name)s API."
 msgstr ""
-"Du har ännu inte registrerat några ansökningar. Klicka på knappen \"Ny "
+"Du har ännu inte registrerat några applikationer. Klicka på knappen \"Ny "
 "applikation\" för att skapa en applikation för att komma åt %(site_name)s "
 "API."
 
@@ -370,7 +372,7 @@ msgstr "Ny token"
 #, python-format
 msgid "Following are personal tokens used to access the %(site_name)s API:"
 msgstr ""
-"Följande är personliga symboler som används för att komma åt %(site_name)s "
+"Följande är personliga tokens som används för att komma åt %(site_name)s "
 "API:et:"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:60
@@ -385,12 +387,12 @@ msgstr ""
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:65
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:74
 msgid "Authorized applications"
-msgstr "Tillåtna applikationer"
+msgstr "Auktoriserade applikationer"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:70
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:79
 msgid "You have granted the following application access to your account:"
-msgstr "Du har beviljat följande applikation till ditt konto:"
+msgstr "Du har beviljat följande applikation åtkomst till ditt konto:"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:76
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:84
@@ -419,7 +421,7 @@ msgstr "Skapa"
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_permission_view.html:17
 #, python-format
 msgid "Authorized application: %(client_name)s"
-msgstr "Authorized application: %(client_name)s"
+msgstr "Auktoriserad applikation: %(client_name)s"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_view.html:17
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_view.html:17

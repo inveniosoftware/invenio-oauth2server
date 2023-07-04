@@ -5,7 +5,8 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
 # 
 # Translators:
-# Andrea Dömötör, 2022
+# Dorottya Szemigán, 2023
+# Andrea Dömötör, 2023
 # 
 #, fuzzy
 msgid ""
@@ -14,8 +15,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: info@inveniosoftware.org\n"
 "POT-Creation-Date: 2022-10-12 09:26+0000\n"
 "PO-Revision-Date: 2016-08-18 08:03+0000\n"
-"Last-Translator: Andrea Dömötör, 2022\n"
-"Language-Team: Hungarian (https://www.transifex.com/inveniosoftware/teams/23537/hu/)\n"
+"Last-Translator: Andrea Dömötör, 2023\n"
+"Language-Team: Hungarian (https://app.transifex.com/inveniosoftware/teams/23537/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -65,6 +66,11 @@ msgid ""
 "application cannot (e.g. a browser-based JavaScript application). If you "
 "select public, your application MUST validate the redirect URI."
 msgstr ""
+"Válassza a Bizalmas lehetőséget, ha az Ön alkalmazása képes a kiadott kliens"
+" titkosítására (pl. webes alkalmazás), egyébként (pl. böngésző alapú "
+"JavaScript alkalmazás) válassza a Nyilvános lehetőséget. Ha a Nyilvános "
+"lehetőséget választja, az alkalmazásnak érvényesíteni KELL az átirányítási "
+"URI-t."
 
 #: invenio_oauth2server/forms.py:164
 msgid "Confidential"
@@ -118,7 +124,7 @@ msgstr "Az ön alkalmazásának URL-je (a felhasználók számára megjelenítve
 
 #: invenio_oauth2server/scopes.py:20
 msgid "Allow access to email address (read-only)."
-msgstr "Hozzáférés engedélyezése az email címnek (csak olvasás)"
+msgstr "Hozzáférés engedélyezése az email címnek (csak olvasás)."
 
 #: invenio_oauth2server/templates/invenio_oauth2server/authorize.html:19
 #: invenio_oauth2server/templates/invenio_oauth2server/authorize.html:20
@@ -137,7 +143,7 @@ msgid ""
 "Application '%(client_name)s' by '%(client_user)s' wants permission to "
 "access your '%(current_user)s' account."
 msgstr ""
-"'%(client_user)s' '%(client_name)s' alkalmazása szeretne hozzáférni az ön "
+"'%(client_user)s' '%(client_name)s' alkalmazása szeretne hozzáférni az Ön "
 "'%(current_user)s' fiókjához."
 
 #: invenio_oauth2server/templates/invenio_oauth2server/authorize.html:28
@@ -226,17 +232,17 @@ msgstr "Kliens ID"
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:23
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:36
 msgid "Client Secret"
-msgstr "Ügyfél titok"
+msgstr "Ügyféltitok"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:24
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:39
 msgid "Do not share the client secret with anyone!"
-msgstr "Az ügyfél titok megosztása másokkal nem ajánlatos!"
+msgstr "Az ügyféltitok megosztása másokkal nem ajánlatos!"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:30
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:26
 msgid "Reset client secret"
-msgstr "Ügyfél titok visszaállítása"
+msgstr "Ügyféltitok visszaállítása"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:47
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_view.html:48
@@ -277,7 +283,7 @@ msgstr "példa kérés"
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:81
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:102
 msgid "required, use"
-msgstr ""
+msgstr "kötelező, használja"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:73
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:87
@@ -291,17 +297,17 @@ msgstr "kötelező"
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:74
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:83
 msgid "required, space separate list of scopes"
-msgstr ""
+msgstr "kötelező, hatókörök listája space-szel elválasztva"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:75
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:84
 msgid "required, URL encoded"
-msgstr ""
+msgstr "kötelező, URL-kódolt"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:76
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:85
 msgid "recommended, for CSRF protection"
-msgstr ""
+msgstr "CSRF védelemhez ajánlott"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:83
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:93
@@ -320,7 +326,7 @@ msgstr "Szövegtörzs paraméterek kérése:"
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:104
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:105
 msgid "required for grant_type"
-msgstr ""
+msgstr "szükséges ehhez: grant_type"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:17
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:17
