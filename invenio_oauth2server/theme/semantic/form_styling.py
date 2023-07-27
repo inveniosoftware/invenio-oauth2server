@@ -18,15 +18,19 @@ class SelectSUI(object):
 
     def __call__(self, field, **kwargs):
         """Render select field."""
-        html = ['<div class="ui fluid selection dropdown">']
+        html = [
+            '<div role="listbox" aria-expanded="false" class="ui fluid selection dropdown">'
+        ]
         html.append('<input type="hidden" name="{0}">'.format(field.name))
-        html.append('<i class="dropdown icon"></i>')
+        html.append('<i class="dropdown icon" aria-hidden="true"></i>')
         items_html = []
         default_text_html = []
         for val, label, selected in field.iter_choices():
             if selected:
                 default_text_html = [
-                    '<div class="text">{0}</div><div class="menu">'.format(label)
+                    '<div aria-atomic="true" aria-live="polite" class="text">{0}</div><div class="menu">'.format(
+                        label
+                    )
                 ]
             items_html.append(self.render_option(val, label, selected))
         items_html.append("</div></div>")
@@ -37,5 +41,7 @@ class SelectSUI(object):
     def render_option(cls, value, label, selected, **kwargs):
         """Render option."""
         return HTMLString(
-            '<div class="item" data-value="{0}">{1}</div>'.format(value, label)
+            (
+                '<div role="option" aria-selected="{2}" class="item" data-value="{0}">{1}</div>'
+            ).format(value, label, selected)
         )
