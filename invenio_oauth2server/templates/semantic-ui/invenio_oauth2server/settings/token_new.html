@@ -16,16 +16,18 @@
 {% block settings_content %}
 {{ helpers.panel_start(
     _('New personal access token'),
+    breadcrumb_path=url_for('.index'),
+    breadcrumb_title=_('Applications'),
 ) }}
 <form class="ui form" role="form" method="POST">
   {{ render_field(form.name, autofocus=True) }}
   {{ render_scopes_field(form.scopes) }}
   {{ form.csrf_token }}
-  <a href="{{ url_for('.index') }}" class="ui button">
-    <i class="icon x"></i> {{ _('Cancel') }}
+  <a href="{{ url_for('.index') }}" class="ui labeled icon button">
+    <i class="icon x" aria-hidden="true"></i> {{ _('Cancel') }}
   </a>
-  <button type="submit" class="ui button primary">
-    <i class="icon check"></i> {{ _('Create') }}
+  <button type="submit" class="ui labeled icon button primary">
+    <i class="icon check" aria-hidden="true"></i> {{ _('Create') }}
   </button>
 </form>
 {{helpers.panel_end()}}
