@@ -118,7 +118,7 @@ from .decorators import require_api_auth, require_oauth_scopes  # noqa isort:ski
 from .ext import InvenioOAuth2Server, InvenioOAuth2ServerREST  # noqa isort:skip
 from .proxies import current_oauth2server  # noqa isort:skip
 
-__version__ = "2.0.0"
+__version__ = "2.1.0"
 
 __all__ = (
     "__version__",
