@@ -8,6 +8,11 @@
 Changes
 =======
 
+Version 2.1.0 (released 2023-07-31)
+
+- applications: Improve templates for UI and accessibility
+- pulled translations
+
 Version 2.0.0 (released 2023-03-02)
 
 - drop python2.7 support
