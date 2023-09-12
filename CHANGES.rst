@@ -8,6 +8,10 @@
 Changes
 =======
 
+Version 2.2.0 (released 2023-09-12)
+
+- new-buttons: remove secondary class from buttons
+
 Version 2.1.0 (released 2023-07-31)
 
 - applications: Improve templates for UI and accessibility
