@@ -16,27 +16,27 @@ on:
     branches: master
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '0 3 * * 6'
+    - cron: "0 3 * * 6"
   workflow_dispatch:
     inputs:
       reason:
-        description: 'Reason'
+        description: "Reason"
         required: false
-        default: 'Manual trigger'
+        default: "Manual trigger"
 
 jobs:
   Tests:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-          python-version: [3.7, 3.8, 3.9]
-          requirements-level: [pypi]
-          db-service: [postgresql10, postgresql13, mysql5, mysql8]
+        python-version: [3.7, 3.8, 3.9]
+        requirements-level: [pypi]
+        db-service: [postgresql11, postgresql13, mysql5, mysql8]
 
-          include:
-          - db-service: postgresql10
+        include:
+          - db-service: postgresql11
             DB: postgresql
-            POSTGRESQL_VERSION: POSTGRESQL_10_LATEST
+            POSTGRESQL_VERSION: POSTGRESQL_11_LATEST
             SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://invenio:invenio@localhost:5432/invenio"
 
           - db-service: postgresql13
@@ -53,7 +53,6 @@ jobs:
             DB: mysql
             MYSQL_VERSION: MYSQL_8_LATEST
             SQLALCHEMY_DATABASE_URI: "mysql+pymysql://invenio:invenio@localhost:3306/invenio"
-
 
     env:
       SQLALCHEMY_DATABASE_URI: ${{matrix.SQLALCHEMY_DATABASE_URI}}

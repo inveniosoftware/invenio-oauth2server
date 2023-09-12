@@ -16,12 +16,12 @@
     btn='',
     btn_icon='',
     btn_href='',
-    btn_class='basic secondary',
+    btn_class='basic',
     btn_name='',
     btn2='',
     btn_icon2='',
     btn_href2='',
-    btn_class2='basic secondary',
+    btn_class2='basic',
     btn_name2='',
     id="",
     with_body=True,
@@ -68,7 +68,7 @@
               {%- elif btn_name %}
                 <button name="{{ btn_name }}" class="ui compact tiny button {{ 'icon' if btn_icon }} {{ btn_class }}">
                   {% if btn_icon %}
-                    <i class="{{ btn_icon }}"></i>
+                    <i class="{{ btn_icon }}" aria-hidden="true"></i>
                   {% endif %}
                   {{ btn }}
                 </button>
@@ -82,7 +82,7 @@
                   href="{{ btn_href2 }}"
                 >
                   {% if btn_icon2 %}
-                    <i class="{{ btn_icon2 }}"></i>
+                    <i class="{{ btn_icon2 }}" aria-hidden="true"></i>
                   {% endif %}
                   {{ btn2 }}
                 </a>
@@ -93,7 +93,7 @@
                   class="ui compact tiny button {{ btn_class2 }} {{ 'icon' if btn_icon2 }}"
                 >
                   {% if btn_icon2 %}
-                    <i class="{{ btn_icon2 }}"></i>
+                    <i class="{{ btn_icon2 }}" aria-hidden="true"></i>
                   {% endif %}
                   {{ btn2 }}
                 </button>
