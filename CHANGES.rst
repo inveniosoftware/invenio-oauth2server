@@ -8,6 +8,10 @@
 Changes
 =======
 
+Version 2.2.1 (released 2023-10-31)
+
+- settings: simplify token query
+
 Version 2.2.0 (released 2023-09-12)
 
 - new-buttons: remove secondary class from buttons
