@@ -115,7 +115,7 @@ def index():
     ).all()
 
     tokens = (
-        Token.query.options(db.joinedload("client"))
+        Token.query.join(Client, isouter=True)
         .filter(
             Token.user_id == current_user.get_id(),
             Token.is_personal == True,  # noqa
@@ -126,7 +126,7 @@ def index():
     )
 
     authorized_apps = (
-        Token.query.options(db.joinedload("client"))
+        Token.query.join(Client, isouter=True)
         .filter(
             Token.user_id == current_user.get_id(),
             Token.is_personal == False,  # noqa
