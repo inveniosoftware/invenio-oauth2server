@@ -3,7 +3,7 @@
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
 # Copyright (C) 2022 RERO.
-# Copyright (C) 2023 Graz University of Technology.
+# Copyright (C) 2023-2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -18,10 +18,10 @@ import oauthlib.common as oauthlib_commmon
 import six
 from flask import abort, request
 from flask_login import current_user
+from flask_menu import current_menu
 from invenio_i18n import LazyString
 from invenio_i18n import lazy_gettext as _
 from invenio_rest.csrf import csrf
-from invenio_theme import menu
 from werkzeug.utils import cached_property, import_string
 
 from . import config
@@ -293,7 +293,7 @@ def finalize_app(app):
     """Finalize app."""
     icons = app.extensions["invenio-theme"].icons
 
-    menu.submenu("settings.applications").register(
+    current_menu.submenu("settings.applications").register(
         endpoint="invenio_oauth2server_settings.index",
         text=_(
             "%(icon)s Applications",
