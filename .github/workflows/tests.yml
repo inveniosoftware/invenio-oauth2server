@@ -29,60 +29,33 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
         requirements-level: [pypi]
-        db-service: [postgresql11, postgresql13, mysql5, mysql8]
+        db-service: [postgresql14, mysql8]
 
         include:
-          - db-service: postgresql11
+          - db-service: postgresql14
             DB: postgresql
-            POSTGRESQL_VERSION: POSTGRESQL_11_LATEST
-            SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://invenio:invenio@localhost:5432/invenio"
-
-          - db-service: postgresql13
-            DB: postgresql
-            POSTGRESQL_VERSION: POSTGRESQL_13_LATEST
-            SQLALCHEMY_DATABASE_URI: "postgresql+psycopg2://invenio:invenio@localhost:5432/invenio"
-
-          - db-service: mysql5
-            DB: mysql
-            MYSQL_VERSION: MYSQL_5_LATEST
-            SQLALCHEMY_DATABASE_URI: "mysql+pymysql://invenio:invenio@localhost:3306/invenio"
 
           - db-service: mysql8
             DB: mysql
-            MYSQL_VERSION: MYSQL_8_LATEST
-            SQLALCHEMY_DATABASE_URI: "mysql+pymysql://invenio:invenio@localhost:3306/invenio"
 
     env:
-      SQLALCHEMY_DATABASE_URI: ${{matrix.SQLALCHEMY_DATABASE_URI}}
-      POSTGRESQL_VERSION: ${{matrix.POSTGRESQL_VERSION}}
-      MYSQL_VERSION: ${{matrix.MYSQL_VERSION}}
       DB: ${{ matrix.DB }}
       EXTRAS: tests
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Generate dependencies
-        run: |
-          pip install wheel requirements-builder
-          requirements-builder -e "$EXTRAS" ${{ matrix.requirements-file }} --level=${{ matrix.requirements-level }} setup.py > .${{ matrix.requirements-level }}-${{ matrix.python-version }}-requirements.txt
-
-      - name: Cache pip
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('.${{ matrix.requirements-level }}-${{ matrix.python-version }}-requirements.txt') }}
+          cache: pip
+          cache-dependency-path: setup.cfg
 
       - name: Install dependencies
         run: |
-          pip install -r .${{matrix.requirements-level}}-${{ matrix.python-version }}-requirements.txt
           pip install .[$EXTRAS]
           pip freeze
 
