@@ -2,6 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2016-2018 CERN.
+# Copyright (C) 2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -35,9 +36,9 @@ class ClientView(ModelView):
         "client_id",
     )
 
-    column_list = (
-        column_searchable_list
-    ) = column_sortable_list = column_details_list = list_all
+    column_list = column_searchable_list = column_sortable_list = (
+        column_details_list
+    ) = list_all
 
     column_list = list_all
     column_default_sort = ("client_id", True)
@@ -56,9 +57,9 @@ class TokenView(ModelView):
         "token_type",
         "expires",
     )
-    column_list = (
-        column_searchable_list
-    ) = column_sortable_list = column_details_list = list_all
+    column_list = column_searchable_list = column_sortable_list = (
+        column_details_list
+    ) = list_all
 
 
 oauth2server_clients_adminview = {
