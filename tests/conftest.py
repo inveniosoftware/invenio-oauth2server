@@ -2,6 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
+# Copyright (C) 2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -20,7 +21,6 @@ import pytest
 from flask import Flask, url_for
 from flask.cli import ScriptInfo
 from flask.views import MethodView
-from flask_breadcrumbs import Breadcrumbs
 from flask_mail import Mail
 from flask_menu import Menu
 from helpers import create_oauth_client, patch_request
@@ -89,7 +89,6 @@ def app(request):
         InvenioI18N(app)
         Mail(app)
         Menu(app)
-        Breadcrumbs(app)
         InvenioDB(app)
         InvenioOAuth2Server(app)
         InvenioI18N(app)
