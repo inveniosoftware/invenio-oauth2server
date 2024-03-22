@@ -26,7 +26,9 @@ from flask_menu import Menu
 from helpers import create_oauth_client, patch_request
 from invenio_accounts import InvenioAccountsREST, InvenioAccountsUI
 from invenio_accounts.models import User
-from invenio_accounts.views import blueprint as accounts_blueprint
+from invenio_accounts.views.settings import (
+    create_settings_blueprint as create_accounts_blueprint,
+)
 from invenio_db import InvenioDB, db
 from invenio_i18n import InvenioI18N
 from six import get_method_self
@@ -102,7 +104,7 @@ def app(request):
     app = Flask("testapp", instance_path=instance_path)
     init_app(app)
     InvenioAccountsUI(app)
-    app.register_blueprint(accounts_blueprint)
+    app.register_blueprint(create_accounts_blueprint(app))
     app.register_blueprint(server_blueprint)
     app.register_blueprint(settings_blueprint)
 
