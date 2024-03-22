@@ -8,6 +8,12 @@
 Changes
 =======
 
+Version 2.3.0 (released 2024-03-22)
+
+- fix: before_first_request deprecation
+  (add finalise app entrypoint)
+
+
 Version 2.2.1 (released 2023-10-31)
 
 - settings: simplify token query
