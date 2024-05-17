@@ -1,12 +1,16 @@
 ..
     This file is part of Invenio.
-    Copyright (C) 2015-2018 CERN.
+    Copyright (C) 2015-2024 CERN.
 
     Invenio is free software; you can redistribute it and/or modify it
     under the terms of the MIT License; see LICENSE file for more details.
 
 Changes
 =======
+
+Version 2.3.1 (released 2024-05-17)
+
+- settings-ui: fix token scopes list
 
 Version 2.3.0 (released 2024-03-22)
 
