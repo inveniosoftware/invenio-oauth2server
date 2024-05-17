@@ -53,15 +53,7 @@
     <ul class="ui segments no-style-list no-border no-border-radius-top m-0 p-0">
       {%- for t in tokens %}
         <li class="ui segment">
-          <a class="header" href="{{url_for('.token_view', token_id=t.id)}}">{{ t.client.name }}</a>
-          <ul class="ui horizontal bulleted link list block">
-            {% if t.scopes %}
-              {% for s in t.get_visible_scopes() %}
-                <li class="item ml-0">{{ s }}{% if not loop.last%}, {% endif%}</li>
-              {% endfor %}
-            {% endif %}
-          </ul>
-          <small>{{ t.client.description }}</small>
+          <a href="{{url_for('.token_view', token_id=t.id)}}">{{t.client.name}}</a>{% if t.scopes %} &mdash; <small class="text-muted">{% for s in t.get_visible_scopes() %}{{ s }}{% if not loop.last%}, {% endif%}{% endfor %}</small>{% endif %}<br/><small class="text-muted">{{t.client.description}}</small>
         </li>
       {%- endfor %}
     </ul>
