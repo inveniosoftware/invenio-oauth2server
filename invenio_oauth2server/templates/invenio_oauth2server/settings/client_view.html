@@ -88,6 +88,7 @@
           <li>client_secret ({{ _("required") }}).</li>
           <li>grant_type ({{ _("required, use") }} {% for c in config.OAUTH2SERVER_ALLOWED_GRANT_TYPES %}<code>{{c}}</code>{% if not loop.last %}, {% endif %}{% endfor %}).</li>
           <li>code ({{ _("required for grant_type") }} <code>authorization code</code>).</li>
+          <li>redirect_uri ({{ _("required for grant_type") }} <code>authorization code</code>).</li>
           <li>scope ({{ _("required for grant_type") }} <code>client_credentials</code>).</li>
           <li>refresh_token ({{ _("required for grant_type") }} <code>refresh_token</code>).</li>
         </ul>
