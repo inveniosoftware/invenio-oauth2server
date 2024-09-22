@@ -36,7 +36,7 @@ def scopes_multi_checkbox(field, **kwargs):
 
     html = ['<div class="row">']
 
-    for value, label, checked in field.iter_choices():
+    for value, label, checked, render_kw in field.iter_choices():
         choice_id = "%s-%s" % (field_id, value)
 
         options = dict(
