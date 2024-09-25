@@ -42,7 +42,7 @@
   <label>{{ field.label }}</label>
   <div class="ui grid">
     <div class="four column stackable tablet-mobile row">
-      {% for value, label, checked in field.iter_choices() %}
+      {% for value, label, checked, render_kw in field.iter_choices() %}
         {%- set choice_id = field.id ~ "-" ~ value %}
         <div class="column">
           <div class="inline field">

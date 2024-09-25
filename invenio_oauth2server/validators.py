@@ -2,19 +2,20 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
-# Copyright (C) 2023 Graz University of Technology.
+# Copyright (C) 2023-2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Validators for OAuth 2.0 redirect URIs and scopes."""
 
+from urllib.parse import urlparse
+
 from flask import current_app
 from oauthlib.oauth2.rfc6749.errors import (
     InsecureTransportError,
     InvalidRedirectURIError,
 )
-from six.moves.urllib_parse import urlparse
 from wtforms.validators import URL
 
 from .errors import ScopeDoesNotExists

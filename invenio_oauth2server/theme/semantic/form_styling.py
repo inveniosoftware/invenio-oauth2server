@@ -1,12 +1,13 @@
 # This file is part of Invenio.
 # Copyright (C) 2015-2020 CERN.
+# Copyright (C) 2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Render semantic ui styling for forms."""
 
-from wtforms.widgets import HTMLString
+from markupsafe import Markup
 
 
 class SelectSUI(object):
@@ -35,12 +36,12 @@ class SelectSUI(object):
             items_html.append(self.render_option(val, label, selected))
         items_html.append("</div></div>")
         html = html + default_text_html + items_html
-        return HTMLString("".join(html))
+        return Markup("".join(html))
 
     @classmethod
     def render_option(cls, value, label, selected, **kwargs):
         """Render option."""
-        return HTMLString(
+        return Markup(
             (
                 '<div role="option" aria-selected="{2}" class="item" data-value="{0}">{1}</div>'
             ).format(value, label, selected)

@@ -2,6 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
+# Copyright (C) 2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -11,13 +12,13 @@
 from flask import current_app
 from flask_wtf import FlaskForm as Form
 from invenio_i18n import lazy_gettext as _
+from markupsafe import Markup
 from oauthlib.oauth2.rfc6749.errors import (
     InsecureTransportError,
     InvalidRedirectURIError,
 )
 from werkzeug.local import LocalProxy
 from wtforms import fields, validators, widgets
-from wtforms.widgets import HTMLString
 from wtforms_alchemy import model_form_factory
 
 from .models import Client
@@ -35,7 +36,7 @@ def scopes_multi_checkbox(field, **kwargs):
 
     html = ['<div class="row">']
 
-    for value, label, checked in field.iter_choices():
+    for value, label, checked, render_kw in field.iter_choices():
         choice_id = "%s-%s" % (field_id, value)
 
         options = dict(
@@ -60,7 +61,7 @@ def scopes_multi_checkbox(field, **kwargs):
         html.append("</label></div>")
     html.append("</div>")
 
-    return HTMLString("".join(html))
+    return Markup("".join(html))
 
 
 #
