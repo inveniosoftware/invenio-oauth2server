@@ -8,6 +8,15 @@
 Changes
 =======
 
+Version 2.4.0 (released 2024-11-07)
+
+- global: remove six usage
+- compatibility: to werkzeug >= 2.3.0
+- setup: unpin wtforms dependency
+- fix: DeprecationWarning HTMLString
+- settings: update page to reflect additional required parameter
+- i18n: push translations
+
 Version 2.3.1 (released 2024-05-17)
 
 - settings-ui: fix token scopes list
