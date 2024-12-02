@@ -1,6 +1,7 @@
 # This file is part of Invenio.
 # Copyright (C) 2015-2020 CERN.
 # Copyright (C) 2024 Graz University of Technology.
+# Copyright (C) 2024 KTH Royal Institute of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -26,7 +27,7 @@ class SelectSUI(object):
         html.append('<i class="dropdown icon" aria-hidden="true"></i>')
         items_html = []
         default_text_html = []
-        for val, label, selected in field.iter_choices():
+        for val, label, selected, _ in field.iter_choices():
             if selected:
                 default_text_html = [
                     '<div aria-atomic="true" aria-live="polite" class="text">{0}</div><div class="menu">'.format(
