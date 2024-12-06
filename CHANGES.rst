@@ -9,6 +9,11 @@
 Changes
 =======
 
+Version 3.0.0 (release 2024-12-05)
+
+- fix: compat for flask-oauthlib
+- setup: bump major dependencies
+
 Version 2.4.1 (release 2024-11-30)
 
 - setup: change to reusable workflows

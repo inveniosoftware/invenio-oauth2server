@@ -36,6 +36,15 @@ def monkey_patch_werkzeug_base():
         werkzeug.url_decode = urllib.parse.parse_qs
         werkzeug.url_encode = urllib.parse.urlencode
 
+    try:
+        # werkzeug >= 3.0 has removed following functions from werkzeug.urls
+        # necessary for flask-oauthlib
+        from werkzeug.urls import url_quote
+    except ImportError:
+        werkzeug.urls.url_quote = urllib.parse.quote
+        werkzeug.urls.url_decode = urllib.parse.parse_qs
+        werkzeug.urls.url_encode = urllib.parse.urlencode
+
 
 def monkey_patch_werkzeug():
     """Patch all the missing werkzeug modules."""

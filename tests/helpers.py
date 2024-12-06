@@ -2,6 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
+# Copyright (C) 2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -9,6 +10,8 @@
 """Test helper functions."""
 
 from __future__ import absolute_import, print_function
+
+from urllib.parse import parse_qs, urlparse, urlunparse
 
 from flask import (  # noqa isort:skip
     Blueprint,
@@ -19,11 +22,11 @@ from flask import (  # noqa isort:skip
     url_for,
 )
 
-import invenio_oauth2server._compat  # noqa isort:skip
+from invenio_oauth2server._compat import monkey_patch_werkzeug  # noqa isort:skip
+
+monkey_patch_werkzeug()
 
 from flask_oauthlib.client import OAuth, prepare_request  # noqa isort:skip
-from six.moves.urllib.parse import urlparse  # noqa isort:skip
-from werkzeug.urls import url_decode, url_parse, url_unparse  # noqa isort:skip
 
 
 def patch_request(app):
@@ -53,10 +56,13 @@ def patch_request(app):
 
 def parse_redirect(location, parse_fragment=False):
     """Parse a redirect."""
-    scheme, netloc, script_root, qs, anchor = url_parse(location)
+    # scheme, netloc, script_root, qs, anchor = urlparse(location)
+    parse_result = urlparse(location)
     return (
-        url_unparse((scheme, netloc, script_root, "", "")),
-        url_decode(anchor if parse_fragment else qs),
+        urlunparse(
+            (parse_result.scheme, parse_result.netloc, parse_result.path, "", "", "")
+        ),
+        parse_qs(parse_result.fragment if parse_fragment else parse_result.query),
     )
 
 
