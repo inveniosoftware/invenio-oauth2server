@@ -111,16 +111,18 @@ def app(request):
     app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {"/api": api_app.wsgi_app})
 
     with app.app_context():
-        if str(db.engine.url) != "sqlite://" and not database_exists(
-            str(db.engine.url)
+        if str(
+            db.engine.url.render_as_string(hide_password=False)
+        ) != "sqlite://" and not database_exists(
+            str(db.engine.url.render_as_string(hide_password=False))
         ):
-            create_database(str(db.engine.url))
+            create_database(str(db.engine.url.render_as_string(hide_password=False)))
         db.create_all()
 
     def teardown():
         with app.app_context():
-            if str(db.engine.url) != "sqlite://":
-                drop_database(str(db.engine.url))
+            if str(db.engine.url.render_as_string(hide_password=False)) != "sqlite://":
+                drop_database(str(db.engine.url.render_as_string(hide_password=False)))
             shutil.rmtree(instance_path)
 
     request.addfinalizer(teardown)
