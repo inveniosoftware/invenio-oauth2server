@@ -2,7 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
-# Copyright (C) 2023 Graz University of Technology.
+# Copyright (C) 2023-2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -14,7 +14,7 @@ from functools import wraps
 from flask import abort, current_app, request
 from flask_login import current_user
 
-from .provider import oauth2
+from .provider import require_oauth
 from .proxies import current_oauth2server
 
 
@@ -27,7 +27,7 @@ def require_api_auth(allow_anonymous=False):
 
     def wrapper(f):
         """Wrap function with oauth require decorator."""
-        f_oauth_required = oauth2.require_oauth()(f)
+        f_oauth_required = require_oauth()(f)
 
         @wraps(f)
         def decorated(*args, **kwargs):

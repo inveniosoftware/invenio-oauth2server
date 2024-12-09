@@ -2,6 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
+# Copyright (C) 2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -10,20 +11,16 @@
 
 from __future__ import absolute_import, print_function
 
-from flask import (  # noqa isort:skip
-    Blueprint,
-    abort,
-    jsonify,
-    request,
-    session,
-    url_for,
-)
+from urllib.parse import parse_qs, urlparse, urlunparse
 
-import invenio_oauth2server._compat  # noqa isort:skip
+from authlib.integrations.flask_client import OAuth
+from flask import Blueprint, abort, jsonify, request, session, url_for
 
-from flask_oauthlib.client import OAuth, prepare_request  # noqa isort:skip
-from six.moves.urllib.parse import urlparse  # noqa isort:skip
-from werkzeug.urls import url_decode, url_parse, url_unparse  # noqa isort:skip
+# from invenio_oauth2server._compat import monkey_patch_werkzeug  # noqa isort:skip
+
+# monkey_patch_werkzeug()
+
+# from flask_oauthlib.client import OAuth, prepare_request  # noqa isort:skip
 
 
 def patch_request(app):
@@ -31,7 +28,9 @@ def patch_request(app):
     test_client = app.test_client()
 
     def make_request(uri, headers=None, data=None, method=None):
-        uri, headers, data, method = prepare_request(uri, headers, data, method)
+        # uri, headers, data, method = prepare_request_uri_query(
+        #     uri, headers, data, method
+        # )
         if not headers and data is not None:
             headers = {"Content-Type": " application/x-www-form-urlencoded"}
 
@@ -53,10 +52,13 @@ def patch_request(app):
 
 def parse_redirect(location, parse_fragment=False):
     """Parse a redirect."""
-    scheme, netloc, script_root, qs, anchor = url_parse(location)
+    # scheme, netloc, script_root, qs, anchor = urlparse(location)
+    parse_result = urlparse(location)
     return (
-        url_unparse((scheme, netloc, script_root, "", "")),
-        url_decode(anchor if parse_fragment else qs),
+        urlunparse(
+            (parse_result.scheme, parse_result.netloc, parse_result.path, "", "", "")
+        ),
+        parse_qs(parse_result.fragment if parse_fragment else parse_result.query),
     )
 
 
@@ -88,7 +90,7 @@ def create_oauth_client(app, name, **kwargs):
     default.update(kwargs)
 
     oauth = OAuth(app)
-    remote = oauth.remote_app(name, **default)
+    remote = oauth.register(name, **default)
 
     @blueprint.route("/oauth2test/login")
     def login():
@@ -102,7 +104,6 @@ def create_oauth_client(app, name, **kwargs):
         return "logout"
 
     @blueprint.route("/oauth2test/authorized")
-    @remote.authorized_handler
     def authorized(resp):
         if resp is None:
             return "Access denied: error=%s" % (request.args.get("error", "unknown"))
@@ -132,9 +133,9 @@ def create_oauth_client(app, name, **kwargs):
     def test_invalid():
         return get_test(url_for("invenio_oauth2server.invalid"))
 
-    @remote.tokengetter
-    def get_oauth_token():
-        return session.get("confidential_token")
+    # @remote.tokengetter
+    # def get_oauth_token():
+    #     return session.get("confidential_token")
 
     app.register_blueprint(blueprint)
 

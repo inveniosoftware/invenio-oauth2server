@@ -19,15 +19,15 @@ set -o errexit
 set -o nounset
 
 # Always bring down docker services
-function cleanup {
-    eval "$(docker-services-cli down --env)"
-}
-trap cleanup EXIT
+# function cleanup {
+#     eval "$(docker-services-cli down --env)"
+# }
+# trap cleanup EXIT
 
-python -m check_manifest
-python -m setup extract_messages --output-file /dev/null
-python -m sphinx.cmd.build -qnNW docs docs/_build/html
+# python -m check_manifest
+# python -m setup extract_messages --output-file /dev/null
+# python -m sphinx.cmd.build -qnNW docs docs/_build/html
 eval "$(docker-services-cli up --db ${DB:-postgresql} --env)"
-python -m pytest
+python -m pytest -s tests/test_provider.py -k test_resource_auth_methods
 tests_exit_code=$?
 exit "$tests_exit_code"

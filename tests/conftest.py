@@ -39,7 +39,9 @@ from invenio_oauth2server.decorators import require_api_auth, require_oauth_scop
 from invenio_oauth2server.models import Client, Scope, Token
 from invenio_oauth2server.views import server_blueprint, settings_blueprint
 
-import invenio_oauth2server._compat  # noqa isort:skip
+from invenio_oauth2server._compat import monkey_patch_werkzeug  # noqa isort:skip
+
+monkey_patch_werkzeug()
 
 try:
     from werkzeug.middleware.dispatcher import DispatcherMiddleware
@@ -111,16 +113,18 @@ def app(request):
     app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {"/api": api_app.wsgi_app})
 
     with app.app_context():
-        if str(db.engine.url) != "sqlite://" and not database_exists(
-            str(db.engine.url)
+        if str(
+            db.engine.url.render_as_string(hide_password=False)
+        ) != "sqlite://" and not database_exists(
+            str(db.engine.url.render_as_string(hide_password=False))
         ):
-            create_database(str(db.engine.url))
+            create_database(str(db.engine.url.render_as_string(hide_password=False)))
         db.create_all()
 
     def teardown():
         with app.app_context():
-            if str(db.engine.url) != "sqlite://":
-                drop_database(str(db.engine.url))
+            if str(db.engine.url.render_as_string(hide_password=False)) != "sqlite://":
+                drop_database(str(db.engine.url.render_as_string(hide_password=False)))
             shutil.rmtree(instance_path)
 
     request.addfinalizer(teardown)
