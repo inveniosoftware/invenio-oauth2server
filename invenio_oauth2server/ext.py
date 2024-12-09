@@ -16,8 +16,10 @@ import warnings
 import importlib_metadata
 import oauthlib.common as oauthlib_commmon
 import six
+from authlib.integrations.flask_oauth2 import AuthorizationServer
 from flask import abort, request
-from flask_login import current_user
+
+# from flask_login import current_user
 from flask_menu import current_menu
 from invenio_i18n import LazyString
 from invenio_i18n import lazy_gettext as _
@@ -25,16 +27,16 @@ from invenio_rest.csrf import csrf
 from werkzeug.utils import cached_property, import_string
 
 from . import config
-from .models import OAuthUserProxy, Scope
-from .provider import oauth2
+from .models import Scope
+from .provider import InvenioPasswordGrant, get_client, login_oauth2_user, save_token
 
-from invenio_oauth2server._compat import monkey_patch_werkzeug  # noqa isort:skip
+# from invenio_oauth2server._compat import monkey_patch_werkzeug  # noqa isort:skip
 
-monkey_patch_werkzeug()  # noqa isort:skip
-from flask_oauthlib.contrib.oauth2 import bind_cache_grant  # noqa isort:skip
+# monkey_patch_werkzeug()  # noqa isort:skip
+# from flask_oauthlib.contrib.oauth2 import bind_cache_grant  # noqa isort:skip
 
 
-class _OAuth2ServerState(object):
+class _OAuth2ServerState:
     """OAuth2 server state storing registered scopes."""
 
     def __init__(self, app, entry_point_group=None):
@@ -42,8 +44,8 @@ class _OAuth2ServerState(object):
         self.app = app
         self.scopes = {}
 
-        # Initialize OAuth2 provider
-        oauth2.init_app(app)
+        # # Initialize OAuth2 provider
+        # oauth2.init_app(app)
 
         # Flask-OAuthlib does not support CACHE_REDIS_URL
         if app.config["OAUTH2_CACHE_TYPE"] == "redis" and app.config.get(
@@ -55,9 +57,19 @@ class _OAuth2ServerState(object):
                 "OAUTH2_CACHE_REDIS_HOST", redis_from_url(app.config["CACHE_REDIS_URL"])
             )
 
-        # Configures an OAuth2Provider instance to use configured caching
-        # system to get and set the grant token.
-        bind_cache_grant(app, oauth2, lambda: OAuthUserProxy(current_user))
+        oauth2 = AuthorizationServer(
+            app, query_client=get_client, save_token=save_token
+        )
+        oauth2.init_app(app)
+
+        app.after_request(login_oauth2_user)
+        oauth2.register_grant(InvenioPasswordGrant)
+
+        self.oauth2 = oauth2
+
+        # # Configures an OAuth2Provider instance to use configured caching
+        # # system to get and set the grant token.
+        # bind_cache_grant(app, oauth2, lambda: OAuthUserProxy(current_user))
 
         # Disables oauthlib's secure transport detection in in debug mode.
         if app.debug or app.testing:

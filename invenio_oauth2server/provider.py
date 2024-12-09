@@ -2,6 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
+# Copyright (C) 2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -10,23 +11,150 @@
 
 from datetime import datetime, timedelta
 
+from authlib.integrations.flask_oauth2 import ResourceProtector
+from authlib.oauth2.rfc6749 import grants
+from authlib.oauth2.rfc6749.errors import (
+    MissingAuthorizationError,
+    UnsupportedTokenTypeError,
+)
+from authlib.oauth2.rfc6750 import BearerTokenValidator
 from flask import current_app, g
 from flask_login import current_user
-from flask_oauthlib.provider import OAuth2Provider
+
+# from flask_oauthlib.provider import OAuth2Provider
 from flask_principal import Identity, identity_changed
 from flask_security.utils import verify_password
-from importlib_metadata import version
+
+# from importlib_metadata import version
 from invenio_db import db
 from werkzeug.local import LocalProxy
 
 from .models import Client, Token
 from .scopes import email_scope
 
-oauth2 = OAuth2Provider()
+# oauth2 = OAuth2Provider()
+# oauth2 = AuthorizationServer
 datastore = LocalProxy(lambda: current_app.extensions["security"].datastore)
 
 
-@oauth2.usergetter
+class InvenioTokenValidator(BearerTokenValidator):
+    def authenticate_token(self, access_token):
+        """Logic to fetch the token from your database."""
+
+        print(f"InvenioTokenValidator.authenticate_token access_token: {access_token}")
+        if access_token:
+            t = Token.query.filter_by(access_token=access_token).first()
+        # elif refresh_token:
+        #     t = (
+        #         Token.query.join(Token.client)
+        #         .filter(
+        #             Token.refresh_token == refresh_token,
+        #             Token.is_personal == False,  # noqa
+        #             Client.is_confidential == True,
+        #         )
+        #         .first()
+        #     )
+        else:
+            return None
+        return t if t and t.user.active else None
+
+    # def validate_token(self, token, scopes, request):
+    #     # Logic to validate token and scope
+    #     print(f"InvenioTokenValidator.validate_token")
+    #     # if token.is_expired():
+    #     #     return False
+    #     return token.scope in scopes
+
+
+class InvenioPasswordGrant(grants.ResourceOwnerPasswordCredentialsGrant):
+    def authenticate_user(self, username, password):
+        """Get user for grant type password.
+
+        Needed for grant type 'password'. Note, grant type password is by default
+        disabled.
+
+        :param email: User email.
+        :param password: Password.
+        :returns: The user instance or ``None``.
+        """
+        user = datastore.find_user(email=username)
+        if user and user.active and verify_password(password, user.password):
+            return user
+
+
+class InvenioResourceProtector(ResourceProtector):
+    # def parse_request_authorization(self, request):
+    #     """Parse the token and token validator from request Authorization header.
+    #     Here is an example of Authorization header::
+
+    #         Authorization: Bearer a-token-string
+
+    #     This method will parse this header, if it can find the validator for
+    #     ``Bearer``, it will return the validator and ``a-token-string``.
+
+    #     :return: validator, token_string
+    #     :raise: MissingAuthorizationError
+    #     :raise: UnsupportedTokenTypeError
+    #     """
+
+    #     auth = request.headers.get("Authorization")
+    #     print(
+    #         f"InvenioResourceProtector.parse_request_authorization request: {request.data()}, auth: {auth}"
+    #     )
+    #     if not auth:
+    #         print("raise")
+    #         raise MissingAuthorizationError(
+    #             self._default_auth_type, self._default_realm
+    #         )
+
+    #     # https://tools.ietf.org/html/rfc6749#section-7.1
+    #     token_parts = auth.split(None, 1)
+    #     print(
+    #         f"InvenioResourceProtector.parse_request_authorization request: {request}, auth: {auth}, token_parts: {token_parts}"
+    #     )
+    #     if len(token_parts) != 2:
+    #         raise UnsupportedTokenTypeError(
+    #             self._default_auth_type, self._default_realm
+    #         )
+
+    #     token_type, token_string = token_parts
+    #     validator = self.get_token_validator(token_type)
+    #     return validator, token_string
+
+    def parse_request_authorization(self, request):
+        print("InvenioResourceProtector.parse_request_authorization")
+        try:
+            # print(
+            #     f"InvenioResourceProtector.parse_request_authorization request: {request}, request.data: {request.data()}"
+            # )
+
+            return super().parse_request_authorization(request)
+        except MissingAuthorizationError:
+            print(
+                f"InvenioResourceProtector.parse_request_authorization MissingAuthorizationError request: {request._request.data()}"
+            )
+            # token_type, token_string = token_parts
+            # validator = self.get_token_validator(token_type)
+            # return validator, token_string
+        except UnsupportedTokenTypeError:
+            print(
+                f"InvenioResourceProtector.parse_request_authorization request: {request}, request.data: {request.data}"
+            )
+
+            # token_parts = auth.split(None, 1)
+            # token_type, token_string = token_parts
+            # validator = self.get_token_validator(token_type)
+            # return validator, token_string
+        except Exception:
+            print("InvenioResourceProtector.parse_request_authorization exception")
+
+
+# Register the validator
+require_oauth = InvenioResourceProtector()
+require_oauth.register_token_validator(InvenioTokenValidator())
+
+
+# @oauth2.usergetter
 def get_user(email, password, *args, **kwargs):
     """Get user for grant type password.
 
@@ -42,35 +170,36 @@ def get_user(email, password, *args, **kwargs):
         return user
 
 
-@oauth2.tokengetter
-def get_token(access_token=None, refresh_token=None):
-    """Load an access token.
+# moved to InvenioTokenValidator
+# @oauth2.tokengetter
+# def get_token(access_token=None, refresh_token=None):
+#     """Load an access token.
 
-    Add support for personal access tokens compared to flask-oauthlib.
-    If the access token is ``None``, it looks for the refresh token.
+#     Add support for personal access tokens compared to flask-oauthlib.
+#     If the access token is ``None``, it looks for the refresh token.
 
-    :param access_token: The access token. (Default: ``None``)
-    :param refresh_token: The refresh token. (Default: ``None``)
-    :returns: The token instance or ``None``.
-    """
-    if access_token:
-        t = Token.query.filter_by(access_token=access_token).first()
-    elif refresh_token:
-        t = (
-            Token.query.join(Token.client)
-            .filter(
-                Token.refresh_token == refresh_token,
-                Token.is_personal == False,  # noqa
-                Client.is_confidential == True,
-            )
-            .first()
-        )
-    else:
-        return None
-    return t if t and t.user.active else None
+#     :param access_token: The access token. (Default: ``None``)
+#     :param refresh_token: The refresh token. (Default: ``None``)
+#     :returns: The token instance or ``None``.
+#     """
+#     if access_token:
+#         t = Token.query.filter_by(access_token=access_token).first()
+#     elif refresh_token:
+#         t = (
+#             Token.query.join(Token.client)
+#             .filter(
+#                 Token.refresh_token == refresh_token,
+#                 Token.is_personal == False,  # noqa
+#                 Client.is_confidential == True,
+#             )
+#             .first()
+#         )
+#     else:
+#         return None
+#     return t if t and t.user.active else None
 
 
-@oauth2.clientgetter
+# @oauth2.clientgetter
 def get_client(client_id):
     """Load the client.
 
@@ -87,7 +216,7 @@ def get_client(client_id):
         return client
 
 
-@oauth2.tokensetter
+# @oauth2.tokensetter
 def save_token(token, request, *args, **kwargs):
     """Token persistence.
 
@@ -140,20 +269,15 @@ def save_token(token, request, *args, **kwargs):
     return tok
 
 
-@oauth2.after_request
-def login_oauth2_user(valid, oauth):
+# @oauth2.after_request
+def login_oauth2_user(valid, oauth=None):
     """Log in a user after having been verified."""
+    if oauth is None:
+        print(f"login_oauth2_user oauth: {oauth}")
+        return valid
     if valid:
         oauth.user.login_via_oauth2 = True
-        # Flask-login==0.6.2 changed the way the user is saved i.e uses `flask.g`
-        # To keep backwards compatibility we fallback to the previous implementation
-        # for earlier versions.
-        if version("flask-login") <= "0.6.1":
-            from flask import _request_ctx_stack
-
-            _request_ctx_stack.top.user = oauth.user
-        else:
-            g._login_user = oauth.user
+        g._login_user = oauth.user
         identity_changed.send(
             current_app._get_current_object(), identity=Identity(oauth.user.id)
         )

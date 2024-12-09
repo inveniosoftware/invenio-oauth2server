@@ -2,7 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
-# Copyright (C) 2023 Graz University of Technology.
+# Copyright (C) 2023-2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -381,6 +381,17 @@ class Token(db.Model):
         """
         validate_scopes(scopes)
         self._scopes = " ".join(set(scopes)) if scopes else ""
+
+    def is_expired(self):
+        # TODO
+        return False
+
+    def is_revoked(self):
+        # TODO
+        return False
+
+    def get_scope(self):
+        return ""
 
     def get_visible_scopes(self):
         """Get list of non-internal scopes for token.
