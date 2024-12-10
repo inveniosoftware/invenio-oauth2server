@@ -2,7 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
-# Copyright (C) 2023 Graz University of Technology.
+# Copyright (C) 2023-2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -103,7 +103,7 @@ def test_deletion_of_consumer_resource_owner(models_fixture):
     with app.app_context():
         # delete consumer
         with db.session.begin_nested():
-            db.session.delete(User.query.get(app.consumer_id))
+            db.session.delete(db.session.get(User, app.consumer_id))
 
             # assert that t2 deleted
             assert (
@@ -135,7 +135,7 @@ def test_deletion_of_consumer_resource_owner(models_fixture):
             )
 
             # delete resource_owner
-            db.session.delete(User.query.get(app.resource_owner_id))
+            db.session.delete(db.session.get(User, app.resource_owner_id))
 
             # still resource_owner and client_1 and token_1 deleted
             assert (
@@ -159,7 +159,7 @@ def test_deletion_of_resource_owner_consumer(models_fixture):
 
     with app.app_context():
         with db.session.begin_nested():
-            db.session.delete(User.query.get(app.resource_owner_id))
+            db.session.delete(db.session.get(User, app.resource_owner_id))
 
         # assert that c1, t1, t2 deleted
         assert (
@@ -192,7 +192,7 @@ def test_deletion_of_resource_owner_consumer(models_fixture):
         )
 
         # delete consumer
-        db.session.delete(User.query.get(app.consumer_id))
+        db.session.delete(db.session.get(User, app.consumer_id))
 
 
 def test_deletion_of_client1(models_fixture):
@@ -202,7 +202,7 @@ def test_deletion_of_client1(models_fixture):
     # delete client_1
     with app.app_context():
         with db.session.begin_nested():
-            db.session.delete(Client.query.get(app.u1c1_id))
+            db.session.delete(db.session.get(Client, app.u1c1_id))
 
             # assert that token_1, token_2 deleted
             assert (
@@ -235,7 +235,7 @@ def test_deletion_of_client1(models_fixture):
             )
 
             # delete consumer
-            db.session.delete(User.query.get(app.consumer_id))
+            db.session.delete(db.session.get(User, app.consumer_id))
 
 
 def test_deletion_of_token1(models_fixture):
@@ -245,7 +245,7 @@ def test_deletion_of_token1(models_fixture):
     # delete token_1
     with app.app_context():
         with db.session.begin_nested():
-            db.session.delete(Token.query.get(app.u1c1u1t1_id))
+            db.session.delete(db.session.get(Token, app.u1c1u1t1_id))
 
         # still exist resource_owner, consumer, client_1, token_2
         assert (
@@ -277,7 +277,7 @@ def test_deletion_of_token1(models_fixture):
         )
 
         # delete consumer
-        db.session.delete(User.query.get(app.consumer_id))
+        db.session.delete(db.session.get(User, app.consumer_id))
 
 
 def test_deletion_of_token2(models_fixture):
@@ -287,7 +287,7 @@ def test_deletion_of_token2(models_fixture):
     # delete token_2
     with app.app_context():
         with db.session.begin_nested():
-            db.session.delete(Token.query.get(app.u1c1u2t2_id))
+            db.session.delete(db.session.get(Token, app.u1c1u2t2_id))
 
         # still exist resource_owner, consumer, client_1, token_1
         assert (
@@ -319,4 +319,4 @@ def test_deletion_of_token2(models_fixture):
         )
 
         # delete consumer
-        db.session.delete(User.query.get(app.consumer_id))
+        db.session.delete(db.session.get(User, app.consumer_id))

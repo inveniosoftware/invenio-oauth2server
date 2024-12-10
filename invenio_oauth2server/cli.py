@@ -2,6 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2018 CERN.
+# Copyright (C) 2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -35,7 +36,7 @@ def process_user(ctx, param, value):
     """Return a user if exists."""
     if value:
         if value.isdigit():
-            user = User.query.get(str(value))
+            user = db.session.get(User, str(value))
         else:
             user = User.query.filter(User.email == value).one_or_none()
         return user
