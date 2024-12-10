@@ -2,6 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2016-2018 CERN.
+# Copyright (C) 2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -51,8 +52,12 @@ def upgrade():
         sa.Column("client_id", sa.String(length=255), nullable=False),
         sa.Column("user_id", sa.Integer(), nullable=True),
         sa.Column("token_type", sa.String(length=255), nullable=True),
-        sa.Column("access_token", sqlalchemy_utils.EncryptedType(), nullable=True),
-        sa.Column("refresh_token", sqlalchemy_utils.EncryptedType(), nullable=True),
+        sa.Column(
+            "access_token", sqlalchemy_utils.StringEncryptedType(), nullable=True
+        ),
+        sa.Column(
+            "refresh_token", sqlalchemy_utils.StringEncryptedType(), nullable=True
+        ),
         sa.Column("expires", sa.DateTime(), nullable=True),
         sa.Column("_scopes", sa.Text(), nullable=True),
         sa.Column("is_personal", sa.Boolean(name="is_personal"), nullable=True),
