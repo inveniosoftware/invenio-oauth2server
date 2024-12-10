@@ -2,7 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
-# Copyright (C) 2023 Graz University of Technology.
+# Copyright (C) 2023-2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -16,7 +16,7 @@ from invenio_accounts.models import User
 from invenio_db import db
 from invenio_i18n import lazy_gettext as _
 from sqlalchemy.schema import Index
-from sqlalchemy_utils import EncryptedType
+from sqlalchemy_utils import StringEncryptedType
 from sqlalchemy_utils.types import URLType
 from sqlalchemy_utils.types.encrypted.encrypted_type import AesEngine
 from werkzeug.security import gen_salt
@@ -338,14 +338,14 @@ class Token(db.Model):
     """Token type - only bearer is supported at the moment."""
 
     access_token = db.Column(
-        EncryptedType(
+        StringEncryptedType(
             type_in=db.String(255),
             key=secret_key,
         ),
     )
 
     refresh_token = db.Column(
-        EncryptedType(
+        StringEncryptedType(
             type_in=db.String(255),
             key=secret_key,
             engine=NoneAesEngine,
