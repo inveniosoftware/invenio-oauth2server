@@ -270,7 +270,7 @@ def models_fixture(app):
             db.session.add(u1c1u2t2)
         db.session.commit()
         test_user_id = test_user.get_id()
-        app.test_user = lambda: User.query.get(test_user_id)
+        app.test_user = lambda: db.session.get(User, test_user_id)
         app.resource_owner_id = resource_owner.get_id()
         app.consumer_id = consumer.get_id()
         app.u1c1_id = u1c1.client_id
