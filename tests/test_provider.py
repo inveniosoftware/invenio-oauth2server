@@ -923,7 +923,7 @@ def test_not_allowed_public_refresh_flow(provider_fixture):
                 follow_redirects=True,
             )
             # Only confidential clients can refresh expired token.
-            assert r.status_code == 401
+            assert r.status_code == 400
 
 
 def test_password_grant_type(provider_fixture):
@@ -949,12 +949,12 @@ def test_password_grant_type(provider_fixture):
             data["password"] = "invalid"
 
             r = client.post(url_for("invenio_oauth2server.access_token"), data=data)
-            assert r.status_code == 401
+            assert r.status_code == 400
 
             data["username"] = "inactive@inveniosoftware.org"
             data["password"] = "tester3"
             r = client.post(url_for("invenio_oauth2server.access_token"), data=data)
-            assert r.status_code == 401
+            assert r.status_code == 400
 
 
 def test_email_scope(provider_fixture):
