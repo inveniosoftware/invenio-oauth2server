@@ -19,6 +19,7 @@ import six
 from flask import abort, request
 from flask_login import current_user
 from flask_menu import current_menu
+from flask_oauthlib.contrib.oauth2 import bind_cache_grant
 from invenio_i18n import LazyString
 from invenio_i18n import lazy_gettext as _
 from invenio_rest.csrf import csrf
@@ -27,11 +28,6 @@ from werkzeug.utils import cached_property, import_string
 from . import config
 from .models import OAuthUserProxy, Scope
 from .provider import oauth2
-
-from invenio_oauth2server._compat import monkey_patch_werkzeug  # noqa isort:skip
-
-monkey_patch_werkzeug()  # noqa isort:skip
-from flask_oauthlib.contrib.oauth2 import bind_cache_grant  # noqa isort:skip
 
 
 class _OAuth2ServerState(object):

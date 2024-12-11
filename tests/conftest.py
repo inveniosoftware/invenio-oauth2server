@@ -39,8 +39,6 @@ from invenio_oauth2server.decorators import require_api_auth, require_oauth_scop
 from invenio_oauth2server.models import Client, Scope, Token
 from invenio_oauth2server.views import server_blueprint, settings_blueprint
 
-import invenio_oauth2server._compat  # noqa isort:skip
-
 try:
     from werkzeug.middleware.dispatcher import DispatcherMiddleware
 except ImportError:
