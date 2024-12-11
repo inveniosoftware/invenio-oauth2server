@@ -107,13 +107,9 @@ For more information about access control in Invenio you can visit
 
 """
 
-from invenio_oauth2server._compat import monkey_patch_werkzeug  # noqa isort:skip
-
-monkey_patch_werkzeug()  # noqa isort:skip
-
-from .decorators import require_api_auth, require_oauth_scopes  # noqa isort:skip
-from .ext import InvenioOAuth2Server, InvenioOAuth2ServerREST  # noqa isort:skip
-from .proxies import current_oauth2server  # noqa isort:skip
+from .decorators import require_api_auth, require_oauth_scopes
+from .ext import InvenioOAuth2Server, InvenioOAuth2ServerREST
+from .proxies import current_oauth2server
 
 __version__ = "2.4.1"
 

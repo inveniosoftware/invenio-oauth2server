@@ -2,7 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
-# Copyright (C) 2023 Graz University of Technology.
+# Copyright (C) 2023-2024 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -85,7 +85,7 @@ def test_invalid_authorize_requests(provider_fixture):
                 )
                 assert r.status_code == 302
                 next_url, data = parse_redirect(r.location)
-                assert data["error"] == "invalid_scope"
+                assert data["error"] == ["invalid_scope"]
                 assert next_url == redirect_uri
 
                 # Invalid response type
@@ -100,7 +100,7 @@ def test_invalid_authorize_requests(provider_fixture):
                 )
                 assert r.status_code == 302
                 next_url, data = parse_redirect(r.location)
-                assert data["error"] == "unsupported_response_type"
+                assert data["error"] == ["unsupported_response_type"]
                 assert next_url == redirect_uri
 
                 # Missing response_type
@@ -114,7 +114,7 @@ def test_invalid_authorize_requests(provider_fixture):
                 )
                 assert r.status_code == 302
                 next_url, data = parse_redirect(r.location)
-                assert data["error"] == "invalid_request"
+                assert data["error"] == ["invalid_request"]
                 assert next_url == redirect_uri
 
                 # Duplicate parameter
@@ -130,7 +130,7 @@ def test_invalid_authorize_requests(provider_fixture):
                 )
                 assert r.status_code == 302
                 next_url, data = parse_redirect(r.location)
-                assert data["error"] == "invalid_request"
+                assert data["error"] == ["invalid_request"]
                 assert next_url == error_url
 
                 # Invalid client_id
@@ -145,7 +145,7 @@ def test_invalid_authorize_requests(provider_fixture):
                 )
                 assert r.status_code == 302
                 next_url, data = parse_redirect(r.location)
-                assert data["error"] == "invalid_request"
+                assert data["error"] == ["invalid_request"]
                 assert error_url in next_url
 
                 r = client.get(next_url, query_string=data)
@@ -163,7 +163,7 @@ def test_invalid_authorize_requests(provider_fixture):
                 )
                 assert r.status_code == 302
                 next_url, data = parse_redirect(r.location)
-                assert data["error"] == "invalid_request"
+                assert data["error"] == ["invalid_request"]
                 assert error_url in next_url
 
 
@@ -197,7 +197,7 @@ def test_refresh_flow(provider_fixture):
             r.status_code == 302
             next_url, res_data = parse_redirect(r.location)
             assert res_data["code"]
-            assert res_data["state"] == "mystate"
+            assert res_data["state"] == ["mystate"]
 
             # Exchange one time code for access token
             r = client.post(
@@ -374,9 +374,9 @@ def test_implicit_flow(provider_fixture):
                 next_url, data = parse_redirect(r.location, parse_fragment=True)
 
                 assert data["access_token"]
-                assert data["token_type"] == "Bearer"
-                assert data["state"] == "teststate"
-                assert data["scope"] == "test:scope"
+                assert data["token_type"] == ["Bearer"]
+                assert data["state"] == ["teststate"]
+                assert data["scope"] == ["test:scope"]
                 assert data.get("refresh_token") is None
                 assert next_url == redirect_uri
 
@@ -516,7 +516,7 @@ def test_auth_flow_denied(provider_fixture):
             assert r.status_code == 302
             next_url, data = parse_redirect(r.location)
             assert next_url == redirect_uri
-            assert data.get("error") == "access_denied"
+            assert data.get("error") == ["access_denied"]
 
         # Returned
         r = client.get(next_url, query_string=data)
@@ -767,7 +767,7 @@ def test_expired_refresh_flow(provider_fixture):
             assert r.status_code == 302
             next_url, res_data = parse_redirect(r.location)
             assert res_data["code"]
-            assert res_data["state"] == "mystate"
+            assert res_data["state"] == ["mystate"]
 
             # Exchange one time code for access token
             r = client.post(
@@ -870,7 +870,7 @@ def test_not_allowed_public_refresh_flow(provider_fixture):
             assert r.status_code == 302
             next_url, res_data = parse_redirect(r.location)
             assert res_data["code"]
-            assert res_data["state"] == "mystate"
+            assert res_data["state"] == ["mystate"]
 
             # Exchange one time code for access token
             r = client.post(
