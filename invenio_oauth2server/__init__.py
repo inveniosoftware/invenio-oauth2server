@@ -111,7 +111,7 @@ from .decorators import require_api_auth, require_oauth_scopes
 from .ext import InvenioOAuth2Server, InvenioOAuth2ServerREST
 from .proxies import current_oauth2server
 
-__version__ = "2.4.1"
+__version__ = "3.0.0"
 
 __all__ = (
     "__version__",
