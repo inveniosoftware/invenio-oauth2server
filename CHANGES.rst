@@ -9,6 +9,16 @@
 Changes
 =======
 
+Version 3.0.0 (released 2024-12-12)
+
+- setup: move to flask-oauthlib-invenio
+- global: replace werkzeug.url with urllib.parse
+- tests: changed status_code
+- fix: LegacyAPIWarning
+- fix: DeprecationWarning:
+- tests: apply changes for sqlalchemy>=2.0
+- setup: bump major dependencies
+
 Version 2.4.1 (release 2024-11-30)
 
 - setup: change to reusable workflows
