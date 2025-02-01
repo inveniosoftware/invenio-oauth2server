@@ -3,7 +3,7 @@
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
 # Copyright (C) 2022 RERO.
-# Copyright (C) 2023-2024 Graz University of Technology.
+# Copyright (C) 2023-2025 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -165,6 +165,59 @@ class InvenioOAuth2Server(object):
         return getattr(self._state, name, None)
 
 
+def _get_uri_from_request(request):
+    """Get uri from request.
+
+    The uri returned from request.uri is not properly urlencoded
+    (sometimes it's partially urldecoded) This is a weird hack to get
+    werkzeug to return the proper urlencoded string uri
+
+    copy pasted code from flask-oauthlib-invenio
+    """
+    uri = request.base_url
+    if request.query_string:
+        uri += "?" + request.query_string.decode("utf-8")
+    return uri
+
+
+def extract_params():
+    """Extract request params.
+
+    copy pasted code from flask-oauthlib-invenio
+    """
+    uri = _get_uri_from_request(request)
+    http_method = request.method
+    headers = dict(request.headers)
+    if "wsgi.input" in headers:
+        del headers["wsgi.input"]
+    if "wsgi.errors" in headers:
+        del headers["wsgi.errors"]
+    # Werkzeug, and subsequently Flask provide a safe Authorization header
+    # parsing, so we just replace the Authorization header with the extraced
+    # info if it was successfully parsed.
+    if request.authorization:
+        headers["Authorization"] = str(request.authorization)
+
+    # request.form could create problems on file upload
+    body = {}  # request.form.to_dict()
+    return uri, http_method, body, headers
+
+
+def verify_request(scopes):
+    """Verify request.
+
+    copy pasted code from flask-oauthlib-invenio
+    """
+    uri, http_method, body, headers = extract_params()
+    try:
+        # compatibility to oauthlib
+        headers["Authorization"] = str(headers["Authorization"])
+    except KeyError:
+        pass
+
+    return oauth2.server.verify_request(uri, http_method, body, headers, scopes)
+
+
 def verify_oauth_token_and_set_current_user():
     """Verify OAuth token and set current user on request stack.
 
@@ -185,7 +238,7 @@ def verify_oauth_token_and_set_current_user():
     if not hasattr(request, "oauth") or not request.oauth:
         scopes = []
         try:
-            valid, req = oauth2.verify_request(scopes)
+            valid, req = verify_request(scopes)
         except ValueError:
             abort(400, "Error trying to decode a non urlencoded string.")
 
