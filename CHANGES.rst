@@ -10,6 +10,13 @@
 Changes
 =======
 
+Version v3.0.2 (released 2025-02-06)
+
+- fix: avoid reading body of request when verifying token
+    * This is to fix a bug that affects large file uploads,
+      where we need to tell Flask that we expect a large body
+      before actually starting to read/access it.
+
 Version 3.0.1 (released 2025-01-28)
 
 - fix: update iter_choices for WTForms 3.0.0 compatibility
