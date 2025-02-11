@@ -101,7 +101,7 @@ class RedirectURIValidator(object):
 
         if errors:
             raise validators.ValidationError(
-                _("Invalid redirect URIs: {urls}").format(urls=", ".join(errors))
+                _("Invalid redirect URIs: %(urls)s", urls=", ".join(errors))
             )
 
 
