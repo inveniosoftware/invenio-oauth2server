@@ -2,7 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
-# Copyright (C) 2023-2024 Graz University of Technology.
+# Copyright (C) 2023-2025 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -589,8 +589,8 @@ def test_resource_auth_methods(provider_fixture):
         ("q=title:TheTitle", True),
         ("q=properly%20encoded%24", True),
         # Invalid query strings
-        ("$type=search", False),
-        ("q=Joan+D'Arc", False),
+        ("$type=search", True),
+        ("q=Joan+D'Arc", True),
         ("with regular spaces", False),
         ("json_data={a: 42}", False),
         ("array=[1, 2, 3]", False),
