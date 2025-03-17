@@ -2,12 +2,19 @@
     This file is part of Invenio.
     Copyright (C) 2015-2024 CERN.
     Copyright (C) 2024 Graz University of Technology.
+    Copyright (C) 2025 KTH Royal Institute of Technology.
 
     Invenio is free software; you can redistribute it and/or modify it
     under the terms of the MIT License; see LICENSE file for more details.
 
 Changes
 =======
+
+
+Version 2.4.2 (released 2025-03-17)
+
+- i18n: update translations
+- fix: update iter_choices for WTForms 3.0.0 compatibility
 
 Version 2.4.1 (release 2024-11-30)
 
