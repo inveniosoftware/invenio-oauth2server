@@ -1,22 +1,22 @@
 # Translations template for invenio-oauth2server.
-# Copyright (C) 2024 CERN
+# Copyright (C) 2025 CERN
 # This file is distributed under the same license as the
 # invenio-oauth2server project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: invenio-oauth2server 2.3.1\n"
+"Project-Id-Version: invenio-oauth2server 2.4.2\n"
 "Report-Msgid-Bugs-To: info@inveniosoftware.org\n"
-"POT-Creation-Date: 2024-08-06 08:55+0000\n"
+"POT-Creation-Date: 2025-03-27 13:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.15.0\n"
+"Generated-By: Babel 2.17.0\n"
 
 #: invenio_oauth2server/admin.py:69
 msgid "OAuth Applications"
@@ -30,31 +30,32 @@ msgstr ""
 msgid "OAuth Application Tokens"
 msgstr ""
 
-#: invenio_oauth2server/ext.py:300
+#: invenio_oauth2server/ext.py:299
 #, python-format
 msgid "%(icon)s Applications"
 msgstr ""
 
-#: invenio_oauth2server/forms.py:103
-msgid "Invalid redirect URIs: {urls}"
-msgstr ""
-
-#: invenio_oauth2server/forms.py:135
-msgid "Redirect URIs (one per line)"
+#: invenio_oauth2server/forms.py:104
+#, python-format
+msgid "Invalid redirect URIs: %(urls)s"
 msgstr ""
 
 #: invenio_oauth2server/forms.py:136
+msgid "Redirect URIs (one per line)"
+msgstr ""
+
+#: invenio_oauth2server/forms.py:138
 msgid ""
 "One redirect URI per line. This is your application's authorization "
 "callback URLs. HTTPS must be used for all hosts except localhost (for "
 "testing purposes)."
 msgstr ""
 
-#: invenio_oauth2server/forms.py:155
+#: invenio_oauth2server/forms.py:156
 msgid "Client type"
 msgstr ""
 
-#: invenio_oauth2server/forms.py:156
+#: invenio_oauth2server/forms.py:158
 msgid ""
 "Select confidential if your application is capable of keeping the issued "
 "client secret confidential (e.g. a web application), select public if "
@@ -62,23 +63,23 @@ msgid ""
 " you select public, your application MUST validate the redirect URI."
 msgstr ""
 
-#: invenio_oauth2server/forms.py:164
+#: invenio_oauth2server/forms.py:165
 msgid "Confidential"
 msgstr ""
 
-#: invenio_oauth2server/forms.py:164
+#: invenio_oauth2server/forms.py:165
 msgid "Public"
 msgstr ""
 
-#: invenio_oauth2server/forms.py:174
+#: invenio_oauth2server/forms.py:175
 msgid "Name of personal access token."
 msgstr ""
 
-#: invenio_oauth2server/forms.py:178
+#: invenio_oauth2server/forms.py:179
 msgid "The name must be less than 40 characters long."
 msgstr ""
 
-#: invenio_oauth2server/forms.py:186
+#: invenio_oauth2server/forms.py:188
 msgid ""
 "Scopes assign permissions to your personal access token. A personal "
 "access token works just like a normal OAuth  access token for "
@@ -97,7 +98,7 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: invenio_oauth2server/models.py:133
+#: invenio_oauth2server/models.py:134
 msgid "Optional. Description of the application (displayed to users)."
 msgstr ""
 
@@ -303,9 +304,11 @@ msgstr ""
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:90
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:91
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:92
+#: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:93
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:115
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:116
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:117
+#: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:118
 msgid "required for grant_type"
 msgstr ""
 
