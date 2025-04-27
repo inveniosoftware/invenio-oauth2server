@@ -5,8 +5,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
 # 
 # Translators:
-# Tibor Simko <tibor.simko@cern.ch>, 2021
-# Theodoros Theodoropoulos, 2021
+# Minjae Kwon, 2025
 # 
 #, fuzzy
 msgid ""
@@ -15,26 +14,26 @@ msgstr ""
 "Report-Msgid-Bugs-To: info@inveniosoftware.org\n"
 "POT-Creation-Date: 2025-03-27 13:42+0000\n"
 "PO-Revision-Date: 2016-08-18 08:03+0000\n"
-"Last-Translator: Theodoros Theodoropoulos, 2021\n"
-"Language-Team: Greek (https://app.transifex.com/inveniosoftware/teams/23537/el/)\n"
+"Last-Translator: Minjae Kwon, 2025\n"
+"Language-Team: Korean (https://app.transifex.com/inveniosoftware/teams/23537/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
-"Language: el\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: ko\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: invenio_oauth2server/admin.py:69
 msgid "OAuth Applications"
-msgstr ""
+msgstr "OAuth 어플리케이션"
 
 #: invenio_oauth2server/admin.py:70 invenio_oauth2server/admin.py:79
 msgid "User Management"
-msgstr "Διαχείριση Χρήστη"
+msgstr "유저 관리"
 
 #: invenio_oauth2server/admin.py:78
 msgid "OAuth Application Tokens"
-msgstr ""
+msgstr "OAuth 어플리케이션 토큰"
 
 #: invenio_oauth2server/ext.py:299
 #, python-format
@@ -44,11 +43,11 @@ msgstr ""
 #: invenio_oauth2server/forms.py:104
 #, python-format
 msgid "Invalid redirect URIs: %(urls)s"
-msgstr ""
+msgstr "유효하지 않은 리다이렉트 URI: %(urls)s"
 
 #: invenio_oauth2server/forms.py:136
 msgid "Redirect URIs (one per line)"
-msgstr ""
+msgstr "리다이렉트 URI (한 줄에 하나씩)"
 
 #: invenio_oauth2server/forms.py:138
 msgid ""
@@ -94,7 +93,7 @@ msgstr ""
 
 #: invenio_oauth2server/models.py:121
 msgid "Name"
-msgstr "Όνομα"
+msgstr "이름"
 
 #: invenio_oauth2server/models.py:122
 msgid "Name of application (displayed to users)."
@@ -102,7 +101,7 @@ msgstr ""
 
 #: invenio_oauth2server/models.py:132
 msgid "Description"
-msgstr "Περιγραφή"
+msgstr ""
 
 #: invenio_oauth2server/models.py:134
 msgid "Optional. Description of the application (displayed to users)."
@@ -168,7 +167,7 @@ msgstr ""
 #: invenio_oauth2server/templates/invenio_oauth2server/authorize.html:60
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/authorize.html:67
 msgid "Reject"
-msgstr "Απόρριψη"
+msgstr ""
 
 #: invenio_oauth2server/templates/invenio_oauth2server/errors.html:18
 #: invenio_oauth2server/templates/invenio_oauth2server/errors.html:22
@@ -200,12 +199,12 @@ msgstr ""
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_new.html:26
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_new.html:27
 msgid "Cancel"
-msgstr "Ακύρωση"
+msgstr ""
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_new.html:26
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_new.html:29
 msgid "Register"
-msgstr "Εγγραφή"
+msgstr ""
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:17
 #, python-format
@@ -237,14 +236,14 @@ msgstr ""
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:62
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_view.html:55
 msgid "Delete"
-msgstr "Διαγραφή"
+msgstr ""
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:48
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_view.html:49
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:65
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_view.html:58
 msgid "Save"
-msgstr "Αποθήκευση"
+msgstr ""
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:55
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:74
@@ -377,7 +376,7 @@ msgstr ""
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:76
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:89
 msgid "Revoke"
-msgstr ""
+msgstr "철회"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:84
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:96
@@ -393,7 +392,7 @@ msgstr ""
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_new.html:27
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_new.html:30
 msgid "Create"
-msgstr ""
+msgstr "만들기"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_permission_view.html:17
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_permission_view.html:17
@@ -448,7 +447,7 @@ msgstr ""
 
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:94
 msgid "or"
-msgstr "ή"
+msgstr "또는"
 
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:17
 msgid "Developer applications"
