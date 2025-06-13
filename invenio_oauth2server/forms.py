@@ -172,6 +172,7 @@ class TokenForm(Form):
     """Token form."""
 
     name = fields.StringField(
+        label=_("Token name"),
         description=_("Name of personal access token."),
         validators=[
             validators.DataRequired(),
@@ -182,6 +183,7 @@ class TokenForm(Form):
     )
 
     scopes = fields.SelectMultipleField(
+        label=_("Scopes"),
         widget=scopes_multi_checkbox,
         choices=[],  # Must be dynamically provided in view.
         description=_(
