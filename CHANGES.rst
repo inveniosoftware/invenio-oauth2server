@@ -1,7 +1,7 @@
 ..
     This file is part of Invenio.
     Copyright (C) 2015-2024 CERN.
-    Copyright (C) 2024 Graz University of Technology.
+    Copyright (C) 2024-2025 Graz University of Technology.
     Copyright (C) 2025 KTH Royal Institute of Technology.
 
     Invenio is free software; you can redistribute it and/or modify it
@@ -9,6 +9,13 @@
 
 Changes
 =======
+
+Version v3.1.0 (released 2025-07-03)
+
+- provided translated field labels
+- fix: setuptools require underscores instead of dashes
+- i18n: removed deprecated messages
+- i18n: unified gettext formatting
 
 Version v3.0.2 (released 2025-02-06)
 

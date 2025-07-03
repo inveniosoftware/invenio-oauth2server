@@ -2,7 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2024 CERN.
-# Copyright (C) 2023-2024 Graz University of Technology.
+# Copyright (C) 2023-2025 Graz University of Technology.
 # Copyright (C) 2025 KTH Royal Institute of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
@@ -112,7 +112,7 @@ from .decorators import require_api_auth, require_oauth_scopes
 from .ext import InvenioOAuth2Server, InvenioOAuth2ServerREST
 from .proxies import current_oauth2server
 
-__version__ = "3.0.2"
+__version__ = "3.1.0"
 
 __all__ = (
     "__version__",
