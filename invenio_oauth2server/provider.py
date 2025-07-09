@@ -10,13 +10,13 @@
 """Configuration of Flask-OAuthlib provider."""
 
 from datetime import datetime, timedelta
+from importlib.metadata import version
 
 from flask import current_app, g
 from flask_login import current_user
 from flask_oauthlib.provider import OAuth2Provider
 from flask_principal import Identity, identity_changed
 from flask_security.utils import verify_password
-from importlib_metadata import version
 from invenio_db import db
 from werkzeug.local import LocalProxy
 

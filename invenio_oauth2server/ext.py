@@ -13,13 +13,13 @@
 import os
 import warnings
 
-import importlib_metadata
 import oauthlib.common as oauthlib_commmon
 import six
 from flask import abort, request
 from flask_login import current_user
 from flask_menu import current_menu
 from flask_oauthlib.contrib.oauth2 import bind_cache_grant
+from invenio_base.utils import entry_points
 from invenio_i18n import LazyString
 from invenio_i18n import lazy_gettext as _
 from invenio_rest.csrf import csrf
@@ -90,7 +90,7 @@ class _OAuth2ServerState(object):
 
         :param entry_point_group: The entrypoint group name to load plugins.
         """
-        for ep in set(importlib_metadata.entry_points(group=entry_point_group)):
+        for ep in entry_points(group=entry_point_group):
             self.register_scope(ep.load())
 
     def load_obj_or_import_string(self, value):
