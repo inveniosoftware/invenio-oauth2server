@@ -10,6 +10,11 @@
 Changes
 =======
 
+Version v3.2.0 (released 2025-07-14)
+
+- chores: replaced importlib_xyz with importlib
+- i18n:push translations
+
 Version v3.1.0 (released 2025-07-03)
 
 - provided translated field labels
