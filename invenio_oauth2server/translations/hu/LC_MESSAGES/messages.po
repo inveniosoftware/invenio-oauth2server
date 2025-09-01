@@ -5,8 +5,8 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
 # 
 # Translators:
-# Dorottya Szemigán, 2023
 # Andrea Dömötör, 2025
+# Dorottya Szemigán, 2025
 # 
 #, fuzzy
 msgid ""
@@ -15,7 +15,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: info@inveniosoftware.org\n"
 "POT-Creation-Date: 2025-07-08 19:45+0000\n"
 "PO-Revision-Date: 2016-08-18 08:03+0000\n"
-"Last-Translator: Andrea Dömötör, 2025\n"
+"Last-Translator: Dorottya Szemigán, 2025\n"
 "Language-Team: Hungarian (https://app.transifex.com/inveniosoftware/teams/23537/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -87,7 +87,7 @@ msgstr "Nyilvános"
 
 #: invenio_oauth2server/forms.py:175
 msgid "Token name"
-msgstr ""
+msgstr "Tokennév"
 
 #: invenio_oauth2server/forms.py:176
 msgid "Name of personal access token."
@@ -99,7 +99,7 @@ msgstr "A névnek kevesebb, mint 40 karakterből kell állnia."
 
 #: invenio_oauth2server/forms.py:186
 msgid "Scopes"
-msgstr ""
+msgstr "Hatókörök"
 
 #: invenio_oauth2server/forms.py:190
 msgid ""
