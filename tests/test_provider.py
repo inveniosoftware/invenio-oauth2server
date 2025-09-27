@@ -2,14 +2,14 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
-# Copyright (C) 2023-2024 Graz University of Technology.
+# Copyright (C) 2023-2026 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Test OAuth2Server providers."""
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from flask import json, url_for
@@ -796,7 +796,7 @@ def test_expired_refresh_flow(provider_fixture):
             assert r.status_code == 200
 
             Token.query.filter_by(access_token=old_access_token).update(
-                dict(expires=datetime.utcnow() - timedelta(seconds=1))
+                dict(expires=datetime.now(timezone.utc) - timedelta(seconds=1))
             )
             db.session.commit()
 
@@ -892,7 +892,6 @@ def test_not_allowed_public_refresh_flow(provider_fixture):
             assert json_resp["user"]["id"]
             refresh_token = json_resp["refresh_token"]
             old_access_token = json_resp["access_token"]
-
             # Access token valid
             r = client.get(
                 url_for("invenio_oauth2server.info", access_token=old_access_token)
@@ -900,7 +899,7 @@ def test_not_allowed_public_refresh_flow(provider_fixture):
             assert r.status_code == 200
 
             Token.query.filter_by(access_token=old_access_token).update(
-                dict(expires=datetime.utcnow() - timedelta(seconds=1))
+                dict(expires=datetime.now(timezone.utc) - timedelta(seconds=1))
             )
             db.session.commit()
 

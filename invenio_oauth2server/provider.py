@@ -2,14 +2,14 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
-# Copyright (C) 2024 Graz University of Technology.
+# Copyright (C) 2024-2025 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
 """Configuration of Flask-OAuthlib provider."""
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from importlib.metadata import version
 
 from flask import current_app, g
@@ -124,7 +124,7 @@ def save_token(token, request, *args, **kwargs):
         db.session.commit()
 
     expires_in = token.get("expires_in")
-    expires = datetime.utcnow() + timedelta(seconds=int(expires_in))
+    expires = datetime.now(timezone.utc) + timedelta(seconds=int(expires_in))
 
     tok = Token(
         access_token=token["access_token"],
