@@ -2,7 +2,7 @@
 #
 # This file is part of Invenio.
 # Copyright (C) 2015-2018 CERN.
-# Copyright (C) 2023-2024 Graz University of Technology.
+# Copyright (C) 2023-2026 Graz University of Technology.
 #
 # Invenio is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -353,7 +353,7 @@ class Token(db.Model):
         nullable=True,
     )
 
-    expires = db.Column(db.DateTime, nullable=True)
+    expires = db.Column(db.UTCDateTime, nullable=True)
 
     _scopes = db.Column(db.Text)
 
