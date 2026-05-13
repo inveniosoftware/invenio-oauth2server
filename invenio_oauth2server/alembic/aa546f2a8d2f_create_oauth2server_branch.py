@@ -11,7 +11,7 @@
 
 # revision identifiers, used by Alembic.
 revision = "aa546f2a8d2f"
-down_revision = "dbdbc1b19cf2"
+down_revision = None
 branch_labels = ("invenio_oauth2server",)
 depends_on = "dbdbc1b19cf2"
 
