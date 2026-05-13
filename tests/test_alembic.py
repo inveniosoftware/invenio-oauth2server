@@ -13,7 +13,6 @@ import pytest
 from invenio_db import db
 
 
-@pytest.mark.skip(reason="Caused by mergepoint")
 def test_alembic(app):
     """Test alembic recipes."""
     ext = app.extensions["invenio-db"]
