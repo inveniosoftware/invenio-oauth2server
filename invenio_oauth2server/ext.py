@@ -348,7 +348,7 @@ def finalize_app(app):
             "%(icon)s Applications",
             icon=LazyString(lambda: f'<i class="{icons.codepen}"></i>'),
         ),
-        order=5,
+        order=21,
         active_when=lambda: request.endpoint.startswith(
             "invenio_oauth2server_settings."
         ),
