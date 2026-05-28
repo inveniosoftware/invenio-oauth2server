@@ -10,6 +10,13 @@
 Changes
 =======
 
+Version v5.0.0 (released 2026-05-28)
+
+- chore(setup): bump dependencies
+- fix: Enabled alembix test
+- fix: moved down_revision to depends_on
+- fix(ui): reorder menu in user settings
+
 Version v4.0.0 (released 2026-01-29)
 
 - chore(setup): bump dependencies
