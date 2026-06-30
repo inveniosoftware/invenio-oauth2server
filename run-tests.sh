@@ -19,8 +19,7 @@ function cleanup {
 }
 trap cleanup EXIT
 
-python -m check_manifest
-python -m setup extract_messages --output-file /dev/null
+pybabel extract -F pyproject.toml invenio_oauth2server --output-file /dev/null
 python -m sphinx.cmd.build -qnNW docs docs/_build/html
 eval "$(docker-services-cli up --db ${DB:-postgresql} --env)"
 python -m pytest
