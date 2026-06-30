@@ -1,4 +1,150 @@
-[build-system]
-requires = ["setuptools", "wheel", "babel>2.8"]
-build-backend = "setuptools.build_meta"
+# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2022-2026 Graz University of Technology.
+# SPDX-FileCopyrightText: 2022 RERO.
+# SPDX-FileCopyrightText: 2026 TU Wien.
+# SPDX-License-Identifier: MIT
 
+[project]
+name = "invenio-oauth2server"
+description = "Invenio module that implements OAuth 2 server."
+readme = "README.rst"
+requires-python = ">=3.9"
+license = "MIT"
+authors = [
+  { name = "CERN", email = "info@inveniosoftware.org" },
+]
+keywords = [
+  "OAuth2",
+  "invenio",
+  "server",
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+]
+dependencies = [
+  "cachelib>=0.1",
+  "flask-oauthlib-invenio>=2.0.0,<3.0.0",
+  "flask-wtf>=0.14.3",
+  "future>=0.16.0",
+  "importlib_metadata>=4.4",
+  "invenio-accounts>=9.0.0,<10.0.0",
+  "invenio-base>=2.3.0,<3.0.0",
+  "invenio-i18n>=4.0.0,<5.0.0",
+  "invenio-theme>=5.0.0,<6.0.0",
+  "pyjwt>=1.5.0",
+  "requests-oauthlib>=1.1.0",
+  "wtforms>=3.0.0",
+  "wtforms-alchemy>=0.15.0",
+]
+dynamic = ["version"]
+
+[project.urls]
+Repository = "https://github.com/inveniosoftware/invenio-oauth2server"
+
+[project.entry-points."flask.commands"]
+tokens = "invenio_oauth2server.cli:tokens"
+
+[project.entry-points."invenio_admin.views"]
+invenio_oauth2server_clients_adminview = "invenio_oauth2server.admin:oauth2server_clients_adminview"
+invenio_oauth2server_tokens_adminview = "invenio_oauth2server.admin:oauth2server_tokens_adminview"
+
+[project.entry-points."invenio_base.api_apps"]
+invenio_oauth2server = "invenio_oauth2server:InvenioOAuth2Server"
+invenio_oauth2server_rest = "invenio_oauth2server:InvenioOAuth2ServerREST"
+
+[project.entry-points."invenio_base.apps"]
+invenio_oauth2server = "invenio_oauth2server:InvenioOAuth2Server"
+
+[project.entry-points."invenio_base.blueprints"]
+invenio_oauth2server = "invenio_oauth2server.views.server:blueprint"
+invenio_oauth2server_settings = "invenio_oauth2server.views.settings:blueprint"
+
+[project.entry-points."invenio_base.finalize_app"]
+invenio_oauth2server = "invenio_oauth2server.ext:finalize_app"
+
+[project.entry-points."invenio_base.secret_key"]
+invenio_oauth2server = "invenio_oauth2server.utils:rebuild_access_tokens"
+
+[project.entry-points."invenio_db.alembic"]
+invenio_oauth2server = "invenio_oauth2server:alembic"
+
+[project.entry-points."invenio_db.models"]
+invenio_oauth2server = "invenio_oauth2server.models"
+
+[project.entry-points."invenio_i18n.translations"]
+messages = "invenio_oauth2server"
+
+[project.entry-points."invenio_oauth2server.scopes"]
+oauth_email = "invenio_oauth2server.scopes:email_scope"
+
+[project.optional-dependencies]
+admin = []
+docs = []
+mysql = []
+postgresql = []
+redis = []
+sqlite = []
+tests = [
+  "invenio-admin>=1.6.0,<2.0.0",
+  "invenio-db[mysql,postgresql,versioning]>=2.2.0,<3.0.0",
+  "pytest-black>=0.6.0",
+  "pytest-invenio>=4.0.0,<5.0.0",
+  "redis>=2.10.5",
+  "sphinx>=4.5",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# see https://babel.pocoo.org/en/latest/messages.html#toml-configuration-format
+[tool.babel]
+[tool.babel.compile_catalog]
+directory = "invenio_oauth2server/translations/"
+use_fuzzy = true
+
+[tool.babel.extract_messages]
+copyright_holder = "CERN"
+msgid_bugs_address = "info@inveniosoftware.org"
+mapping_file = "pyproject.toml"
+output_file = "invenio_oauth2server/translations/messages.pot"
+add_comments = "NOTE"
+
+[tool.babel.init_catalog]
+input_file = "invenio_oauth2server/translations/messages.pot"
+output_dir = "invenio_oauth2server/translations/"
+
+[[tool.babel.mappings]]
+method = "javascript"
+pattern = "**.js"
+encoding = "utf-8"
+extract_messages = "$._, jQuery._"
+
+[[tool.babel.mappings]]
+method = "python"
+pattern = "**.py"
+encoding = "utf-8"
+
+[[tool.babel.mappings]]
+method = "jinja2"
+pattern = "**/templates/**.html"
+encoding = "utf-8"
+
+[tool.hatch.version]
+path = "invenio_oauth2server/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "/invenio_oauth2server",
+]
+
+[tool.isort]
+profile = "black"
+
+[tool.pydocstyle]
+add_ignore = "D401"
+
+[tool.pytest.ini_options]
+addopts = '--black --isort --pydocstyle --doctest-glob="*.rst" --doctest-modules --cov=invenio_oauth2server --cov-report=term-missing'
+testpaths = "tests invenio_oauth2server"
+live_server_scope = "module"
