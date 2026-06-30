@@ -64,3 +64,4 @@ target/
 # examples
 examples/*.db
 examples/static/
+uv.lock
