@@ -1,6 +1,0 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN.
-# SPDX-License-Identifier: MIT
-
--e git+git://github.com/lepture/flask-oauthlib.git#egg=flask-oauthlib
--e git+git://github.com/inveniosoftware/invenio-accounts.git#egg=invenio-accounts
--e git+git://github.com/inveniosoftware/invenio-db.git#egg=invenio-db
