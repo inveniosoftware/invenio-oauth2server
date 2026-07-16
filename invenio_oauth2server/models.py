@@ -126,7 +126,7 @@ class Client(db.Model):
         info=dict(
             label=_("Description"),
             description=_(
-                "Optional. Description of the application" " (displayed to users)."
+                "Optional. Description of the application (displayed to users)."
             ),
         ),
     )
