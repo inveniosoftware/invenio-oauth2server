@@ -5,8 +5,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 # 
 # Translators:
-# Zacharias Zacharodimos <zacharias.zacharodimos@cern.ch>, 2021
-# Alizee Pace <alizee.pace@gmail.com>, 2025
+# Suthep Yonphimai <tomztt@gmail.com>, 2026
 # 
 #, fuzzy
 msgid ""
@@ -15,40 +14,40 @@ msgstr ""
 "Report-Msgid-Bugs-To: info@inveniosoftware.org\n"
 "POT-Creation-Date: 2026-06-22 20:35+0000\n"
 "PO-Revision-Date: 2016-08-18 08:03+0000\n"
-"Last-Translator: Alizee Pace <alizee.pace@gmail.com>, 2025\n"
-"Language-Team: Italian (https://app.transifex.com/inveniosoftware/teams/23537/it/)\n"
+"Last-Translator: Suthep Yonphimai <tomztt@gmail.com>, 2026\n"
+"Language-Team: Thai (https://app.transifex.com/inveniosoftware/teams/23537/th/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
-"Language: it\n"
-"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Language: th\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: invenio_oauth2server/admin.py:64
 msgid "OAuth Applications"
-msgstr ""
+msgstr "แอปพลิเคชัน OAuth"
 
 #: invenio_oauth2server/admin.py:65 invenio_oauth2server/admin.py:74
 msgid "User Management"
-msgstr "Gestione Utenti"
+msgstr "การจัดการผู้ใช้"
 
 #: invenio_oauth2server/admin.py:73
 msgid "OAuth Application Tokens"
-msgstr ""
+msgstr "โทเคนแอปพลิเคชัน OAuth"
 
 #: invenio_oauth2server/ext.py:343
 #, python-format
 msgid "%(icon)s Applications"
-msgstr "Applicazioni %(icon)s"
+msgstr "แอปพลิเคชัน %(icon)s"
 
 #: invenio_oauth2server/forms.py:99
 #, python-format
 msgid "Invalid redirect URIs: %(urls)s"
-msgstr "URIs di riorentazione invalidi: %(urls)s"
+msgstr "URI เปลี่ยนเส้นทางไม่ถูกต้อง: %(urls)s"
 
 #: invenio_oauth2server/forms.py:131
 msgid "Redirect URIs (one per line)"
-msgstr "URIs di riorientazione (uno per linea)"
+msgstr "URI เปลี่ยนเส้นทาง (หนึ่งบรรทัดต่อหนึ่ง)"
 
 #: invenio_oauth2server/forms.py:133
 msgid ""
@@ -56,13 +55,13 @@ msgid ""
 " URLs. HTTPS must be used for all hosts except localhost (for testing "
 "purposes)."
 msgstr ""
-"Un URI di riorientazione per linea. Questi sono i callback URLs di "
-"autorizzazione dell'applicazione. Usa HTTPS per tutti i nodi opsiti tranne "
-"localhost (per scopi di prova)."
+"URI เปลี่ยนเส้นทางหนึ่งรายการต่อบรรทัด นี่คือ URL callback "
+"การอนุญาตของแอปพลิเคชัน ต้องใช้ HTTPS สำหรับโฮสต์ทั้งหมด ยกเว้น localhost "
+"(สำหรับการทดสอบ)"
 
 #: invenio_oauth2server/forms.py:151
 msgid "Client type"
-msgstr "Tipo di cliente"
+msgstr "ประเภทไคลเอนต์"
 
 #: invenio_oauth2server/forms.py:153
 msgid ""
@@ -71,35 +70,34 @@ msgid ""
 "application cannot (e.g. a browser-based JavaScript application). If you "
 "select public, your application MUST validate the redirect URI."
 msgstr ""
-"Scegliere confidenziale se la tua applicazione è capace di tenire "
-"confidenziale il segreto di cliente (per esempio un'applicazione web), "
-"scegliere publico se non può (per esempio un'applicazione Javascript basata "
-"su browser). Se scegli publico, l'applicazione DEVE validare il redirect "
-"URI."
+"เลือก 'ความลับ' หากแอปพลิเคชันสามารถเก็บรหัสลับไคลเอนต์ไว้เป็นความลับได้ "
+"(เช่น เว็บแอปพลิเคชัน) เลือก 'สาธารณะ' หากไม่สามารถทำได้ (เช่น JavaScript "
+"ที่ทำงานในเบราว์เซอร์) หากเลือกสาธารณะ แอปพลิเคชันต้องตรวจสอบ URI "
+"เปลี่ยนเส้นทาง"
 
 #: invenio_oauth2server/forms.py:160
 msgid "Confidential"
-msgstr "Confidenziale"
+msgstr "ความลับ"
 
 #: invenio_oauth2server/forms.py:160
 msgid "Public"
-msgstr "Publico"
+msgstr "สาธารณะ"
 
 #: invenio_oauth2server/forms.py:170
 msgid "Token name"
-msgstr ""
+msgstr "ชื่อโทเคน"
 
 #: invenio_oauth2server/forms.py:171
 msgid "Name of personal access token."
-msgstr "Nome dell'access token personale."
+msgstr "ชื่อของโทเคนการเข้าถึงส่วนตัว"
 
 #: invenio_oauth2server/forms.py:175
 msgid "The name must be less than 40 characters long."
-msgstr ""
+msgstr "ชื่อต้องมีความยาวน้อยกว่า 40 ตัวอักษร"
 
 #: invenio_oauth2server/forms.py:181
 msgid "Scopes"
-msgstr ""
+msgstr "ขอบเขต"
 
 #: invenio_oauth2server/forms.py:185
 msgid ""
@@ -107,37 +105,37 @@ msgid ""
 "token works just like a normal OAuth  access token for authentication "
 "against the API."
 msgstr ""
-"Le scopes danno certi diritti d'accesso al tuo access token personale. Un "
-"access token personale funziona come un access token OAuth normale per "
-"l'autenticazione presso il API."
+"ขอบเขตกำหนดสิทธิ์ให้กับโทเคนการเข้าถึงส่วนตัว "
+"โทเคนการเข้าถึงส่วนตัวทำงานเหมือนโทเคนการเข้าถึง OAuth "
+"ปกติสำหรับการยืนยันตัวตนกับ API"
 
 #: invenio_oauth2server/models.py:116
 msgid "Name"
-msgstr "Nome"
+msgstr "ชื่อ"
 
 #: invenio_oauth2server/models.py:117
 msgid "Name of application (displayed to users)."
-msgstr "Nome dell'applicazione (visibile dagli utenti)."
+msgstr "ชื่อแอปพลิเคชัน (แสดงต่อผู้ใช้)"
 
 #: invenio_oauth2server/models.py:127
 msgid "Description"
-msgstr "Descrizione"
+msgstr "คำอธิบาย"
 
 #: invenio_oauth2server/models.py:129
 msgid "Optional. Description of the application (displayed to users)."
-msgstr "Opzionale. Descrizione dell'applicazione (visibile dagli utenti)."
+msgstr "ไม่บังคับ คำอธิบายแอปพลิเคชัน (แสดงต่อผู้ใช้)"
 
 #: invenio_oauth2server/models.py:138
 msgid "Website URL"
-msgstr "URL del sito web"
+msgstr "URL เว็บไซต์"
 
 #: invenio_oauth2server/models.py:139
 msgid "URL of your application (displayed to users)."
-msgstr "URL della sua applicazione (visibile dagli utenti)."
+msgstr "URL ของแอปพลิเคชัน (แสดงต่อผู้ใช้)"
 
 #: invenio_oauth2server/scopes.py:14
 msgid "Allow access to email address (read-only)."
-msgstr ""
+msgstr "อนุญาตการเข้าถึงที่อยู่อีเมล (อ่านอย่างเดียว)"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/authorize.html:15
 #: invenio_oauth2server/templates/invenio_oauth2server/authorize.html:16
@@ -146,7 +144,7 @@ msgstr ""
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/authorize.html:17
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/authorize.html:62
 msgid "Authorize application"
-msgstr "Autorizzare l'applicazione"
+msgstr "อนุญาตแอปพลิเคชัน"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/authorize.html:17
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/authorize.html:19
@@ -155,46 +153,48 @@ msgid ""
 "Application '%(client_name)s' by '%(client_user)s' wants permission to "
 "access your '%(current_user)s' account."
 msgstr ""
+"แอปพลิเคชัน '%(client_name)s' โดย '%(client_user)s' ขอสิทธิ์เข้าถึงบัญชี "
+"'%(current_user)s' ของคุณ"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/authorize.html:24
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_permission_view.html:26
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/authorize.html:30
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_permission_view.html:22
 msgid "Review permissions"
-msgstr "Riesame delle autorizzazioni"
+msgstr "ตรวจสอบสิทธิ์"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/authorize.html:33
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_permission_view.html:35
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/authorize.html:43
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_permission_view.html:35
 msgid "No permissions granted."
-msgstr ""
+msgstr "ไม่มีสิทธิ์ที่ได้รับ"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/authorize.html:40
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_permission_view.html:40
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/authorize.html:49
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_permission_view.html:40
 msgid "Application"
-msgstr "Applicazione"
+msgstr "แอปพลิเคชัน"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/authorize.html:43
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_permission_view.html:43
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/authorize.html:52
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_permission_view.html:43
 msgid "Visit application website"
-msgstr "Visitare il sito web dell'applicazione"
+msgstr "เยี่ยมชมเว็บไซต์แอปพลิเคชัน"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/authorize.html:56
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/authorize.html:63
 msgid "Reject"
-msgstr "Rifuta"
+msgstr "ปฏิเสธ"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/errors.html:14
 #: invenio_oauth2server/templates/invenio_oauth2server/errors.html:18
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/errors.html:13
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/errors.html:16
 msgid "Invalid authorization request"
-msgstr "Richiesta di autorizzazione invalida"
+msgstr "คำขอการอนุญาตไม่ถูกต้อง"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/errors.html:20
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/errors.html:18
@@ -203,69 +203,69 @@ msgid ""
 "The service that redirected your here made an invalid authorization request "
 "(error code: %(x_error)s)."
 msgstr ""
-"Il servizio che ti ha riorientato qui ha fatto una richiesta di "
-"autorizzazione invalida (codice d'errore: %(x_error)s)."
+"บริการที่เปลี่ยนเส้นทางคุณมาที่นี่ส่งคำขอการอนุญาตไม่ถูกต้อง "
+"(รหัสข้อผิดพลาด: %(x_error)s)"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/errors.html:27
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/errors.html:24
 msgid "Get me out of here!"
-msgstr "Fammi uscire di qui!"
+msgstr "พาฉันออกจากที่นี่!"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_new.html:13
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_new.html:13
 msgid "New OAuth Application"
-msgstr "Nuova Applicazione OAuth"
+msgstr "แอปพลิเคชัน OAuth ใหม่"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_new.html:21
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_new.html:22
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_new.html:22
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_new.html:23
 msgid "Cancel"
-msgstr "Annulla"
+msgstr "ยกเลิก"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_new.html:22
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_new.html:25
 msgid "Register"
-msgstr "Registrare"
+msgstr "ลงทะเบียน"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:13
 #, python-format
 msgid "Application / %(client_name)s"
-msgstr "Applicazione / %(client_name)s"
+msgstr "แอปพลิเคชัน / %(client_name)s"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:18
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:24
 msgid "Client ID"
-msgstr "ID Cliente"
+msgstr "รหัสไคลเอนต์"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:19
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:27
 msgid "Client Secret"
-msgstr ""
+msgstr "รหัสลับไคลเอนต์"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:20
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:29
 msgid "Do not share the client secret with anyone!"
-msgstr "Non condividere il segreto di cliente con nessuno!"
+msgstr "อย่าแชร์รหัสลับไคลเอนต์กับใคร!"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:26
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:36
 msgid "Reset client secret"
-msgstr "Reimposta il segreto di cliente"
+msgstr "รีเซ็ตรหัสลับไคลเอนต์"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:43
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_view.html:44
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:58
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_view.html:51
 msgid "Delete"
-msgstr "Elimina"
+msgstr "ลบ"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:44
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_view.html:45
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:61
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_view.html:54
 msgid "Save"
-msgstr "Salva"
+msgstr "บันทึก"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:51
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:70
@@ -275,24 +275,24 @@ msgstr "Endpoints OAuth 2.0"
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:55
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:75
 msgid "Authorize URL (GET)"
-msgstr "Autorizzare URL (GET)"
+msgstr "URL การอนุญาต (GET)"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:58
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:82
 msgid "Query parameters"
-msgstr "Parametri Query"
+msgstr "พารามิเตอร์คำค้นหา"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:65
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:88
 msgid "example request"
-msgstr "esempio di richiesta"
+msgstr "ตัวอย่างคำขอ"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:68
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:85
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:90
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:110
 msgid "required, use"
-msgstr ""
+msgstr "จำเป็น ใช้"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:69
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:83
@@ -301,32 +301,32 @@ msgstr ""
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:108
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:109
 msgid "required"
-msgstr ""
+msgstr "จำเป็น"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:70
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:92
 msgid "required, space separate list of scopes"
-msgstr ""
+msgstr "จำเป็น รายการขอบเขตคั่นด้วยช่องว่าง"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:71
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:93
 msgid "required, URL encoded"
-msgstr ""
+msgstr "จำเป็น เข้ารหัส URL"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:72
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:94
 msgid "recommended, for CSRF protection"
-msgstr ""
+msgstr "แนะนำ สำหรับป้องกัน CSRF"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:79
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:100
 msgid "Access token URL (POST)"
-msgstr "URL dell'access token"
+msgstr "URL โทเคนการเข้าถึง (POST)"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:81
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:106
 msgid "Request body parameters:"
-msgstr ""
+msgstr "พารามิเตอร์เนื้อหาคำขอ:"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:86
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/client_view.html:87
@@ -337,23 +337,22 @@ msgstr ""
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:113
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:114
 msgid "required for grant_type"
-msgstr ""
+msgstr "จำเป็นสำหรับ grant_type"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:13
 msgid "Developer Applications"
-msgstr "Applicazioni di Sviluppatori"
+msgstr "แอปพลิเคชันสำหรับนักพัฒนา"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:14
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:14
 msgid "New application"
-msgstr "Nuova applicazione"
+msgstr "แอปพลิเคชันใหม่"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:21
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:20
 #, python-format
 msgid "You have registered these applications to use the %(site_name)s API:"
-msgstr ""
-"Hai registrato le applicazioni seguenti per usare il API di %(site_name)s:"
+msgstr "คุณได้ลงทะเบียนแอปพลิเคชันเหล่านี้เพื่อใช้ %(site_name)s API:"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:32
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:32
@@ -362,26 +361,24 @@ msgid ""
 "You have not yet registered any applications. Click the 'New application' "
 "button to create an application to access the %(site_name)s API."
 msgstr ""
-"Non hai ancora registrato applicazioni. Fa clic sul pulsante 'Nouva "
-"applicazione' per creare un'applicazione per accedere al API di "
-"%(site_name)s."
+"คุณยังไม่ได้ลงทะเบียนแอปพลิเคชันใด คลิกปุ่ม 'แอปพลิเคชันใหม่' "
+"เพื่อสร้างแอปพลิเคชันสำหรับเข้าถึง %(site_name)s API"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:37
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:38
 msgid "Personal access tokens"
-msgstr "Access tokens personali"
+msgstr "โทเคนการเข้าถึงส่วนตัว"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:38
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:39
 msgid "New token"
-msgstr "Nuovo token"
+msgstr "โทเคนใหม่"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:45
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:46
 #, python-format
 msgid "Following are personal tokens used to access the %(site_name)s API:"
-msgstr ""
-"Di seguito sono i tokens personali per accedere al API di %(site_name)s:"
+msgstr "ต่อไปนี้คือโทเคนส่วนตัวที่ใช้เข้าถึง %(site_name)s API:"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:56
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:59
@@ -389,63 +386,60 @@ msgid ""
 "You have not yet created any personal access tokens. Click the 'New token' "
 "button to create a personal access token."
 msgstr ""
-"Non hai ancora creato access tokens personali. Fa clic sul pulsante 'Nuovo "
-"token' per creare un access token personale."
+"คุณยังไม่ได้สร้างโทเคนการเข้าถึงส่วนตัวใด คลิกปุ่ม 'โทเคนใหม่' "
+"เพื่อสร้างโทเคนการเข้าถึงส่วนตัว"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:61
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:66
 msgid "Authorized applications"
-msgstr "Applicazioni autorizzate"
+msgstr "แอปพลิเคชันที่ได้รับอนุญาต"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:66
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:71
 msgid "You have granted the following application access to your account:"
-msgstr ""
-"Hai dato permesso di accedere al tuo conto alle applicazioni seguenti:"
+msgstr "คุณได้อนุญาตให้แอปพลิเคชันต่อไปนี้เข้าถึงบัญชีของคุณ:"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:72
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:85
 msgid "Revoke"
-msgstr "Revoca"
+msgstr "เพิกถอน"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/index.html:80
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:92
 msgid ""
 "You have not yet granted any external applications access to your account."
-msgstr ""
-"Non hai ancora dato permesso di accedere al tuo conto a nessuna applicazione"
-" esterna."
+msgstr "คุณยังไม่ได้อนุญาตให้แอปพลิเคชันภายนอกใดเข้าถึงบัญชีของคุณ"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_new.html:14
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_new.html:14
 msgid "New personal access token"
-msgstr "Nuovo access token personale"
+msgstr "โทเคนการเข้าถึงส่วนตัวใหม่"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_new.html:23
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_new.html:26
 msgid "Create"
-msgstr "Crea"
+msgstr "สร้าง"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_permission_view.html:13
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_permission_view.html:13
 #, python-format
 msgid "Authorized application: %(client_name)s"
-msgstr ""
+msgstr "แอปพลิเคชันที่ได้รับอนุญาต: %(client_name)s"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_view.html:13
 #, python-format
 msgid "Personal access token / %(name)s"
-msgstr "Access token personale / %(name)s"
+msgstr "โทเคนการเข้าถึงส่วนตัว / %(name)s"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_view.html:20
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_view.html:20
 msgid "Access token"
-msgstr "Access token"
+msgstr "โทเคนการเข้าถึง"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_view.html:22
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_view.html:25
 msgid "Please copy the personal access token now. You won't see it again!"
-msgstr ""
+msgstr "โปรดคัดลอกโทเคนการเข้าถึงส่วนตัวตอนนี้ คุณจะไม่เห็นอีกครั้ง!"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_view.html:25
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_view.html:30
@@ -453,8 +447,7 @@ msgid ""
 "Do not share this personal access token. It gives full access to your "
 "account."
 msgstr ""
-"Non condividere questo access token personale. Da intero accesso al tuo "
-"conto."
+"อย่าแชร์โทเคนการเข้าถึงส่วนตัวนี้ มันให้สิทธิ์เข้าถึงบัญชีของคุณอย่างสมบูรณ์"
 
 #: invenio_oauth2server/templates/invenio_oauth2server/settings/token_view.html:36
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_view.html:40
@@ -462,32 +455,34 @@ msgid ""
 "If you've lost or forgotten this token please create a new one. Be aware "
 "that any scripts or applications using this token will need to be updated."
 msgstr ""
+"หากคุณสูญหายหรือลืมโทเคนนี้ โปรดสร้างอันใหม่ "
+"โปรดทราบว่าสคริปต์หรือแอปพลิเคชันที่ใช้โทเคนนี้จะต้องได้รับการอัปเดต"
 
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_new.html:15
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:16
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_new.html:16
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_view.html:15
 msgid "Applications"
-msgstr "Applicazioni"
+msgstr "แอปพลิเคชัน"
 
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:14
 #, python-format
 msgid "%(client_name)s"
-msgstr ""
+msgstr "%(client_name)s"
 
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:52
 msgid "Application settings"
-msgstr ""
+msgstr "การตั้งค่าแอปพลิเคชัน"
 
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/client_view.html:90
 msgid "or"
-msgstr "o"
+msgstr "หรือ"
 
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/index.html:13
 msgid "Developer applications"
-msgstr ""
+msgstr "แอปพลิเคชันสำหรับนักพัฒนา"
 
 #: invenio_oauth2server/templates/semantic-ui/invenio_oauth2server/settings/token_view.html:13
 #, python-format
 msgid "%(name)s"
-msgstr ""
+msgstr "%(name)s"
