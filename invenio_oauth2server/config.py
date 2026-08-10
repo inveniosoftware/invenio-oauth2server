@@ -71,7 +71,7 @@ OAUTH2SERVER_JWT_AUTH_HEADER_TYPE = "Bearer"
     `JWT  <https://jwt.io>`_
 """
 
-OAUTH2SERVER_JWT_VERIFICATION_FACTORY = "invenio_oauth2server.utils:" "jwt_verify_token"
+OAUTH2SERVER_JWT_VERIFICATION_FACTORY = "invenio_oauth2server.utils:jwt_verify_token"
 """Import path of factory used to verify JWT.
 
 The ``request.headers`` should be passed as parameter.
