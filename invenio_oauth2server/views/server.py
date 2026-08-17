@@ -1,5 +1,6 @@
 # SPDX-FileCopyrightText: 2015-2018 CERN.
 # SPDX-FileCopyrightText: 2023 Graz University of Technology.
+# SPDX-FileCopyrightText: 2026 KTH Royal Institute of Technology.
 # SPDX-License-Identifier: MIT
 
 """OAuth 2.0 Provider."""
@@ -71,7 +72,9 @@ def authorize(*args, **kwargs):
             oauth_request=kwargs.get("request"),
             scopes=[scopes[x] for x in kwargs.get("scopes", [])],
         )
-        return render_template("invenio_oauth2server/authorize.html", **ctx)
+        return render_template(
+            current_app.config["OAUTH2SERVER_AUTHORIZE_TEMPLATE"], **ctx
+        )
 
     confirm = request.form.get("confirm", "no")
     return confirm == "yes"

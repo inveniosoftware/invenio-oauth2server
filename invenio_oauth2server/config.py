@@ -1,5 +1,6 @@
 # SPDX-FileCopyrightText: 2015-2018 CERN.
 # SPDX-FileCopyrightText: 2023 Graz University of Technology.
+# SPDX-FileCopyrightText: 2026 KTH Royal Institute of Technology.
 # SPDX-License-Identifier: MIT
 
 """OAuth2Server configuration variables."""
@@ -9,6 +10,9 @@ OAUTH2_CACHE_TYPE = "redis"
 
 OAUTH2_PROVIDER_ERROR_ENDPOINT = "invenio_oauth2server.errors"
 """Error view endpoint."""
+
+OAUTH2SERVER_AUTHORIZE_TEMPLATE = "invenio_oauth2server/authorize.html"
+"""Template used for rendering the authorization request."""
 
 OAUTH2SERVER_CLIENT_ID_SALT_LEN = 40
 """Length of client id."""
