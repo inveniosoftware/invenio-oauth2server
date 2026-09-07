@@ -7,6 +7,10 @@
 Changes
 =======
 
+Version v5.2.0 (released 2026-09-07)
+
+- feat: configure authorize template
+
 Version v5.1.1 (released 2026-08-26)
 
 - i18n: pulled translations
