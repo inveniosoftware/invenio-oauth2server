@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2015-2026 CERN.
 # SPDX-FileCopyrightText: 2024 Graz University of Technology.
 # SPDX-License-Identifier: MIT
 
@@ -80,6 +80,7 @@ def app(request):
             },
             ACCOUNTS_COVER_TEMPLATE="invenio_accounts/base_cover.html",
             ACCOUNTS_BASE_TEMPLATE="invenio_accounts/base.html",
+            ACCOUNTS_REAUTH_ENABLED="reauth_enabled" in request.fixturenames,
         )
         InvenioI18N(app)
         Mail(app)
@@ -133,6 +134,12 @@ def api_app_with_test_view(api_app):
     """Add a test view URL."""
     api_app.add_url_rule("/test", "test", view_func=lambda: "OK")
     return api_app
+
+
+@pytest.fixture
+def reauth_enabled():
+    """Enable re-authentication in the ``app`` fixture."""
+    return True
 
 
 @pytest.fixture

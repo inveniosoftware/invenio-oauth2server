@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2015-2026 CERN.
 # SPDX-FileCopyrightText: 2023 Graz University of Technology.
 # SPDX-License-Identifier: MIT
 
@@ -9,6 +9,7 @@ from functools import wraps
 
 from flask import Blueprint, abort, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required
+from invenio_accounts.reauth import is_reauth_fresh, reauth_redirect, reauth_required
 from invenio_db import db
 
 from ..forms import ClientForm, TokenForm
@@ -125,6 +126,7 @@ def index():
 
 @blueprint.route("/clients/new/", methods=["GET", "POST"])
 @login_required
+@reauth_required()
 def client_new():
     """Create new client."""
     form = ClientForm(request.form)
@@ -153,6 +155,9 @@ def client_view(client):
         db.session.commit()
         return redirect(url_for(".index"))
 
+    if request.method == "POST" and not is_reauth_fresh():
+        return reauth_redirect(url_for(".client_view", client_id=client.client_id))
+
     form = ClientForm(request.form, obj=client)
     if form.validate_on_submit():
         form.populate_obj(client)
@@ -167,6 +172,7 @@ def client_view(client):
 
 @blueprint.route("/clients/<string:client_id>/reset/", methods=["POST"])
 @login_required
+@reauth_required()
 @client_getter()
 def client_reset(client):
     """Reset client's secret."""
@@ -181,6 +187,7 @@ def client_reset(client):
 #
 @blueprint.route("/tokens/new/", methods=["GET", "POST"])
 @login_required
+@reauth_required()
 def token_new():
     """Create new token."""
     form = TokenForm(request.form)
@@ -212,6 +219,9 @@ def token_view(token):
         db.session.delete(token)
         db.session.commit()
         return redirect(url_for(".index"))
+
+    if request.method == "POST" and not is_reauth_fresh():
+        return reauth_redirect(url_for(".token_view", token_id=token.id))
 
     show_token = session.pop("show_personal_access_token", False)
 
