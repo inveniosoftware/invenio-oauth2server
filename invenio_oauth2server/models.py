@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2015-2026 CERN.
 # SPDX-FileCopyrightText: 2023-2026 Graz University of Technology.
 # SPDX-License-Identifier: MIT
 
@@ -247,9 +247,12 @@ class Client(db.Model):
         """Validate if client is allowed to access scopes."""
         try:
             validate_scopes(scopes)
-            return True
         except ScopeDoesNotExists:
             return False
+        if self.is_internal:
+            return True
+        registered = current_oauth2server.scopes
+        return not any(registered[scope].is_internal for scope in scopes)
 
     def gen_salt(self):
         """Generate salt."""

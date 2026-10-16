@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2015-2026 CERN.
 # SPDX-FileCopyrightText: 2023-2024 Graz University of Technology.
 # SPDX-License-Identifier: MIT
 
@@ -83,6 +83,31 @@ def test_token_scopes(models_fixture):
 
         with db.session.begin_nested():
             db.session.delete(client)
+
+
+def test_client_validation_scopes_internal(models_fixture):
+    """ONly internal clients can request internal scopes."""
+    app = models_fixture
+    with app.app_context():
+        client = Client(
+            client_id="dev2",
+            client_secret="dev2",
+            name="dev2",
+            description="",
+            is_confidential=False,
+            user=app.test_user(),
+            _redirect_uris="",
+            _default_scopes="",
+        )
+
+        assert client.validate_scopes(["test:scope1"])
+        assert not client.validate_scopes(["test:scope2"])
+        assert not client.validate_scopes(["test:scope2", "test:scope1"])
+        assert not client.validate_scopes(["invalid"])
+
+        client.is_internal = True
+        assert client.validate_scopes(["test:scope2", "test:scope1"])
+        assert not client.validate_scopes(["invalid"])
 
 
 def test_registering_invalid_scope(models_fixture):
