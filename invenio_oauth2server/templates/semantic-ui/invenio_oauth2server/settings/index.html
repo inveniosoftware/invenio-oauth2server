@@ -1,5 +1,5 @@
 {#
-  SPDX-FileCopyrightText: 2015-2024 CERN.
+  SPDX-FileCopyrightText: 2015-2026 CERN.
   SPDX-License-Identifier: MIT
 #}
 {%- extends config.OAUTH2SERVER_SETTINGS_TEMPLATE %}
@@ -49,7 +49,7 @@
     <ul class="ui segments no-style-list no-border no-border-radius-top m-0 p-0">
       {%- for t in tokens %}
         <li class="ui segment">
-          <a href="{{url_for('.token_view', token_id=t.id)}}">{{t.client.name}}</a>{% if t.scopes %} &mdash; <small class="text-muted">{% for s in t.get_visible_scopes() %}{{ s }}{% if not loop.last%}, {% endif%}{% endfor %}</small>{% endif %}<br/><small class="text-muted">{{t.client.description}}</small>
+          <a href="{{url_for('.token_view', token_id=t.id)}}">{{t.client.name}}</a>{% if t.is_expired %} <span class="ui mini red label">{{ _('Expired') }}</span>{% endif %}{% if t.scopes %} &mdash; <small class="text-muted">{% for s in t.get_visible_scopes() %}{{ s }}{% if not loop.last%}, {% endif%}{% endfor %}</small>{% endif %}<br/><small class="text-muted">{{t.client.description}}</small>
         </li>
       {%- endfor %}
     </ul>

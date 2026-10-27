@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2015-2026 CERN.
 # SPDX-FileCopyrightText: 2023 Graz University of Technology.
 # SPDX-FileCopyrightText: 2026 KTH Royal Institute of Technology.
 # SPDX-License-Identifier: MIT
@@ -22,6 +22,20 @@ OAUTH2SERVER_CLIENT_SECRET_SALT_LEN = 60
 
 OAUTH2SERVER_TOKEN_PERSONAL_SALT_LEN = 60
 """Length of the personal access token."""
+
+OAUTH2SERVER_PERSONAL_TOKEN_EXPIRES_IN_CHOICES = None
+"""Lifetimes (in days) users can choose from when creating a personal token.
+
+For instance ``[30, 90, 180, 365]``. When set, choosing an expiry is mandatory
+and personal tokens created through the settings page always expire. When
+``None``, personal tokens never expire.
+"""
+
+OAUTH2SERVER_PERSONAL_TOKEN_DEFAULT_EXPIRES_IN = None
+"""Lifetime (in days) preselected when creating a personal token.
+
+Must be one of ``OAUTH2SERVER_PERSONAL_TOKEN_EXPIRES_IN_CHOICES``.
+"""
 
 OAUTH2SERVER_ALLOWED_GRANT_TYPES = {
     "authorization_code",

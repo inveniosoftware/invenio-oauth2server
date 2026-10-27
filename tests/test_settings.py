@@ -1,11 +1,14 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2015-2026 CERN.
 # SPDX-FileCopyrightText: 2023 Graz University of Technology.
 # SPDX-License-Identifier: MIT
 
 """Test settings views."""
 
+from datetime import datetime, timedelta, timezone
+
 from flask import url_for
 from helpers import login
+from invenio_db import db
 from invenio_i18n import gettext as _
 
 from invenio_oauth2server.models import Client, Token
@@ -207,3 +210,90 @@ def test_client_management(settings_fixture):
             )
             assert resp.status_code == 200
             assert test_client.name not in str(resp.get_data())
+
+
+def test_personal_token_no_expiry_by_default(settings_fixture):
+    """Test that personal tokens don't expire when no choices are configured."""
+    app = settings_fixture
+    with app.test_request_context():
+        with app.test_client() as client:
+            login(client)
+
+            resp = client.get(url_for("invenio_oauth2server_settings.token_new"))
+            assert resp.status_code == 200
+            assert 'name="expires_in"' not in str(resp.get_data())
+
+            resp = client.post(
+                url_for("invenio_oauth2server_settings.token_new"),
+                data={"name": "Test_Token"},
+                follow_redirects=True,
+            )
+            assert resp.status_code == 200
+            assert Token.query.one().expires is None
+
+
+def test_personal_token_expiry(settings_fixture):
+    """Test that personal tokens get the expiry chosen in the form."""
+    app = settings_fixture
+    app.config["OAUTH2SERVER_PERSONAL_TOKEN_EXPIRES_IN_CHOICES"] = [30, 90]
+    app.config["OAUTH2SERVER_PERSONAL_TOKEN_DEFAULT_EXPIRES_IN"] = 90
+    with app.test_request_context():
+        with app.test_client() as client:
+            login(client)
+
+            # The form offers the configured choices and no "never" option
+            resp = client.get(url_for("invenio_oauth2server_settings.token_new"))
+            assert resp.status_code == 200
+            data = resp.get_data(as_text=True)
+            assert 'name="expires_in"' in data
+            assert '<option value="30">30 days</option>' in data
+            assert '<option selected value="90">90 days</option>' in data
+            assert data.count("<option") == 2
+
+            # Values outside of the configured choices are rejected
+            for value in ["0", "", "9999", "never"]:
+                resp = client.post(
+                    url_for("invenio_oauth2server_settings.token_new"),
+                    data={"name": "Test_Token", "expires_in": value},
+                    follow_redirects=True,
+                )
+                assert resp.status_code == 200
+                assert Token.query.count() == 0
+
+            # Create a token with an expiry
+            before = datetime.now(timezone.utc)
+            resp = client.post(
+                url_for("invenio_oauth2server_settings.token_new"),
+                data={"name": "Test_Token", "expires_in": "30"},
+                follow_redirects=True,
+            )
+            after = datetime.now(timezone.utc)
+            assert resp.status_code == 200
+            token = Token.query.one()
+            assert (
+                before + timedelta(days=30)
+                <= token.expires
+                <= after + timedelta(days=30)
+            )
+            assert "Expires on {0}".format(
+                token.expires.strftime("%Y-%m-%d")
+            ) in resp.get_data(as_text=True)
+
+            # Renaming the token keeps its expiry
+            expires = token.expires
+            resp = client.post(
+                url_for("invenio_oauth2server_settings.token_view", token_id=token.id),
+                data=dict(name="Test_Token_Renamed", expires_in="90"),
+            )
+            assert resp.status_code == 200
+            assert db.session.get(Token, token.id).expires == expires
+
+            # Expired tokens are marked as such
+            token.expires = datetime.now(timezone.utc) - timedelta(days=1)
+            db.session.commit()
+            resp = client.get(url_for("invenio_oauth2server_settings.index"))
+            assert "Expired" in resp.get_data(as_text=True)
+            resp = client.get(
+                url_for("invenio_oauth2server_settings.token_view", token_id=token.id)
+            )
+            assert "Expired on" in resp.get_data(as_text=True)

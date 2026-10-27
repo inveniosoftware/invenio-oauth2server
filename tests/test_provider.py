@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2015-2026 CERN.
 # SPDX-FileCopyrightText: 2023-2026 Graz University of Technology.
 # SPDX-License-Identifier: MIT
 
@@ -543,6 +543,46 @@ def test_personal_access_token(provider_fixture):
                 query_string="access_token={0}".format(app.personal_token3),
             )
             assert r.status_code == 401
+
+
+def test_expired_personal_access_token(provider_fixture):
+    """Test that expired personal access tokens are rejected."""
+    app = provider_fixture
+    with app.test_request_context():
+        token = Token.create_personal(
+            "test-expiry",
+            app.user1_id,
+            expires=datetime.now(timezone.utc) + timedelta(days=1),
+        )
+        db.session.commit()
+        access_token = token.access_token
+
+        with app.test_client() as client:
+            for headers, query_string in [
+                ({"Authorization": f"Bearer {access_token}"}, None),
+                (None, f"access_token={access_token}"),
+            ]:
+                r = client.get(
+                    url_for("invenio_oauth2server.ping"),
+                    headers=headers,
+                    query_string=query_string,
+                )
+                assert r.status_code == 200
+
+        token.expires = datetime.now(timezone.utc) - timedelta(seconds=1)
+        db.session.commit()
+
+        with app.test_client() as client:
+            for headers, query_string in [
+                ({"Authorization": f"Bearer {access_token}"}, None),
+                (None, f"access_token={access_token}"),
+            ]:
+                r = client.get(
+                    url_for("invenio_oauth2server.ping"),
+                    headers=headers,
+                    query_string=query_string,
+                )
+                assert r.status_code == 401
 
 
 def test_resource_auth_methods(provider_fixture):

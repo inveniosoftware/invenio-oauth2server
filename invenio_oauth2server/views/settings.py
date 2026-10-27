@@ -1,17 +1,28 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2015-2026 CERN.
 # SPDX-FileCopyrightText: 2023 Graz University of Technology.
 # SPDX-License-Identifier: MIT
 
 
 """OAuth Server Settings Blueprint."""
 
+from datetime import datetime, timedelta, timezone
 from functools import wraps
 
-from flask import Blueprint, abort, redirect, render_template, request, session, url_for
+from flask import (
+    Blueprint,
+    abort,
+    current_app,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_login import current_user, login_required
 from invenio_db import db
+from invenio_i18n import lazy_gettext as _
 
-from ..forms import ClientForm, TokenForm
+from ..forms import ClientForm, TokenForm, TokenNewForm
 from ..models import Client, Token
 from ..proxies import current_oauth2server
 
@@ -183,12 +194,30 @@ def client_reset(client):
 @login_required
 def token_new():
     """Create new token."""
-    form = TokenForm(request.form)
+    expires_in_choices = current_app.config[
+        "OAUTH2SERVER_PERSONAL_TOKEN_EXPIRES_IN_CHOICES"
+    ]
+    form = TokenNewForm(
+        request.form,
+        expires_in=current_app.config["OAUTH2SERVER_PERSONAL_TOKEN_DEFAULT_EXPIRES_IN"],
+    )
     form.scopes.choices = current_oauth2server.scope_choices()
+    if expires_in_choices:
+        form.expires_in.choices = [
+            (days, _("%(days)s days", days=days)) for days in expires_in_choices
+        ]
+    else:
+        del form.expires_in
 
     if form.validate_on_submit():
+        expires = None
+        if expires_in_choices:
+            expires = datetime.now(timezone.utc) + timedelta(days=form.expires_in.data)
         t = Token.create_personal(
-            form.data["name"], current_user.get_id(), scopes=form.scopes.data
+            form.data["name"],
+            current_user.get_id(),
+            scopes=form.scopes.data,
+            expires=expires,
         )
         db.session.commit()
         session["show_personal_access_token"] = True

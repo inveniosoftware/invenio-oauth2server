@@ -1,8 +1,10 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2015-2026 CERN.
 # SPDX-FileCopyrightText: 2023-2026 Graz University of Technology.
 # SPDX-License-Identifier: MIT
 
 """OAuth2Server models."""
+
+from datetime import datetime, timezone
 
 import six
 from flask import current_app
@@ -377,6 +379,14 @@ class Token(db.Model):
         validate_scopes(scopes)
         self._scopes = " ".join(set(scopes)) if scopes else ""
 
+    @property
+    def is_expired(self):
+        """Check if the token has expired.
+
+        :returns: ``True`` if the token has an expiry date in the past.
+        """
+        return self.expires is not None and self.expires < datetime.now(timezone.utc)
+
     def get_visible_scopes(self):
         """Get list of non-internal scopes for token.
 
@@ -385,17 +395,21 @@ class Token(db.Model):
         return [k for k, s in current_oauth2server.scope_choices() if k in self.scopes]
 
     @classmethod
-    def create_personal(cls, name, user_id, scopes=None, is_internal=False):
+    def create_personal(
+        cls, name, user_id, scopes=None, is_internal=False, expires=None
+    ):
         """Create a personal access token.
 
-        A token that is bound to a specific user and which doesn't expire, i.e.
-        similar to the concept of an API key.
+        A token that is bound to a specific user, i.e. similar to the concept
+        of an API key. It doesn't expire unless ``expires`` is given.
 
         :param name: Client name.
         :param user_id: User ID.
         :param scopes: The list of permitted scopes. (Default: ``None``)
         :param is_internal: If ``True`` it's a internal access token.
              (Default: ``False``)
+        :param expires: The expiry date of the token, as a UTC datetime.
+             (Default: ``None``)
         :returns: A new access token.
         """
         with db.session.begin_nested():
@@ -416,7 +430,7 @@ class Token(db.Model):
                 access_token=gen_salt(
                     current_app.config.get("OAUTH2SERVER_TOKEN_PERSONAL_SALT_LEN")
                 ),
-                expires=None,
+                expires=expires,
                 _scopes=scopes,
                 is_personal=True,
                 is_internal=is_internal,

@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2015-2026 CERN.
 # SPDX-FileCopyrightText: 2024 Graz University of Technology.
 # SPDX-License-Identifier: MIT
 
@@ -57,6 +57,17 @@ def scopes_multi_checkbox(field, **kwargs):
     html.append("</div>")
 
     return Markup("".join(html))
+
+
+select_widget = LocalProxy(
+    lambda: (
+        SelectSUI()
+        if current_app.config.get("APP_THEME")
+        and current_app.config.get("APP_THEME")[0] == "semantic-ui"
+        else widgets.Select()
+    )
+)
+"""Select widget matching the configured theme."""
 
 
 #
@@ -138,14 +149,7 @@ class ClientForm(ClientFormBase):
         default="",
     )
 
-    widget = LocalProxy(
-        lambda: (
-            SelectSUI()
-            if current_app.config.get("APP_THEME")
-            and current_app.config.get("APP_THEME")[0] == "semantic-ui"
-            else widgets.Select()
-        )
-    )
+    widget = select_widget
 
     is_confidential = fields.SelectField(
         label=_("Client type"),
@@ -186,4 +190,19 @@ class TokenForm(Form):
             " A personal access token works just like a normal OAuth "
             " access token for authentication against the API."
         ),
+    )
+
+
+class TokenNewForm(TokenForm):
+    """Form for creating a personal access token."""
+
+    expires_in = fields.SelectField(
+        label=_("Expiration"),
+        description=_(
+            "The token stops working after this period. Create a new token"
+            " when it expires."
+        ),
+        coerce=int,
+        choices=[],  # Must be dynamically provided in view.
+        widget=select_widget,
     )

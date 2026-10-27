@@ -1,5 +1,5 @@
 {#
-  SPDX-FileCopyrightText: 2015-2018 CERN.
+  SPDX-FileCopyrightText: 2015-2026 CERN.
   SPDX-License-Identifier: MIT
 #}
 
@@ -31,6 +31,15 @@
 <hr>
 {% endif %}
 <div class="panel-body">
+    <p>
+    {%- if not token.expires %}
+      {{ _('No expiration') }}
+    {%- elif token.is_expired %}
+      <span class="label label-danger">{{ _('Expired on %(date)s', date=token.expires.strftime('%Y-%m-%d')) }}</span>
+    {%- else %}
+      {{ _('Expires on %(date)s', date=token.expires.strftime('%Y-%m-%d')) }}
+    {%- endif %}
+    </p>
     {% if not show_token %}
     <div class="alert alert-warning">
       <p>{{ _("If you've lost or forgotten this token please create a new one. Be aware that any scripts or applications using this token will need to be updated.") }}</p>

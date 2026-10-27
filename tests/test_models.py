@@ -1,8 +1,10 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2015-2026 CERN.
 # SPDX-FileCopyrightText: 2023-2024 Graz University of Technology.
 # SPDX-License-Identifier: MIT
 
 """OAuth2Server models test cases."""
+
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from invenio_accounts.models import User
@@ -315,3 +317,26 @@ def test_deletion_of_token2(models_fixture):
 
         # delete consumer
         db.session.delete(db.session.get(User, app.consumer_id))
+
+
+def test_create_personal_token_expires(models_fixture):
+    """Test that personal tokens accept an expiry date."""
+    app = models_fixture
+    with app.app_context():
+        # By default, personal tokens do not expire
+        token = Token.create_personal("no-expiry", app.resource_owner_id)
+        db.session.commit()
+        assert token.expires is None
+        assert not token.is_expired
+
+        expires = datetime.now(timezone.utc) + timedelta(days=30)
+        token = Token.create_personal(
+            "with-expiry", app.resource_owner_id, expires=expires
+        )
+        db.session.commit()
+        assert db.session.get(Token, token.id).expires == expires
+        assert not token.is_expired
+
+        token.expires = datetime.now(timezone.utc) - timedelta(days=1)
+        db.session.commit()
+        assert token.is_expired
