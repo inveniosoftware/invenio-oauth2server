@@ -4,6 +4,9 @@
 
 """OAuth2Server models."""
 
+import secrets
+from datetime import datetime, timezone
+
 import six
 from flask import current_app
 from flask_login import current_user
@@ -251,6 +254,54 @@ class Client(db.Model):
         except ScopeDoesNotExists:
             return False
 
+    # Authlib client model adapter methods. These methods are intentionally
+    # implemented on the existing model to avoid schema changes while allowing
+    # the Authlib-backed flask_oauthlib shell to use the current tables.
+    def get_client_id(self):
+        """Return client identifier for Authlib."""
+        return self.client_id
+
+    def get_default_redirect_uri(self):
+        """Return default redirect URI for Authlib."""
+        return self.default_redirect_uri
+
+    def get_allowed_scope(self, scope):
+        """Return accepted scope string for Authlib.
+
+        Preserve the current Flask-OAuthlib behaviour: requested scopes only
+        need to exist in the Invenio scope registry; they are not limited to
+        the client's default scopes. If no scope is requested, use the client
+        defaults.
+        """
+        if not scope:
+            return " ".join(self.default_scopes)
+        scopes = scope.split() if isinstance(scope, str) else scope
+        return scope if self.validate_scopes(scopes) else None
+
+    def check_redirect_uri(self, redirect_uri):
+        """Validate redirect URI for Authlib."""
+        return redirect_uri in self.redirect_uris
+
+    def check_client_secret(self, client_secret):
+        """Validate client secret for Authlib."""
+        return secrets.compare_digest(self.client_secret or "", client_secret or "")
+
+    def check_endpoint_auth_method(self, method, endpoint):
+        """Validate client auth method for Authlib."""
+        if endpoint != "token":
+            return True
+        if not self.is_confidential:
+            return method == "none"
+        return method in {"client_secret_basic", "client_secret_post"}
+
+    def check_response_type(self, response_type):
+        """Validate response type for Authlib."""
+        return response_type in self.allowed_response_types
+
+    def check_grant_type(self, grant_type):
+        """Validate grant type for Authlib."""
+        return grant_type in self.allowed_grant_types
+
     def gen_salt(self):
         """Generate salt."""
         self.reset_client_id()
@@ -383,6 +434,56 @@ class Token(db.Model):
         :returns: A list of scopes.
         """
         return [k for k, s in current_oauth2server.scope_choices() if k in self.scopes]
+
+    # Authlib token model adapter methods. These preserve the current schema
+    # and token storage while satisfying Authlib's TokenMixin/Bearer validator
+    # contracts.
+    def check_client(self, client):
+        """Return whether this token belongs to the given client."""
+        return self.client_id == client.client_id
+
+    def get_scope(self):
+        """Return token scopes as a space-delimited string."""
+        return self._scopes or ""
+
+    def get_expires_in(self):
+        """Return seconds until expiration, or zero for non-expiring tokens."""
+        if self.expires is None:
+            return 0
+        expires = self.expires
+        if expires.tzinfo is None:
+            expires = expires.replace(tzinfo=timezone.utc)
+        return max(0, int((expires - datetime.now(timezone.utc)).total_seconds()))
+
+    def is_expired(self):
+        """Return whether this token is expired."""
+        if self.expires is None:
+            return False
+        expires = self.expires
+        if expires.tzinfo is None:
+            expires = expires.replace(tzinfo=timezone.utc)
+        return datetime.now(timezone.utc) > expires
+
+    def is_revoked(self):
+        """Return whether this token is revoked.
+
+        Existing tokens are deleted on revocation, so persisted tokens are not
+        revoked.
+        """
+        return False
+
+    def delete(self):
+        """Delete this token when it is revoked."""
+        db.session.delete(self)
+        db.session.commit()
+
+    def get_user(self):
+        """Return token user for Authlib."""
+        return self.user
+
+    def get_client(self):
+        """Return token client for Authlib."""
+        return self.client
 
     @classmethod
     def create_personal(cls, name, user_id, scopes=None, is_internal=False):

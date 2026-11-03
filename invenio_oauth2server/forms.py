@@ -4,21 +4,18 @@
 
 """Define forms for generating access tokens and clients."""
 
+from authlib.oauth2.rfc6749.errors import InsecureTransportError
 from flask import current_app
 from flask_wtf import FlaskForm as Form
 from invenio_i18n import lazy_gettext as _
 from markupsafe import Markup
-from oauthlib.oauth2.rfc6749.errors import (
-    InsecureTransportError,
-    InvalidRedirectURIError,
-)
 from werkzeug.local import LocalProxy
 from wtforms import fields, validators, widgets
 from wtforms_alchemy import model_form_factory
 
 from .models import Client
 from .theme.semantic.form_styling import SelectSUI
-from .validators import URLValidator, validate_redirect_uri
+from .validators import InvalidRedirectURIError, URLValidator, validate_redirect_uri
 
 
 #

@@ -5,8 +5,8 @@
 
 """Module tests."""
 
-import pytest
 from flask import Flask
+from invenio_cache import InvenioCache
 
 from invenio_oauth2server import InvenioOAuth2Server, InvenioOAuth2ServerREST
 from invenio_oauth2server.ext import verify_oauth_token_and_set_current_user
@@ -23,10 +23,12 @@ def test_init():
     """Test extension initialization."""
     app = Flask("testapp")
     ext = InvenioOAuth2Server(app)
+    InvenioCache(app)
     assert "invenio-oauth2server" in app.extensions
     assert ext.app is app
 
     app = Flask("testapp")
+    InvenioCache(app)
     ext = InvenioOAuth2Server()
     assert "invenio-oauth2server" not in app.extensions
     state = ext.init_app(app)
@@ -47,24 +49,3 @@ def test_init_rest():
     )
     ext.init_app(app)
     assert verify_oauth_token_and_set_current_user in app.before_request_funcs[None]
-
-
-def test_init_rest_with_oauthlib_monkeypatch():
-    """Test REST OAuthlib monkeypatching."""
-    app = Flask("testapp")
-
-    from oauthlib.common import urlencoded
-
-    assert "^" not in urlencoded
-    old_urlencoded = set(urlencoded)
-
-    app.config["OAUTH2SERVER_ALLOWED_URLENCODE_CHARACTERS"] = "^"
-
-    with pytest.warns(RuntimeWarning):
-        InvenioOAuth2ServerREST(app)
-    assert verify_oauth_token_and_set_current_user in app.before_request_funcs[None]
-
-    from oauthlib.common import urlencoded
-
-    assert old_urlencoded != urlencoded
-    assert "^" in urlencoded

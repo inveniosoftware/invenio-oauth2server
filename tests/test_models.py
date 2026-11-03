@@ -4,6 +4,8 @@
 
 """OAuth2Server models test cases."""
 
+from datetime import datetime, timedelta, timezone
+
 import pytest
 from invenio_accounts.models import User
 from invenio_db import db
@@ -90,6 +92,58 @@ def test_registering_invalid_scope(models_fixture):
     with app.app_context():
         with pytest.raises(TypeError):
             current_oauth2server.register_scope("test:scope")
+
+
+def test_existing_client_and_token_rows_support_authlib_adapters(models_fixture):
+    """Existing OAuth2 rows remain usable by Authlib adapters."""
+    app = models_fixture
+    with app.app_context():
+        expires = datetime.now(timezone.utc).replace(tzinfo=None) + timedelta(hours=1)
+        client = Client(
+            client_id="legacy-client",
+            client_secret="legacy-secret",
+            name="legacy-client",
+            description="Existing OAuth2 client",
+            is_confidential=True,
+            user=app.test_user(),
+            _redirect_uris="http://localhost/authorized",
+            _default_scopes="test:scope1 test:scope2",
+        )
+        token = Token(
+            client=client,
+            user=app.test_user(),
+            token_type="bearer",
+            access_token="legacy-access",
+            refresh_token="legacy-refresh",
+            expires=expires,
+            is_personal=False,
+            is_internal=False,
+            _scopes="test:scope1 test:scope2",
+        )
+        with db.session.begin_nested():
+            db.session.add(client)
+            db.session.add(token)
+
+        stored_client = db.session.get(Client, "legacy-client")
+        stored_token = Token.query.filter_by(access_token="legacy-access").one()
+
+        assert stored_client.get_client_id() == "legacy-client"
+        assert stored_client.check_client_secret("legacy-secret")
+        assert stored_client.check_redirect_uri("http://localhost/authorized")
+        assert stored_client.check_grant_type("authorization_code")
+        assert stored_client.check_response_type("code")
+        assert stored_client.get_allowed_scope("test:scope1") == "test:scope1"
+
+        assert stored_token.check_client(stored_client)
+        assert stored_token.get_client() == stored_client
+        assert stored_token.get_user() == app.test_user()
+        assert stored_token.get_scope() == "test:scope1 test:scope2"
+        assert stored_token.get_expires_in() > 0
+        assert not stored_token.is_expired()
+        assert not stored_token.is_revoked()
+
+        with db.session.begin_nested():
+            db.session.delete(client)
 
 
 def test_deletion_of_consumer_resource_owner(models_fixture):

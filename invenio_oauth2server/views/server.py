@@ -7,6 +7,8 @@
 
 from functools import wraps
 
+from authlib.oauth2 import OAuth2Error
+from authlib.oauth2.rfc6749.errors import InvalidClientError
 from flask import (
     Blueprint,
     abort,
@@ -17,7 +19,6 @@ from flask import (
     request,
 )
 from flask_login import login_required
-from oauthlib.oauth2.rfc6749.errors import InvalidClientError, OAuth2Error
 
 from ..models import Client
 from ..provider import oauth2
@@ -40,13 +41,13 @@ def error_handler(f):
         try:
             return f(*args, **kwargs)
         except OAuth2Error as e:
-            # Only FatalClientError are handled by Flask-OAuthlib (as these
-            # errors should not be redirect back to the client - see
-            # http://tools.ietf.org/html/rfc6749#section-4.2.2.1)
-            if hasattr(e, "redirect_uri"):
-                return redirect(e.in_uri(e.redirect_uri))
-            else:
-                return redirect(e.in_uri(oauth2.error_uri))
+            status, body, headers = e(
+                getattr(e, "redirect_uri", None) or oauth2.error_uri
+            )
+            location = dict(headers).get("Location")
+            if location:
+                return redirect(location)
+            return redirect(oauth2.error_uri)
 
     return decorated
 
@@ -97,8 +98,8 @@ def access_token():
     if not client.is_confidential and "client_credentials" == request.form.get(
         "grant_type"
     ):
-        error = InvalidClientError()
-        response = jsonify(dict(error.twotuples))
+        error = InvalidClientError(status_code=401)
+        response = jsonify(dict(error.get_body()))
         response.status_code = error.status_code
         abort(response)
 
@@ -111,13 +112,12 @@ def access_token():
 @blueprint.route("/errors")
 def errors():
     """Error view in case of invalid oauth requests."""
-    from oauthlib.oauth2.rfc6749.errors import raise_from_error
-
-    try:
-        error = None
-        raise_from_error(request.values.get("error"), params=dict())
-    except OAuth2Error as raised:
-        error = raised
+    error = None
+    if request.values.get("error"):
+        error = OAuth2Error(
+            error=request.values.get("error"),
+            description=request.values.get("error_description"),
+        )
     return render_template("invenio_oauth2server/errors.html", error=error)
 
 

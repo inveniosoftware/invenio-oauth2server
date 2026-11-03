@@ -5,13 +5,14 @@
 """Test invenio_oauth2server validators."""
 
 import pytest
-from oauthlib.oauth2.rfc6749.errors import (
-    InsecureTransportError,
-    InvalidRedirectURIError,
-)
+from authlib.oauth2.rfc6749.errors import InsecureTransportError
 from wtforms.validators import ValidationError
 
-from invenio_oauth2server.validators import URLValidator, validate_redirect_uri
+from invenio_oauth2server.validators import (
+    InvalidRedirectURIError,
+    URLValidator,
+    validate_redirect_uri,
+)
 
 
 @pytest.mark.parametrize(

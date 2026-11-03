@@ -12,8 +12,19 @@ from helpers import login, parse_redirect
 from invenio_accounts.models import User
 from invenio_db import db
 
-from invenio_oauth2server.ext import InvenioOAuth2ServerREST
 from invenio_oauth2server.models import Client, Token
+
+
+def test_token_revocation_uses_database_session(provider_fixture):
+    """Test RFC token revocation removes the persisted token."""
+    app = provider_fixture
+    with app.app_context():
+        token = Token.query.first()
+        token_id = token.id
+
+        token.delete()
+
+        assert db.session.get(Token, token_id) is None
 
 
 def test_client_salt(provider_fixture):
@@ -59,7 +70,7 @@ def test_invalid_authorize_requests(provider_fixture):
                 # Valid request authorize request
                 r = client.get(
                     url_for("invenio_oauth2server.authorize"),
-                    data={
+                    query_string={
                         "redirect_uri": redirect_uri,
                         "scope": scope,
                         "response_type": response_type,
@@ -202,6 +213,7 @@ def test_refresh_flow(provider_fixture):
                     client_secret="confidential",
                     grant_type="authorization_code",
                     code=res_data["code"],
+                    redirect_uri=redirect_uri,
                 ),
             )
             assert r.status_code == 200
@@ -505,7 +517,6 @@ def test_auth_flow_denied(provider_fixture):
             # User rejects request
             data["confirm"] = "no"
             data["scope"] = "test:scope"
-            data["state"] = ""
 
             r = client.post(next_url, data=data)
             assert r.status_code == 302
@@ -573,6 +584,14 @@ def test_resource_auth_methods(provider_fixture):
             assert r.status_code == 200
             assert json.loads(r.get_data()) == dict(ping="pong")
 
+            # Malformed and unsupported authorization headers are rejected.
+            for authorization in ("Bearer", "Basic credentials"):
+                r = client.get(
+                    url_for("invenio_oauth2server.ping"),
+                    headers={"Authorization": authorization},
+                )
+                assert r.status_code == 401
+
 
 @pytest.mark.parametrize(
     ("query_string", "valid_qs"),
@@ -597,30 +616,10 @@ def test_oauthlib_urldecoding_issue(api_app_with_test_view, query_string, valid_
         with app.test_client() as client:
             # Remove '/api' since our client is not aware of the the WSGI mount
             test_url = url_for("test").replace("/api", "")
-            if valid_qs:
-                assert (
-                    client.get(test_url, query_string=query_string).status_code == 200
-                )
-            else:
-                assert (
-                    client.get(test_url, query_string=query_string).status_code == 400
-                )
-
-
-def test_oauthlib_monkeypatch(api_app_with_test_view):
-    app = api_app_with_test_view
-    InvenioOAuth2ServerREST.monkeypatch_oauthlib_urlencode_chars("$:")
-
-    with app.test_request_context():
-        with app.test_client() as client:
-            # Remove '/api' since our client is not aware of the the WSGI mount
-            test_url = url_for("test").replace("/api", "")
-
-            # '$' and ':' should be valid characters after this patch
-            assert client.get(test_url, query_string="$type:search").status_code == 200
-
-            # '=' is not considered a valid character after this patch
-            assert client.get(test_url, query_string="q=RegularArg").status_code == 400
+            # Authlib relies on Flask/Werkzeug parsing instead of OAuthlib's
+            # global character allow-list. Werkzeug safely percent-encodes the
+            # test client's raw query strings, so all reach the resource view.
+            assert client.get(test_url, query_string=query_string).status_code == 200
 
 
 def test_settings_index(provider_fixture):
@@ -772,6 +771,7 @@ def test_expired_refresh_flow(provider_fixture):
                     client_secret="confidential",
                     grant_type="authorization_code",
                     code=res_data["code"],
+                    redirect_uri=data["redirect_uri"],
                 ),
             )
             assert r.status_code == 200
@@ -872,9 +872,9 @@ def test_not_allowed_public_refresh_flow(provider_fixture):
                 url_for("invenio_oauth2server.access_token"),
                 data=dict(
                     client_id="dev",
-                    client_secret="dev",
                     grant_type="authorization_code",
                     code=res_data["code"],
+                    redirect_uri=data["redirect_uri"],
                 ),
             )
             assert r.status_code == 200
@@ -917,7 +917,7 @@ def test_not_allowed_public_refresh_flow(provider_fixture):
                 follow_redirects=True,
             )
             # Only confidential clients can refresh expired token.
-            assert r.status_code == 400
+            assert r.status_code == 401
 
 
 def test_password_grant_type(provider_fixture):
@@ -927,7 +927,6 @@ def test_password_grant_type(provider_fixture):
         with app.test_client() as client:
             data = dict(
                 client_id="dev",
-                client_secret="dev",
                 grant_type="password",
                 username="info@inveniosoftware.org",
                 password="tester",

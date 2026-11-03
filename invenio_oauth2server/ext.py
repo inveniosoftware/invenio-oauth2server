@@ -5,10 +5,6 @@
 
 """Invenio module that implements OAuth 2 server."""
 
-import os
-import warnings
-
-import oauthlib.common as oauthlib_commmon
 import six
 from flask import abort, request
 from flask_login import current_user
@@ -36,23 +32,9 @@ class _OAuth2ServerState(object):
         # Initialize OAuth2 provider
         oauth2.init_app(app)
 
-        # Flask-OAuthlib does not support CACHE_REDIS_URL
-        if app.config["OAUTH2_CACHE_TYPE"] == "redis" and app.config.get(
-            "CACHE_REDIS_URL"
-        ):
-            from redis import from_url as redis_from_url
-
-            app.config.setdefault(
-                "OAUTH2_CACHE_REDIS_HOST", redis_from_url(app.config["CACHE_REDIS_URL"])
-            )
-
-        # Configures an OAuth2Provider instance to use configured caching
-        # system to get and set the grant token.
+        # Configures an OAuth2Provider instance to use the application-level
+        # Invenio-Cache backend to get and set authorization-code grants.
         bind_cache_grant(app, oauth2, lambda: OAuthUserProxy(current_user))
-
-        # Disables oauthlib's secure transport detection in in debug mode.
-        if app.debug or app.testing:
-            os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
         if entry_point_group:
             self.load_entry_point_group(entry_point_group)
@@ -199,18 +181,8 @@ def extract_params():
 
 
 def verify_request(scopes):
-    """Verify request.
-
-    copy pasted code from flask-oauthlib-invenio
-    """
-    uri, http_method, body, headers = extract_params()
-    try:
-        # compatibility to oauthlib
-        headers["Authorization"] = str(headers["Authorization"])
-    except KeyError:
-        pass
-
-    return oauth2.server.verify_request(uri, http_method, body, headers, scopes)
+    """Verify request."""
+    return oauth2.verify_request(scopes)
 
 
 def verify_oauth_token_and_set_current_user():
@@ -265,72 +237,9 @@ class InvenioOAuth2ServerREST(object):
 
         :param app: An instance of :class:`flask.Flask`.
         """
-        self.init_config(app)
-
-        allowed_urlencode_chars = app.config.get(
-            "OAUTH2SERVER_ALLOWED_URLENCODE_CHARACTERS"
-        )
-        if allowed_urlencode_chars:
-            InvenioOAuth2ServerREST.monkeypatch_oauthlib_urlencode_chars(
-                allowed_urlencode_chars
-            )
-        # add check to skip csrf validation if oauth request
+        # Add check to skip CSRF validation for valid OAuth bearer requests.
         csrf.before_csrf_protect(verify_oauth_token_and_set_current_user)
         app.before_request(verify_oauth_token_and_set_current_user)
-
-    def init_config(self, app):
-        """Initialize configuration."""
-        app.config.setdefault(
-            "OAUTH2SERVER_ALLOWED_URLENCODE_CHARACTERS",
-            getattr(config, "OAUTH2SERVER_ALLOWED_URLENCODE_CHARACTERS"),
-        )
-
-    @staticmethod
-    def monkeypatch_oauthlib_urlencode_chars(chars):
-        """Monkeypatch OAuthlib set of "URL encoded"-safe characters.
-
-        .. note::
-
-            OAuthlib keeps a set of characters that it considers as valid
-            inside an URL-encoded query-string during parsing of requests. The
-            issue is that this set of characters wasn't designed to be
-            configurable since it should technically follow various RFC
-            specifications about URIs, like for example `RFC3986
-            <https://www.ietf.org/rfc/rfc3986.txt>`_. Many online services and
-            frameworks though have designed their APIs in ways that aim at
-            keeping things practical and readable to the API consumer, making
-            use of special characters to mark or seperate query-string
-            arguments. Such an example is the usage of embedded JSON strings
-            inside query-string arguments, which of course have to contain the
-            "colon" character (:) for key/value pair definitions.
-
-            Users of the OAuthlib library, in order to integrate with these
-            services and frameworks, end up either circumventing these "static"
-            restrictions of OAuthlib by pre-processing query-strings, or -in
-            search of a more permanent solution- directly make Pull Requests
-            to OAuthlib to include additional characters in the set, and
-            explain the logic behind their decision (one can witness these
-            efforts inside the git history of the source file that includes
-            this set of characters `here
-            <https://github.com/idan/oauthlib/commits/master/oauthlib/common.py>`_).
-            This kind of tactic leads easily to misconceptions about the
-            ability one has over the usage of specific features of services and
-            frameworks. In order to tackle this issue in Invenio-OAuth2Server,
-            we are monkey-patching this set of characters using a configuration
-            variable, so that usage of any special characters is a conscious
-            decision of the package user.
-        """
-        modified_chars = set(chars)
-        always_safe = set(oauthlib_commmon.always_safe)
-        original_special_chars = oauthlib_commmon.urlencoded - always_safe
-        if modified_chars != original_special_chars:
-            warnings.warn(
-                'You are overriding the default OAuthlib "URL encoded" set of '
-                "valid characters. Make sure that the characters defined in "
-                "oauthlib.common.urlencoded are indeed limitting your needs.",
-                RuntimeWarning,
-            )
-            oauthlib_commmon.urlencoded = always_safe | modified_chars
 
 
 def finalize_app(app):

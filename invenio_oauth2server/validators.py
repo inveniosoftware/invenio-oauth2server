@@ -6,15 +6,16 @@
 
 from urllib.parse import urlparse
 
+from authlib.oauth2.rfc6749.errors import InsecureTransportError
 from flask import current_app
-from oauthlib.oauth2.rfc6749.errors import (
-    InsecureTransportError,
-    InvalidRedirectURIError,
-)
 from wtforms.validators import URL
 
 from .errors import ScopeDoesNotExists
 from .proxies import current_oauth2server
+
+
+class InvalidRedirectURIError(ValueError):
+    """Invalid redirect URI error."""
 
 
 def validate_redirect_uri(value):

@@ -24,6 +24,7 @@ from invenio_accounts.models import User
 from invenio_accounts.views.settings import (
     create_settings_blueprint as create_accounts_blueprint,
 )
+from invenio_cache import InvenioCache
 from invenio_db import InvenioDB, db
 from invenio_i18n import InvenioI18N
 from six import get_method_self
@@ -50,7 +51,7 @@ def app(request):
             DB_VERSIONING=True,
             LOGIN_DISABLED=False,
             MAIL_SUPPRESS_SEND=True,
-            OAUTH2_CACHE_TYPE="simple",
+            CACHE_TYPE="SimpleCache",
             OAUTHLIB_INSECURE_TRANSPORT=True,
             SECRET_KEY="CHANGE_ME",
             SECURITY_DEPRECATED_PASSWORD_SCHEMES=[],
@@ -85,6 +86,7 @@ def app(request):
         Mail(app)
         Menu(app)
         InvenioDB(app)
+        InvenioCache(app)
         InvenioOAuth2Server(app)
         InvenioI18N(app)
 
