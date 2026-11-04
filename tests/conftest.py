@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2015-2026 CERN.
 # SPDX-FileCopyrightText: 2024 Graz University of Technology.
 # SPDX-License-Identifier: MIT
 
@@ -417,6 +417,14 @@ def resource_fixture(app, api_app):
 
             return str(current_user.get_id()), 200
 
+    class Test5Resource(MethodView):
+        @require_api_auth()
+        @require_oauth_scopes("test:internalscope")
+        def post(self):
+            from flask_login import current_user
+
+            return str(current_user.get_id()), 200
+
     # Register API resources
     api_app.add_url_rule(
         "/test0/identitytestcase/",
@@ -439,9 +447,19 @@ def resource_fixture(app, api_app):
         "/test4/allowanonymous/",
         view_func=Test4Resource.as_view("test4resource"),
     )
+    api_app.add_url_rule(
+        "/test5/internalscope/",
+        view_func=Test5Resource.as_view("test5resource"),
+    )
+
+    internal_scope = Scope("test:internalscope", help_text="Internal", internal=True)
+    with api_app.app_context():
+        # API requests check the scopes registered on the API application
+        current_oauth2server.register_scope(internal_scope)
 
     datastore = app.extensions["security"].datastore
     with app.app_context():
+        current_oauth2server.register_scope(internal_scope)
         # Register a test scope
         current_oauth2server.register_scope(
             Scope("test:testscope", group="Test", help_text="Test scope")
@@ -461,6 +479,9 @@ def resource_fixture(app, api_app):
         app.token_noscope = Token.create_personal(
             "test-", app.user.id, scopes=[], is_internal=True
         ).access_token
+        app.token_internalscope = Token.create_personal(
+            "test-", app.user.id, scopes=["test:internalscope"], is_internal=True
+        ).access_token
         db.session.commit()
 
     with api_app.test_request_context():
@@ -471,6 +492,7 @@ def resource_fixture(app, api_app):
         app.url_for_test1resource = url_for("test1resource")
         app.url_for_test2resource = url_for("test2resource")
         app.url_for_test4resource = url_for("test4resource")
+        app.url_for_test5resource = url_for("test5resource")
         app.url_for_test0resource_token = url_for(
             "test0resource", access_token=app.token
         )
