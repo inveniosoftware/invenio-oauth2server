@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: 2015-2018 CERN.
 # SPDX-FileCopyrightText: 2022 RERO.
 # SPDX-FileCopyrightText: 2023-2025 Graz University of Technology.
+# SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
 # SPDX-License-Identifier: MIT
 
 """Invenio module that implements OAuth 2 server."""
@@ -9,7 +10,6 @@ import os
 import warnings
 
 import oauthlib.common as oauthlib_commmon
-import six
 from flask import abort, request
 from flask_login import current_user
 from flask_menu import current_menu
@@ -96,7 +96,7 @@ class _OAuth2ServerState(object):
         :returns: The imported object.
         """
         imp = self.app.config.get(value)
-        if isinstance(imp, six.string_types):
+        if isinstance(imp, str):
             return import_string(imp)
         elif imp:
             return imp
