@@ -7,6 +7,10 @@
 Changes
 =======
 
+Version v5.2.1 (released 2026-11-12)
+
+- chore: removing six
+
 Version v5.2.0 (released 2026-09-07)
 
 - feat: configure authorize template
