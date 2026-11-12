@@ -1,10 +1,10 @@
 # SPDX-FileCopyrightText: 2015-2018 CERN.
 # SPDX-FileCopyrightText: 2023-2026 Graz University of Technology.
+# SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
 # SPDX-License-Identifier: MIT
 
 """OAuth2Server models."""
 
-import six
 from flask import current_app
 from flask_login import current_user
 from invenio_accounts.models import User
@@ -212,7 +212,7 @@ class Client(db.Model):
     @redirect_uris.setter
     def redirect_uris(self, value):
         """Validate and store redirect URIs for client."""
-        if isinstance(value, six.text_type):
+        if isinstance(value, str):
             value = value.split("\n")
 
         value = [v.strip() for v in value]

@@ -1,5 +1,6 @@
 # SPDX-FileCopyrightText: 2015-2018 CERN.
 # SPDX-FileCopyrightText: 2024 Graz University of Technology.
+# SPDX-FileCopyrightText: 2026 CESNET z.s.p.o.
 # SPDX-License-Identifier: MIT
 
 
@@ -26,7 +27,6 @@ from invenio_accounts.views.settings import (
 )
 from invenio_db import InvenioDB, db
 from invenio_i18n import InvenioI18N
-from six import get_method_self
 from sqlalchemy_utils.functions import create_database, database_exists, drop_database
 
 from invenio_oauth2server import InvenioOAuth2Server, InvenioOAuth2ServerREST
@@ -101,7 +101,7 @@ def app(request):
     app.register_blueprint(server_blueprint)
     app.register_blueprint(settings_blueprint)
 
-    app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {"/api": api_app.wsgi_app})
+    app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {"/api": api_app})
 
     with app.app_context():
         if str(
@@ -125,7 +125,7 @@ def app(request):
 @pytest.fixture()
 def api_app(app):
     """Retrieve the REST API application."""
-    return get_method_self(app.wsgi_app.mounts["/api"])
+    return app.wsgi_app.mounts["/api"]
 
 
 @pytest.fixture()
