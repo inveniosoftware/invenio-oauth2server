@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2015-2026 CERN.
 # SPDX-FileCopyrightText: 2023 Graz University of Technology.
 # SPDX-FileCopyrightText: 2026 KTH Royal Institute of Technology.
 # SPDX-License-Identifier: MIT
@@ -15,8 +15,10 @@ from flask import (
     redirect,
     render_template,
     request,
+    url_for,
 )
 from flask_login import login_required
+from invenio_accounts.reauth import is_reauth_fresh, reauth_redirect
 from oauthlib.oauth2.rfc6749.errors import InvalidClientError, OAuth2Error
 
 from ..models import Client
@@ -77,6 +79,14 @@ def authorize(*args, **kwargs):
         )
 
     confirm = request.form.get("confirm", "no")
+    if confirm == "yes" and not is_reauth_fresh():
+        # Come back to the consent page; the grant is not issued
+        params = {
+            k: v
+            for k, v in request.values.items()
+            if k in ("client_id", "redirect_uri", "response_type", "scope", "state")
+        }
+        return reauth_redirect(url_for(".authorize", **params))
     return confirm == "yes"
 
 
