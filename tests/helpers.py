@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2015-2026 CERN.
 # SPDX-FileCopyrightText: 2024 Graz University of Technology.
 # SPDX-License-Identifier: MIT
 
@@ -10,6 +10,7 @@ from urllib.parse import parse_qs, urlparse, urlunparse
 
 from flask import Blueprint, abort, jsonify, request, session, url_for
 from flask_oauthlib.client import OAuth, prepare_request
+from invenio_accounts.testutils import reauth_user_via_session
 
 
 def patch_request(app):
@@ -48,15 +49,24 @@ def parse_redirect(location, parse_fragment=False):
     )
 
 
-def login(test_client, email="info@inveniosoftware.org", password="tester"):
-    """Login the test client."""
-    return test_client.post(
+def login(
+    test_client, email="info@inveniosoftware.org", password="tester", reauth=True
+):
+    """Login the test client.
+
+    :param reauth: Also mark the user as freshly re-authenticated, so views
+        asking for a confirmation code can be used right away.
+    """
+    res = test_client.post(
         url_for("security.login"),
         data={
             "email": email,
             "password": password,
         },
     )
+    if reauth:
+        reauth_user_via_session(test_client)
+    return res
 
 
 def create_oauth_client(app, name, **kwargs):

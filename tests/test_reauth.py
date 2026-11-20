@@ -26,11 +26,11 @@ def _is_reauth_redirect(res):
     return res.status_code == 302 and "/account/settings/reauth" in res.location
 
 
-def test_token_new_requires_reauth(reauth_enabled, settings_fixture):
+def test_token_new_requires_reauth(settings_fixture):
     app = settings_fixture
     with app.test_request_context():
         with app.test_client() as client:
-            login(client)
+            login(client, reauth=False)
             token_new_url = url_for("invenio_oauth2server_settings.token_new")
 
             assert _is_reauth_redirect(client.get(token_new_url))
@@ -47,13 +47,11 @@ def test_token_new_requires_reauth(reauth_enabled, settings_fixture):
             assert Token.query.count() == 1
 
 
-def test_token_edit_requires_reauth_but_delete_does_not(
-    reauth_enabled, settings_fixture
-):
+def test_token_edit_requires_reauth_but_delete_does_not(settings_fixture):
     app = settings_fixture
     with app.test_request_context():
         with app.test_client() as client:
-            login(client)
+            login(client, reauth=False)
             _reauth(app, client)
             client.post(
                 url_for("invenio_oauth2server_settings.token_new"),
@@ -66,7 +64,7 @@ def test_token_edit_requires_reauth_but_delete_does_not(
 
     with app.test_request_context():
         with app.test_client() as client:
-            login(client)
+            login(client, reauth=False)
             assert client.get(token_url).status_code == 200
 
             res = client.post(token_url, data={"name": "Renamed"})
@@ -78,11 +76,11 @@ def test_token_edit_requires_reauth_but_delete_does_not(
             assert Token.query.count() == 0
 
 
-def test_client_management_requires_reauth(reauth_enabled, settings_fixture):
+def test_client_management_requires_reauth(settings_fixture):
     app = settings_fixture
     with app.test_request_context():
         with app.test_client() as client:
-            login(client)
+            login(client, reauth=False)
             client_new_url = url_for("invenio_oauth2server_settings.client_new")
             data = dict(
                 name="Test",
@@ -104,7 +102,7 @@ def test_client_management_requires_reauth(reauth_enabled, settings_fixture):
 
     with app.test_request_context():
         with app.test_client() as client:
-            login(client)
+            login(client, reauth=False)
             view_url = url_for(
                 "invenio_oauth2server_settings.client_view", client_id=c.client_id
             )
@@ -125,12 +123,12 @@ def test_client_management_requires_reauth(reauth_enabled, settings_fixture):
             assert Client.query.count() == 0
 
 
-def test_authorize_consent_requires_reauth(reauth_enabled, provider_fixture):
+def test_authorize_consent_requires_reauth(provider_fixture):
     app = provider_fixture
     with app.test_request_context():
         redirect_uri = url_for("oauth2test.authorized", _external=True)
         with app.test_client() as client:
-            login(client)
+            login(client, reauth=False)
             data = dict(
                 redirect_uri=redirect_uri,
                 scope="test:scope",
@@ -165,12 +163,3 @@ def test_authorize_consent_requires_reauth(reauth_enabled, provider_fixture):
             next_url, res_data = parse_redirect(r.location)
             assert next_url == redirect_uri
             assert res_data["code"]
-
-
-def test_disabled_by_default(settings_fixture):
-    app = settings_fixture
-    with app.test_request_context():
-        with app.test_client() as client:
-            login(client)
-            res = client.get(url_for("invenio_oauth2server_settings.token_new"))
-            assert res.status_code == 200
