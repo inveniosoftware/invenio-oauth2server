@@ -1,5 +1,5 @@
 ..
-    SPDX-FileCopyrightText: 2015-2024 CERN.
+    SPDX-FileCopyrightText: 2015-2026 CERN.
     SPDX-FileCopyrightText: 2024-2026 Graz University of Technology.
     SPDX-FileCopyrightText: 2025-2026 KTH Royal Institute of Technology.
     SPDX-FileCopyrightText: 2026 TU Wien.
@@ -7,6 +7,13 @@
 
 Changes
 =======
+
+Version v6.2.0 (released 2026-11-24)
+
+- chore(setup): bump dependencies
+- chore: removing six
+- chore(setup): remove importlib-metadata as dependency
+- chore(cleanup): remove unnecessary string literal breaks
 
 Version v6.1.0 (released 2026-09-07)
 
