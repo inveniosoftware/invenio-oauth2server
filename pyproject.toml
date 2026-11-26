@@ -8,7 +8,7 @@
 name = "invenio-oauth2server"
 description = "Invenio module that implements OAuth 2 server."
 readme = "README.rst"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 license = "MIT"
 authors = [
   { name = "CERN", email = "info@inveniosoftware.org" },
