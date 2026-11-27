@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2015-2026 CERN.
 # SPDX-FileCopyrightText: 2024-2025 Graz University of Technology.
 # SPDX-License-Identifier: MIT
 
@@ -7,7 +7,7 @@
 from datetime import datetime, timedelta, timezone
 from importlib.metadata import version
 
-from flask import current_app, g
+from flask import current_app, g, request
 from flask_login import current_user
 from flask_oauthlib.provider import OAuth2Provider
 from flask_principal import Identity, identity_changed
@@ -16,6 +16,7 @@ from invenio_db import db
 from werkzeug.local import LocalProxy
 
 from .models import Client, Token
+from .proxies import current_oauth2server
 from .scopes import email_scope
 
 oauth2 = OAuth2Provider()
@@ -136,9 +137,45 @@ def save_token(token, request, *args, **kwargs):
     return tok
 
 
+def _has_only_internal_scopes(token):
+    """Check if all scopes of a token are internal scopes.
+
+    :param token: The token instance.
+    :returns: ``True`` if the token has scopes and all of them are internal.
+    """
+    scopes = current_oauth2server.scopes
+    return bool(token.scopes) and all(
+        scope in scopes and scopes[scope].is_internal for scope in token.scopes
+    )
+
+
+def _view_oauth_scopes():
+    """Get the OAuth scopes required by the view of the current request.
+
+    Scopes are set by :func:`invenio_oauth2server.decorators.require_oauth_scopes`,
+    either on the view function or on the method of a class-based view.
+
+    :returns: The set of required scopes.
+    """
+    view = current_app.view_functions.get(request.endpoint)
+    view_class = getattr(view, "view_class", None)
+    method = getattr(view_class, request.method.lower(), None)
+    return getattr(view, "oauth_scopes", set()) | getattr(method, "oauth_scopes", set())
+
+
 @oauth2.after_request
 def login_oauth2_user(valid, oauth):
-    """Log in a user after having been verified."""
+    """Log in a user after having been verified.
+
+    Tokens with only internal scopes are only valid on views requiring one of
+    their scopes.
+    """
+    if (
+        valid
+        and _has_only_internal_scopes(oauth.access_token)
+        and not set(oauth.access_token.scopes) & _view_oauth_scopes()
+    ):
+        valid = False
     if valid:
         oauth.user.login_via_oauth2 = True
         # Flask-login==0.6.2 changed the way the user is saved i.e uses `flask.g`

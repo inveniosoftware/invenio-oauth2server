@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2015-2026 CERN.
 # SPDX-FileCopyrightText: 2023 Graz University of Technology.
 # SPDX-License-Identifier: MIT
 
@@ -209,3 +209,70 @@ def test_jwt_client(resource_fixture, api_app):
             headers=[("X-Travis-Mark-XLII", "{0}".format(token))],
         )
         assert 200 == res.status_code
+
+
+def test_internal_scope_token_on_internal_scope_view(resource_fixture):
+    """Tokens with only internal scopes work on views requiring those scopes."""
+    app = resource_fixture
+    with app.test_client() as client:
+        res = client.post(
+            app.url_for_test5resource,
+            query_string={"access_token": app.token_internalscope},
+        )
+        assert 200 == res.status_code
+        assert "{0}".format(app.user_id).encode("utf-8") == res.data
+
+        res = client.post(
+            app.url_for_test5resource,
+            headers=[("Authorization", f"Bearer {app.token_internalscope}")],
+        )
+        assert 200 == res.status_code
+        assert "{0}".format(app.user_id).encode("utf-8") == res.data
+
+        res = client.post(
+            app.url_for_test5resource, query_string={"access_token": app.token}
+        )
+        assert 403 == res.status_code
+
+
+def test_internal_scope_token_on_other_views(resource_fixture):
+    """Tokens with only internal scopes do not authenticate other views."""
+    app = resource_fixture
+    with app.test_client() as client:
+        res = client.get(
+            app.url_for_test4resource,
+            query_string={"access_token": app.token_internalscope},
+        )
+        assert 200 == res.status_code
+        assert b"None" == res.data
+
+        res = client.post(
+            app.url_for_test4resource,
+            headers=[("Authorization", f"Bearer {app.token_internalscope}")],
+        )
+        assert 200 == res.status_code
+        assert b"None" == res.data
+
+        res = client.post(
+            app.url_for_test3resource,
+            query_string={"access_token": app.token_internalscope},
+        )
+        assert 401 == res.status_code
+
+        res = client.get(
+            app.url_for_test1resource,
+            query_string={"access_token": app.token_internalscope},
+        )
+        assert 401 == res.status_code
+
+
+def test_token_without_scopes_on_other_views(resource_fixture):
+    """Tokens without scopes are not restricted like internal scope tokens."""
+    app = resource_fixture
+    with app.test_client() as client:
+        res = client.get(
+            app.url_for_test4resource,
+            query_string={"access_token": app.token_noscope},
+        )
+        assert 200 == res.status_code
+        assert "{0}".format(app.user_id).encode("utf-8") == res.data

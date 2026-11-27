@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2015-2018 CERN.
+# SPDX-FileCopyrightText: 2015-2026 CERN.
 # SPDX-FileCopyrightText: 2023 Graz University of Technology.
 # SPDX-License-Identifier: MIT
 
@@ -67,6 +67,8 @@ def require_oauth_scopes(*scopes):
                     abort(403)
             return f(*args, **kwargs)
 
+        # Tokens with only internal scopes only log in on views requiring them.
+        decorated.oauth_scopes = required_scopes | getattr(f, "oauth_scopes", set())
         return decorated
 
     return wrapper
